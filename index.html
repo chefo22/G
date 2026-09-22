@@ -1,0 +1,3752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Turnos Automáticos</title>
+<meta name="theme-color" content="#10161D">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIlR1cm5vcyBBdXRvbcOhdGljb3MiLCAic2hvcnRfbmFtZSI6ICJUdXJub3MiLCAiZGVzY3JpcHRpb24iOiAiR2VuZXJhZG9yIGF1dG9tw6F0aWNvIGRlIHR1cm5vcyBtZW5zdWFsZXMgcG9yIHBlcnNvbmEiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiI0ZBRjhGNSIsICJ0aGVtZV9jb2xvciI6ICIjMUQyQjNBIiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0ExTVRJZ05URXlJajRLSUNBOGNtVmpkQ0IzYVdSMGFEMGlOVEV5SWlCb1pXbG5hSFE5SWpVeE1pSWdjbmc5SWprMklpQm1hV3hzUFNJak1VUXlRak5CSWk4K0NpQWdQSEpsWTNRZ2VEMGlPVFlpSUhrOUlqRXlPQ0lnZDJsa2RHZzlJak15TUNJZ2FHVnBaMmgwUFNJeU5UWWlJSEo0UFNJeU1DSWdabWxzYkQwaUkwWkJSamhHTlNJdlBnb2dJRHh5WldOMElIZzlJamsySWlCNVBTSXhNamdpSUhkcFpIUm9QU0l6TWpBaUlHaGxhV2RvZEQwaU5qUWlJSEo0UFNJeU1DSWdabWxzYkQwaUl6SkdPRVk0TWlJdlBnb2dJRHh5WldOMElIZzlJakUwTUNJZ2VUMGlPVFlpSUhkcFpIUm9QU0l5TUNJZ2FHVnBaMmgwUFNJMk5DSWdjbmc5SWpFd0lpQm1hV3hzUFNJak1rWTRSamd5SWk4K0NpQWdQSEpsWTNRZ2VEMGlNelV5SWlCNVBTSTVOaUlnZDJsa2RHZzlJakl3SWlCb1pXbG5hSFE5SWpZMElpQnllRDBpTVRBaUlHWnBiR3c5SWlNeVJqaEdPRElpTHo0S0lDQThaeUJtYVd4c1BTSWpNVVF5UWpOQklqNEtJQ0FnSUR4amFYSmpiR1VnWTNnOUlqRTFNQ0lnWTNrOUlqSTBNQ0lnY2owaU1UQWlMejRLSUNBZ0lEeGphWEpqYkdVZ1kzZzlJakl3TUNJZ1kzazlJakkwTUNJZ2NqMGlNVEFpTHo0S0lDQWdJRHhqYVhKamJHVWdZM2c5SWpJMU1DSWdZM2s5SWpJME1DSWdjajBpTVRBaUx6NEtJQ0FnSUR4amFYSmpiR1VnWTNnOUlqTXdNQ0lnWTNrOUlqSTBNQ0lnY2owaU1UQWlMejRLSUNBZ0lEeGphWEpqYkdVZ1kzZzlJak0xTUNJZ1kzazlJakkwTUNJZ2NqMGlNVEFpTHo0S0lDQWdJRHhqYVhKamJHVWdZM2c5SWpFMU1DSWdZM2s5SWpJNU1DSWdjajBpTVRBaUx6NEtJQ0FnSUR4amFYSmpiR1VnWTNnOUlqSXdNQ0lnWTNrOUlqSTVNQ0lnY2owaU1UQWlMejRLSUNBZ0lEeGphWEpqYkdVZ1kzZzlJak13TUNJZ1kzazlJakk1TUNJZ2NqMGlNVEFpTHo0S0lDQWdJRHhqYVhKamJHVWdZM2c5SWpNMU1DSWdZM2s5SWpJNU1DSWdjajBpTVRBaUx6NEtJQ0FnSUR4amFYSmpiR1VnWTNnOUlqRTFNQ0lnWTNrOUlqTTBNQ0lnY2owaU1UQWlMejRLSUNBZ0lEeGphWEpqYkdVZ1kzZzlJakl3TUNJZ1kzazlJak0wTUNJZ2NqMGlNVEFpTHo0S0lDQWdJRHhqYVhKamJHVWdZM2c5SWpJMU1DSWdZM2s5SWpNME1DSWdjajBpTVRBaUx6NEtJQ0FnSUR4amFYSmpiR1VnWTNnOUlqTXdNQ0lnWTNrOUlqTTBNQ0lnY2owaU1UQWlMejRLSUNBOEwyYytDaUFnUEdOcGNtTnNaU0JqZUQwaU1qVXdJaUJqZVQwaU1qa3dJaUJ5UFNJeE5pSWdabWxzYkQwaUkwVXdRVFExT0NJdlBnbzhMM04yWno0SyIsICJzaXplcyI6ICJhbnkiLCAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIn1dfQ==">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijk2IiBmaWxsPSIjMUQyQjNBIi8+CiAgPHJlY3QgeD0iOTYiIHk9IjEyOCIgd2lkdGg9IjMyMCIgaGVpZ2h0PSIyNTYiIHJ4PSIyMCIgZmlsbD0iI0ZBRjhGNSIvPgogIDxyZWN0IHg9Ijk2IiB5PSIxMjgiIHdpZHRoPSIzMjAiIGhlaWdodD0iNjQiIHJ4PSIyMCIgZmlsbD0iIzJGOEY4MiIvPgogIDxyZWN0IHg9IjE0MCIgeT0iOTYiIHdpZHRoPSIyMCIgaGVpZ2h0PSI2NCIgcng9IjEwIiBmaWxsPSIjMkY4RjgyIi8+CiAgPHJlY3QgeD0iMzUyIiB5PSI5NiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjY0IiByeD0iMTAiIGZpbGw9IiMyRjhGODIiLz4KICA8ZyBmaWxsPSIjMUQyQjNBIj4KICAgIDxjaXJjbGUgY3g9IjE1MCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjI1MCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjM1MCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjE1MCIgY3k9IjI5MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjI5MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjI5MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjM1MCIgY3k9IjI5MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjE1MCIgY3k9IjM0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjM0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjI1MCIgY3k9IjM0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjM0MCIgcj0iMTAiLz4KICA8L2c+CiAgPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjkwIiByPSIxNiIgZmlsbD0iI0UwQTQ1OCIvPgo8L3N2Zz4K" type="image/svg+xml">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijk2IiBmaWxsPSIjMUQyQjNBIi8+CiAgPHJlY3QgeD0iOTYiIHk9IjEyOCIgd2lkdGg9IjMyMCIgaGVpZ2h0PSIyNTYiIHJ4PSIyMCIgZmlsbD0iI0ZBRjhGNSIvPgogIDxyZWN0IHg9Ijk2IiB5PSIxMjgiIHdpZHRoPSIzMjAiIGhlaWdodD0iNjQiIHJ4PSIyMCIgZmlsbD0iIzJGOEY4MiIvPgogIDxyZWN0IHg9IjE0MCIgeT0iOTYiIHdpZHRoPSIyMCIgaGVpZ2h0PSI2NCIgcng9IjEwIiBmaWxsPSIjMkY4RjgyIi8+CiAgPHJlY3QgeD0iMzUyIiB5PSI5NiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjY0IiByeD0iMTAiIGZpbGw9IiMyRjhGODIiLz4KICA8ZyBmaWxsPSIjMUQyQjNBIj4KICAgIDxjaXJjbGUgY3g9IjE1MCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjI1MCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjM1MCIgY3k9IjI0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjE1MCIgY3k9IjI5MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjI5MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjI5MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjM1MCIgY3k9IjI5MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjE1MCIgY3k9IjM0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjM0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjI1MCIgY3k9IjM0MCIgcj0iMTAiLz4KICAgIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjM0MCIgcj0iMTAiLz4KICA8L2c+CiAgPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjkwIiByPSIxNiIgZmlsbD0iI0UwQTQ1OCIvPgo8L3N2Zz4K">
+<script>
+  // Tema oscuro por defecto. Si el usuario eligió "claro" antes, se respeta esa elección.
+  (function(){
+    const guardado = localStorage.getItem('turnos_theme');
+    if(guardado === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#10161D;
+    --paper-dim:#1A222B;
+    --card:#1A222B;
+    --ink:#EDF0F3;
+    --ink-soft:#8FA0AE;
+    --teal:#4FBBAC;
+    --teal-dim:#173430;
+    --amber:#E8B876;
+    --amber-dim:#3A2B14;
+    --red:#E38078;
+    --red-dim:#3A1E1D;
+    --line:#2A3540;
+    --radius:14px;
+    --shadow:0 20px 50px rgba(0,0,0,.5);
+  }
+  html[data-theme="light"]{
+    --paper:#FAF8F5;
+    --paper-dim:#F0ECE4;
+    --card:#fff;
+    --ink:#1D2B3A;
+    --ink-soft:#4B5A6B;
+    --teal:#2F8F82;
+    --teal-dim:#E4F0EE;
+    --amber:#E0A458;
+    --amber-dim:#FBEEDC;
+    --red:#C1524B;
+    --red-dim:#FBE7E5;
+    --line:#DDD6C8;
+    --shadow:0 20px 50px rgba(0,0,0,.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:40px;
+  }
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif; margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  header{
+    padding:22px 18px 14px;
+    border-bottom:1px solid var(--line);
+    position:sticky; top:0; background:var(--paper); z-index:20;
+  }
+  header .brand{display:flex; align-items:center; gap:10px;}
+  header .brand .dot{width:14px;height:14px;border-radius:4px;background:var(--teal);}
+  header h1{font-size:1.35rem; letter-spacing:-0.02em;}
+  header p{margin:4px 0 0; color:var(--ink-soft); font-size:.85rem;}
+
+  nav.tabs{
+    display:flex; gap:6px; margin-top:16px;
+    background:var(--paper-dim); border-radius:12px; padding:4px;
+  }
+  nav.tabs button{
+    flex:1; border:none; background:transparent; color:var(--ink-soft);
+    font-family:'Inter'; font-weight:600; font-size:.85rem;
+    padding:9px 6px; border-radius:9px; cursor:pointer;
+    transition:background .15s, color .15s;
+  }
+  nav.tabs button.active{background:var(--ink); color:var(--paper);}
+
+  main{padding:16px 18px 60px; max-width:640px; margin:0 auto;}
+  @media (max-width:480px){
+    main{padding:16px 8px 60px;}
+    .card.print-cal{padding:12px 4px;}
+  }
+  section.view{display:none;}
+  section.view.active{display:block;}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; margin-bottom:14px;
+  }
+  .card h3{font-size:1rem; margin-bottom:10px;}
+  label{display:block; font-size:.78rem; font-weight:600; color:var(--ink-soft); margin:12px 0 5px; text-transform:uppercase; letter-spacing:.04em;}
+  label:first-of-type{margin-top:0;}
+  input[type=text], input[type=number], input[type=date], select{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:9px;
+    font-family:'Inter'; font-size:.95rem; background:var(--paper); color:var(--ink);
+  }
+  input:focus, select:focus, button:focus-visible{outline:2px solid var(--teal); outline-offset:1px;}
+
+  .color-editor{display:flex; align-items:center; gap:12px;}
+  .color-editor input[type=color]{
+    width:52px; height:44px; padding:0; border:1px solid var(--line); border-radius:9px;
+    background:var(--paper); cursor:pointer;
+  }
+  .color-editor input[type=color]::-webkit-color-swatch-wrapper{padding:3px;}
+  .color-editor input[type=color]::-webkit-color-swatch{border:none; border-radius:6px;}
+  .color-preview{flex:1;}
+  .color-preview-name{
+    display:inline-block; padding:5px 12px; border-radius:100px; font-size:.82rem; font-weight:600;
+  }
+  .persona-color-dot{width:10px; height:10px; border-radius:50%; flex-shrink:0; display:inline-block;}
+
+  .dias-semana{display:flex; gap:6px; flex-wrap:wrap;}
+  .dias-semana .chip-toggle{
+    padding:8px 0; width:40px; text-align:center; border-radius:9px; border:1px solid var(--line);
+    background:var(--paper); font-size:.78rem; font-weight:600; cursor:pointer; color:var(--ink-soft);
+    user-select:none;
+  }
+  .dias-semana .chip-toggle.on{background:var(--red-dim); border-color:var(--red); color:var(--red);}
+  .dias-semana .chip-toggle{position:relative;}
+  .dias-semana .chip-toggle .nivel-dot{
+    position:absolute; bottom:2px; left:50%; transform:translateX(-50%);
+    font-size:.55rem; font-weight:700; line-height:1; opacity:.85;
+  }
+
+  .leyenda-niveles{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 4px; font-size:.72rem; color:var(--ink-soft);}
+  .leyenda-niveles .leyenda-item{display:flex; align-items:center; gap:4px;}
+  .leyenda-niveles .leyenda-swatch{width:12px; height:12px; border-radius:4px; flex-shrink:0;}
+
+  .persona-check .nivel-tag{font-size:.68rem; font-weight:600; padding:2px 7px; border-radius:100px;}
+
+  .fecha-add{display:flex; gap:8px;}
+  .fecha-add input{flex:1;}
+  .btn{
+    border:none; border-radius:9px; padding:10px 16px; font-weight:600; font-size:.88rem;
+    cursor:pointer; font-family:'Inter'; transition:opacity .15s, transform .1s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--ink); color:var(--paper);}
+  .btn-accent{background:var(--teal); color:#fff;}
+  .btn-ghost{background:var(--paper-dim); color:var(--ink);}
+  .btn-danger{background:var(--red-dim); color:var(--red);}
+  .btn-sm{padding:6px 10px; font-size:.78rem; border-radius:7px;}
+  .btn-full{width:100%;}
+  .btn-row{display:flex; gap:8px; margin-top:14px;}
+
+  .cal-nav{display:flex; align-items:center; gap:8px; margin-bottom:2px;}
+  .cal-nav h3{flex:1; text-align:center;}
+  .cal-nav .btn-nav-mes{
+    width:36px; height:36px; padding:0; flex-shrink:0; font-size:1.1rem; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cal-nav .btn-hoy{flex-shrink:0;}
+
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
+  .chip{
+    background:var(--paper-dim); border-radius:100px; padding:5px 10px; font-size:.78rem;
+    display:flex; align-items:center; gap:6px; color:var(--ink-soft);
+  }
+  .chip button{background:none; border:none; cursor:pointer; color:var(--red); font-weight:700; padding:0; line-height:1;}
+
+  .persona-item{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px; margin-bottom:10px;
+  }
+  .persona-item .top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .persona-item .top-main{display:flex; align-items:flex-start; gap:8px; min-width:0;}
+  .persona-item .top h4{font-size:1rem; margin:0; display:flex; align-items:center; gap:7px;}
+  .persona-item .meta{font-size:.78rem; color:var(--ink-soft); margin-top:2px;}
+  .persona-item .acciones{display:flex; gap:6px; flex-shrink:0;}
+  .persona-item .detalle{margin-top:10px; font-size:.8rem; color:var(--ink-soft); line-height:1.5;}
+  .orden-btns{display:flex; flex-direction:column; gap:3px; flex-shrink:0;}
+  .orden-btns button{
+    width:26px; height:22px; padding:0; border:1px solid var(--line); border-radius:6px;
+    background:var(--paper); color:var(--ink-soft); font-size:.7rem; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .orden-btns button:disabled{opacity:.3; cursor:default;}
+  .empty{color:var(--ink-soft); font-size:.88rem; text-align:center; padding:30px 10px;}
+
+  .config-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+
+  .sub-hint{font-size:.8rem; color:var(--ink-soft); margin:0 0 12px;}
+  .excl-tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
+  .excl-tabs .excl-tab{
+    padding:7px 12px; border-radius:100px; border:1px solid var(--line); background:var(--paper);
+    font-size:.8rem; font-weight:600; color:var(--ink-soft); cursor:pointer;
+  }
+  .excl-tabs .excl-tab.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  #excl-dow-row, #excl-cal-grid{max-width:340px; margin-left:auto; margin-right:auto;}
+  .excl-day{
+    background:var(--card); border:1px solid var(--line); border-radius:9px; min-height:44px;
+    display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono'; font-weight:700; font-size:.82rem;
+    cursor:pointer; color:var(--ink); user-select:none;
+  }
+  .excl-day.empty-cell{background:transparent; border:none; cursor:default;}
+  .excl-day.weekend{background:var(--paper-dim);}
+  .excl-day.feriado{background:var(--red-dim); color:var(--red);}
+  .excl-day.fijo{background:var(--paper-dim); color:var(--ink-soft); opacity:.55; cursor:not-allowed;}
+  .excl-day.marcado{background:var(--red); border-color:var(--red); color:#fff;}
+
+  .resumen-total{
+    display:flex; flex-direction:column; gap:3px;
+    background:var(--teal-dim); border-radius:10px; padding:10px 14px; margin-top:12px; font-size:.85rem;
+  }
+  .resumen-total .resumen-fila{display:flex; justify-content:space-between; align-items:center;}
+  .resumen-total .resumen-detalle{font-size:.74rem; color:var(--ink-soft); font-weight:500;}
+  .resumen-total.warn{background:var(--amber-dim);}
+  .resumen-total b{font-family:'JetBrains Mono';}
+
+  .warnings{margin-top:12px;}
+  .warning-item{
+    background:var(--amber-dim); border-left:3px solid var(--amber); border-radius:6px;
+    padding:8px 12px; font-size:.8rem; margin-bottom:6px; color:var(--amber);
+  }
+
+  .cal-grid{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:clamp(3px,1.2vw,6px); margin-top:12px;}
+  .cal-dow{text-align:center; font-size:.68rem; font-weight:700; color:var(--ink-soft); text-transform:uppercase;}
+  .cal-cell{
+    position:relative;
+    background:var(--card); border:1px solid var(--line); border-radius:9px; min-height:70px;
+    min-width:0; overflow:visible;
+    padding:4px 2px; display:flex; flex-direction:column; gap:3px; cursor:pointer;
+  }
+  .otros-dots{position:absolute; top:4px; right:4px; display:flex; gap:2px;}
+  .otros-dot{width:6px; height:6px; border-radius:50%; flex-shrink:0;}
+  .cal-cell.empty-cell{background:transparent; border:none; cursor:default;}
+  .cal-cell.weekend{background:var(--paper-dim);}
+  .cal-cell.feriado{background:var(--red-dim);}
+  .cal-cell.feriado .num{color:var(--red);}
+  .cal-cell.understaffed{border-color:var(--amber); background:var(--amber-dim);}
+  .cal-cell .num{font-family:'JetBrains Mono'; font-weight:700; font-size:clamp(.8rem,3.2vw,.95rem);}
+  .cal-cell .name{
+    font-size:.74rem; background:var(--teal-dim); color:var(--teal); border-radius:5px;
+    padding:2px 3px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    max-width:100%; display:block;
+  }
+
+  dialog{
+    border:none; border-radius:16px; padding:0; width:min(420px,92vw);
+    background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  }
+  dialog::backdrop{background:rgba(29,43,58,.5);}
+  .dialog-body{padding:18px;}
+  .dialog-body h3{margin-bottom:2px;}
+  .dialog-body .sub{font-size:.8rem; color:var(--ink-soft); margin-bottom:12px;}
+  .persona-check{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:9px 4px; border-bottom:1px solid var(--paper-dim); font-size:.9rem;
+  }
+  .persona-check .restringido{font-size:.68rem; color:var(--red); font-weight:600;}
+  .persona-check label{display:flex; align-items:center; gap:8px; margin:0; text-transform:none; letter-spacing:0; font-weight:500; color:var(--ink); font-size:.9rem;}
+  .persona-check input[type=checkbox]{width:18px; height:18px;}
+
+  footer.hint{text-align:center; color:var(--ink-soft); font-size:.75rem; margin-top:18px; padding:0 20px;}
+
+  @media print{
+    header, nav.tabs, .btn-row, .card:not(.print-cal){display:none !important;}
+    .cal-nav .btn-nav-mes, .cal-nav .btn-hoy, #cal-sin-turnos-hint{display:none !important;}
+    body{padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="dot"></span><h1>GS</h1>
+    <button id="btn-theme-toggle" class="btn btn-ghost btn-sm" style="margin-left:auto;" aria-label="Cambiar tema" title="Cambiar tema">🌙</button>
+  </div>
+  <nav class="tabs">
+    <button data-tab="generar" class="active">Generar</button>
+    <button data-tab="calendario">Calendario</button>
+    <button data-tab="otros">Otros</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- GENERAR -->
+  <section id="view-generar" class="view active">
+    <div class="card">
+      <h3>Configuración del mes</h3>
+      <div class="config-grid">
+        <div>
+          <label for="g-mes">Mes</label>
+          <select id="g-mes"></select>
+        </div>
+        <div>
+          <label for="g-anio">Año</label>
+          <input type="number" id="g-anio">
+        </div>
+      </div>
+      <label for="g-personas-dia">Personas necesarias por día</label>
+      <input type="number" id="g-personas-dia" min="1" value="2">
+    </div>
+
+    <div class="card" id="excl-card" style="margin-top:18px;">
+      <h3>Días puntuales este mes</h3>
+      <label style="display:flex; align-items:center; gap:8px; text-transform:none; font-weight:500; letter-spacing:normal; cursor:pointer; color:var(--ink);">
+        <input type="checkbox" id="excl-modo-simple" style="width:auto;">
+        Un toque = "No puede" (sin niveles intermedios)
+      </label>
+      <div class="excl-tabs" id="excl-tabs" style="margin-top:12px;"></div>
+      <div class="cal-grid" id="excl-dow-row"></div>
+      <div class="cal-grid" id="excl-cal-grid"></div>
+      <div id="excl-leyenda"></div>
+      <p class="sub-hint" id="excl-resumen" style="margin-top:10px;"></p>
+    </div>
+
+    <h3 style="margin:18px 0 10px 4px; font-size:.95rem;">Personas cargadas</h3>
+    <div id="lista-personas"></div>
+
+    <button class="btn btn-accent btn-full" id="btn-toggle-form-persona" type="button" style="margin-top:14px;">+ Agregar persona</button>
+
+    <div class="card" id="form-persona-card" style="display:none; margin-top:14px;">
+      <h3 id="form-title">Agregar persona</h3>
+      <input type="hidden" id="persona-id">
+      <label for="p-nombre">Nombre</label>
+      <input type="text" id="p-nombre" placeholder="Ej: María">
+
+      <label for="p-max">Máximo de días en el mes</label>
+      <input type="number" id="p-max" min="0" placeholder="Ej: 12">
+
+      <div class="config-grid">
+        <div>
+          <label for="p-max-seguidos">Máx. días seguidos trabajando</label>
+          <input type="number" id="p-max-seguidos" min="1" placeholder="Sin límite">
+        </div>
+        <div>
+          <label for="p-min-descanso">Mín. días libres seguidos</label>
+          <input type="number" id="p-min-descanso" min="0" placeholder="Sin mínimo">
+        </div>
+      </div>
+      <label for="p-color">Color</label>
+      <div class="color-editor">
+        <input type="color" id="p-color" value="#2F8F82">
+        <div class="color-preview" id="p-color-preview">
+          <span class="color-preview-name" id="p-color-preview-name">Nombre</span>
+        </div>
+      </div>
+
+      <label>Días fijos de la semana (se repiten todas las semanas)</label>
+      <div class="dias-semana" id="dias-fijos">
+        <div class="chip-toggle" data-day="1" data-nivel="0">L</div>
+        <div class="chip-toggle" data-day="2" data-nivel="0">M</div>
+        <div class="chip-toggle" data-day="3" data-nivel="0">X</div>
+        <div class="chip-toggle" data-day="4" data-nivel="0">J</div>
+        <div class="chip-toggle" data-day="5" data-nivel="0">V</div>
+        <div class="chip-toggle" data-day="6" data-nivel="0">S</div>
+        <div class="chip-toggle" data-day="0" data-nivel="0">D</div>
+      </div>
+      <div id="dias-fijos-leyenda"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-accent btn-full" id="btn-guardar-persona">Guardar persona</button>
+        <button class="btn btn-ghost" id="btn-cancelar-edit" style="display:none;">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="card" id="feriados-card" style="margin-top:18px;">
+      <h3>Feriados</h3>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-accent btn-full" id="btn-abrir-selector-feriados" type="button">+ Elegir fechas en el calendario</button>
+      </div>
+      <div class="chips" id="feriados-chips" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" id="btn-generar">Generar turnos del mes</button>
+    </div>
+    <p class="empty" id="generar-empty-hint">Cargá al menos una persona arriba antes de generar.</p>
+  </section>
+
+  <!-- CALENDARIO -->
+  <section id="view-calendario" class="view">
+    <div class="card print-cal">
+      <div class="cal-nav">
+        <button class="btn btn-ghost btn-nav-mes" id="btn-mes-anterior" aria-label="Mes anterior" title="Mes anterior">‹</button>
+        <h3 id="cal-titulo">Sin turnos generados</h3>
+        <button class="btn btn-ghost btn-nav-mes" id="btn-mes-siguiente" aria-label="Mes siguiente" title="Mes siguiente">›</button>
+        <button class="btn btn-ghost btn-sm btn-hoy" id="btn-mes-hoy" title="Ir al mes actual">Hoy</button>
+      </div>
+      <div class="cal-grid" id="cal-dow-row"></div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="warnings" id="cal-warnings"></div>
+      <p class="sub-hint" id="cal-sin-turnos-hint" style="display:none; margin-top:10px;">
+        Todavía no generaste turnos para este mes.
+        <button class="btn btn-primary btn-sm" id="btn-generar-este-mes" style="margin-top:8px; display:block;">Generar turnos para este mes</button>
+      </p>
+    </div>
+    <div class="card" id="cal-otros-legend-card" style="display:none;">
+      <h3 style="font-size:.9rem; margin-bottom:8px;">Otros calendarios</h3>
+      <div class="chips" id="cal-otros-legend"></div>
+    </div>
+    <div class="card" id="resumen-card" style="display:none;">
+      <h3>Resumen por persona</h3>
+      <div id="resumen-lista"></div>
+      <button class="btn btn-ghost btn-full" id="btn-exportar-resumen-imagen" style="margin-top:10px;">Exportar resumen como imagen</button>
+    </div>
+    <div class="btn-row" id="cal-import-actions">
+      <button class="btn btn-ghost btn-full" id="btn-importar-shifter">Importar desde Shifter (.Shifter)</button>
+      <input type="file" id="input-importar-shifter" accept=".Shifter,.db,.sqlite,application/octet-stream" style="display:none;">
+      <button class="btn btn-ghost btn-full" id="btn-importar-groups">Importar desde Groups (experimental)</button>
+      <input type="file" id="input-importar-groups" accept=".db,.sqlite,application/octet-stream,*/*" style="display:none;">
+      <button class="btn btn-ghost btn-full" id="btn-analizar-groups">Analizar archivo de Groups (diagnóstico)</button>
+      <input type="file" id="input-analizar-groups" accept=".db,.sqlite,application/octet-stream,*/*" style="display:none;">
+    </div>
+    <div class="btn-row" id="cal-actions" style="display:none;">
+      <button class="btn btn-ghost btn-full" id="btn-exportar-imagen">Exportar como imagen</button>
+      <button class="btn btn-ghost btn-full" id="btn-copiar">Copiar como texto</button>
+      <button class="btn btn-accent btn-full" id="btn-exportar-shifter">Exportar a Shifter (.Shifter)</button>
+      <button class="btn btn-accent btn-full" id="btn-exportar-groups">Exportar a Groups (experimental)</button>
+    </div>
+  </section>
+
+  <!-- OTROS CALENDARIOS -->
+  <section id="view-otros" class="view">
+    <div class="card" id="pcc-card" style="display:none;">
+      <h3>Calendario completo de la persona</h3>
+      <label for="pcc-persona">Persona</label>
+      <select id="pcc-persona"></select>
+      <div class="cal-nav">
+        <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-anterior" type="button" aria-label="Mes anterior" title="Mes anterior">‹</button>
+        <h3 id="pcc-titulo" style="flex:1; text-align:center; font-size:.95rem;"></h3>
+        <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-siguiente" type="button" aria-label="Mes siguiente" title="Mes siguiente">›</button>
+        <button class="btn btn-ghost btn-sm btn-hoy" id="btn-pcc-mes-hoy" type="button" title="Ir al mes actual">Hoy</button>
+      </div>
+      <div class="cal-grid" id="pcc-dow-row"></div>
+      <div class="cal-grid" id="pcc-grid"></div>
+      <div class="chips" id="pcc-legend" style="margin-top:10px;"></div>
+      <div class="btn-row">
+        <button class="btn btn-accent btn-full" id="btn-exportar-pcc-shifter">Exportar esta persona a Shifter (todo como turnos)</button>
+        <button class="btn btn-accent btn-full" id="btn-exportar-pcc-groups">Exportar esta persona a Groups (experimental, sin límite de 2)</button>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; margin:18px 0 10px 4px;">
+      <h3 style="font-size:.95rem; margin:0;">Tus calendarios</h3>
+      <button class="btn btn-ghost btn-sm" id="btn-toggle-crear-calendario" type="button" aria-label="Crear calendario" title="Crear calendario">+</button>
+    </div>
+    <div id="lista-otros-calendarios"></div>
+
+    <div class="card" id="crear-calendario-card" style="margin-top:18px; display:none;">
+      <h3>Crear calendario</h3>
+      <label for="oc-nombre">Nombre</label>
+      <input type="text" id="oc-nombre" placeholder="Ej: Fórmula 1">
+      <label for="oc-persona">Persona</label>
+      <select id="oc-persona"></select>
+      <label for="oc-color">Color</label>
+      <div class="color-editor">
+        <input type="color" id="oc-color" value="#4B6FA8">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-accent btn-full" id="btn-crear-calendario-extra">Crear calendario</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<dialog id="dialog-dia">
+  <div class="dialog-body">
+    <h3 id="dialog-fecha-titulo">Día</h3>
+    <div id="dialog-personas-list"></div>
+    <div class="btn-row">
+      <button class="btn btn-accent btn-full" id="btn-guardar-dia">Guardar</button>
+      <button class="btn btn-ghost" id="btn-cerrar-dialog">Cerrar</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dialog-selector-fechas">
+  <div class="dialog-body">
+    <h3 id="selector-fechas-titulo">Elegí las fechas</h3>
+    <div class="cal-nav">
+      <button class="btn btn-ghost btn-nav-mes" id="btn-selector-fechas-mes-anterior" type="button" aria-label="Mes anterior">‹</button>
+      <h3 id="selector-fechas-mes-titulo" style="flex:1; text-align:center; font-size:.95rem;"></h3>
+      <button class="btn btn-ghost btn-nav-mes" id="btn-selector-fechas-mes-siguiente" type="button" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="cal-grid" id="selector-fechas-dow-row"></div>
+    <div class="cal-grid" id="selector-fechas-grid"></div>
+    <div id="selector-fechas-leyenda"></div>
+    <div class="btn-row">
+      <button class="btn btn-accent btn-full" id="btn-cerrar-selector-fechas">Listo</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dialog-dia-pcc">
+  <div class="dialog-body">
+    <h3 id="pcc-dialog-fecha-titulo">Día</h3>
+    <div id="pcc-dialog-disponibilidad" style="margin:-4px 0 10px;"></div>
+    <label style="display:flex; align-items:center; gap:8px; text-transform:none; letter-spacing:0; font-size:.9rem;">
+      <input type="checkbox" id="pcc-dialog-turno" style="width:auto;">
+      Turno de trabajo asignado
+    </label>
+    <div id="pcc-dialog-calendarios" style="margin-top:12px;"></div>
+    <div id="pcc-dialog-leyenda"></div>
+    <div class="btn-row">
+      <button class="btn btn-accent btn-full" id="btn-guardar-dia-pcc">Guardar</button>
+      <button class="btn btn-ghost" id="btn-cerrar-dialog-pcc">Cerrar</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+// ---------- Estado ----------
+const LS_PERSONAS = 'turnos_personas';
+const LS_CONFIG = 'turnos_config';
+const LS_SCHEDULE_PREFIX = 'turnos_schedule_';
+
+const LS_EXCLUSIONES_PREFIX = 'turnos_exclusiones_';
+const LS_FERIADOS = 'turnos_feriados';
+const LS_CALENDARIOS_EXTRA = 'turnos_calendarios_extra';
+
+let personas = JSON.parse(localStorage.getItem(LS_PERSONAS) || '[]');
+// Blindaje: si por algún motivo quedaron dos registros con el mismo id
+// (datos viejos, doble clic al guardar, etc.), nos quedamos con el más
+// reciente y sacamos el resto. Esto es lo que evita que la misma persona
+// pueda terminar asignada dos veces en un mismo día.
+{
+  const vistos = new Map();
+  personas.forEach(p => vistos.set(p.id, p));
+  personas = [...vistos.values()];
+}
+let config = JSON.parse(localStorage.getItem(LS_CONFIG) || '{}');
+// Fechas feriadas cargadas a mano (además de los domingos, que ya cuentan
+// como festivo automáticamente). Son globales, no dependen del mes que se
+// esté generando, así que se guardan aparte y se cargan una sola vez.
+let feriados = JSON.parse(localStorage.getItem(LS_FERIADOS) || '[]');
+// Calendarios personales aparte de los turnos de trabajo (ej: "Fórmula 1",
+// "Cumpleaños"). Cada uno es { id, nombre, color, fechas:[isoDate,...] }.
+// Son solo informativos: marcan el día en el calendario pero no entran
+// en la generación de turnos ni en las exclusiones.
+let calendariosExtra = JSON.parse(localStorage.getItem(LS_CALENDARIOS_EXTRA) || '[]');
+// Migración: las fechas de calendarios extra eran solo informativas (array
+// de fechas). Ahora también tienen nivel de preferencia y SÍ influyen en la
+// generación de turnos. A las fechas ya cargadas se les asigna nivel 2
+// (baja) por defecto, para no bloquear de golpe a nadie: convendría
+// revisarlas y ajustar el nivel de cada una a mano.
+calendariosExtra.forEach(c=>{
+  if(Array.isArray(c.fechas)){
+    const migrado = {};
+    c.fechas.forEach(iso => { migrado[iso] = 2; });
+    c.fechas = migrado;
+  } else if(!c.fechas){
+    c.fechas = {};
+  }
+});
+let exclusionesActuales = {}; // { personaId: {'2026-01-05': nivel, ...} } -- puntuales del mes que se está por generar
+let currentSchedule = null; // {year, month, days:{ '2026-01-01':[ids] }, warnings:[], exclusiones:{...} }
+let ultimoResumenSimple = []; // [{nombre, normales, festivos}] del resumen por persona mostrado actualmente
+let calViewAnio = null; // año que se está mirando en la pestaña Calendario (no siempre coincide con "config", que es el último generado)
+let calViewMes = null;  // mes (0-11) que se está mirando en la pestaña Calendario
+let selectorFechasContext = null; // {tipo:'feriados'} o {tipo:'otro', calId} -- para qué está abierto el selector flotante
+let selectorFechasAnio = null;
+let selectorFechasMes = null;
+let pccPersonaId = null; // persona elegida en "Calendario completo de la persona"
+let pccAnio = null;
+let pccMes = null;
+
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DOW_LABELS = ['L','M','X','J','V','S','D'];
+const DOW_FULL = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+function saveAll(){
+  localStorage.setItem(LS_PERSONAS, JSON.stringify(personas));
+  localStorage.setItem(LS_CONFIG, JSON.stringify(config));
+}
+function uid(){ return 'p_' + Math.random().toString(36).slice(2,9); }
+
+// ---------- Color por persona ----------
+const COLOR_DEFAULT = '#2F8F82';
+function hexToRgb(hex){
+  const m = hex.replace('#','').match(/.{1,2}/g);
+  return { r: parseInt(m[0],16), g: parseInt(m[1],16), b: parseInt(m[2],16) };
+}
+function rgbToHex(r,g,b){
+  const h = n => Math.max(0,Math.min(255,Math.round(n))).toString(16).padStart(2,'0');
+  return '#' + h(r) + h(g) + h(b);
+}
+// Devuelve una versión más oscura del mismo color (mismo matiz, menos brillo).
+function oscurecerColor(hex, factor=0.55){
+  const {r,g,b} = hexToRgb(hex);
+  return rgbToHex(r*factor, g*factor, b*factor);
+}
+// ---------- Niveles de preferencia (1 = muy baja ... 5 = no puede / bloqueo total) ----------
+// Se usan de la misma forma en tres lugares: días fijos de la semana (por
+// persona), días puntuales del mes (pestaña Generar) y fechas de los
+// calendarios extra. El nivel 5 siempre bloquea por completo (equivale al
+// viejo "no puede" binario); los niveles 1 a 4 son preferencia blanda: el
+// generador intenta evitarlos pero puede usarlos si no queda otra opción.
+const NIVEL_BLOQUEO = 5;
+const ETIQUETAS_NIVEL = { 1:'Muy baja', 2:'Baja', 3:'Media', 4:'Alta', 5:'No puede' };
+const PESO_NIVEL = { 1:5, 2:15, 3:40, 4:90 }; // penalización en el puntaje del calendario (nivel 5 no puntúa: está bloqueado)
+
+function nombreNivel(nivel){
+  if(!nivel) return 'Disponible';
+  if(nivel>=NIVEL_BLOQUEO) return 'No puede';
+  return 'Prefiere no trabajar (' + ETIQUETAS_NIVEL[nivel].toLowerCase() + ')';
+}
+function esBloqueante(nivel){ return nivel >= NIVEL_BLOQUEO; }
+
+// Color del nivel: interpola entre el ámbar y el rojo del tema actual, así
+// se adapta solo si el usuario cambia entre tema claro y oscuro.
+function getCssVarHex(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function colorParaNivel(nivel){
+  if(!nivel) return null;
+  const from = hexToRgb(getCssVarHex('--amber'));
+  const to = hexToRgb(getCssVarHex('--red'));
+  const t = (nivel-1)/(NIVEL_BLOQUEO-1);
+  return rgbToHex(
+    from.r + (to.r-from.r)*t,
+    from.g + (to.g-from.g)*t,
+    from.b + (to.b-from.b)*t
+  );
+}
+function textoContraste(hex){
+  const {r,g,b} = hexToRgb(hex);
+  const lum = (0.299*r + 0.587*g + 0.114*b) / 255;
+  return lum > 0.6 ? '#1D2B3A' : '#fff';
+}
+// Aplica el color/estilo de un nivel a una celda o chip. Si nivel es 0,
+// limpia los estilos y la deja en su apariencia "disponible" normal.
+function aplicarEstiloNivel(el, nivel){
+  el.dataset.nivel = nivel || 0;
+  if(!nivel){
+    el.style.background = '';
+    el.style.borderColor = '';
+    el.style.color = '';
+    el.title = '';
+    return;
+  }
+  const bg = colorParaNivel(nivel);
+  el.style.background = bg;
+  el.style.borderColor = bg;
+  el.style.color = textoContraste(bg);
+  el.title = nombreNivel(nivel);
+}
+// Dibuja la leyenda de los 5 niveles (se reutiliza en varias pantallas).
+function leyendaNivelesHtml(){
+  let html = '';
+  for(let n=1; n<=NIVEL_BLOQUEO; n++){
+    const bg = colorParaNivel(n);
+    html += `<div class="leyenda-item"><span class="leyenda-swatch" style="background:${bg};"></span>${nombreNivel(n)}</div>`;
+  }
+  return `<div class="leyenda-niveles">${html}</div>`;
+}
+
+// ---------- Días fijos: nivel por día de la semana ----------
+// persona.diasFijos es un objeto { '0': nivel, '3': nivel, ... } (clave =
+// día de semana 0=domingo..6=sábado). Antes era un array de días "que no
+// puede"; se migra a nivel 5 (bloqueo total) para no cambiar el
+// comportamiento de datos ya cargados.
+function nivelDiaFijo(persona, weekday){
+  return (persona.diasFijos && persona.diasFijos[weekday]) || 0;
+}
+function migrarDiasFijos(persona){
+  if(Array.isArray(persona.diasFijos)){
+    const migrado = {};
+    persona.diasFijos.forEach(d => { migrado[d] = NIVEL_BLOQUEO; });
+    persona.diasFijos = migrado;
+  } else if(!persona.diasFijos){
+    persona.diasFijos = {};
+  }
+}
+
+// ---------- Exclusiones puntuales: nivel por fecha ----------
+// exclusiones[personaId] es un objeto { '2026-01-05': nivel, ... }. Antes
+// era un array de fechas "que no puede"; se migra igual, a nivel 5.
+function nivelExclusion(exclusiones, personaId, iso){
+  const m = exclusiones[personaId];
+  if(!m) return 0;
+  if(Array.isArray(m)) return m.includes(iso) ? NIVEL_BLOQUEO : 0;
+  return m[iso] || 0;
+}
+function migrarExclusiones(exclusiones){
+  Object.keys(exclusiones).forEach(pid=>{
+    if(Array.isArray(exclusiones[pid])){
+      const migrado = {};
+      exclusiones[pid].forEach(iso => { migrado[iso] = NIVEL_BLOQUEO; });
+      exclusiones[pid] = migrado;
+    }
+  });
+  return exclusiones;
+}
+
+// ---------- Nivel combinado del día para una persona ----------
+// Junta las tres fuentes (día fijo, exclusión puntual, calendarios extra
+// de esa persona) y se queda con la más restrictiva (el máximo). Si
+// cualquiera de las tres llega a nivel 5, el día queda bloqueado del todo.
+function nivelPreferenciaDia(persona, weekday, iso, exclusiones){
+  let nivel = nivelDiaFijo(persona, weekday);
+  const nivelExcl = nivelExclusion(exclusiones, persona.id, iso);
+  if(nivelExcl > nivel) nivel = nivelExcl;
+  calendariosExtra.forEach(c=>{
+    if(c.personaId !== persona.id) return;
+    const n = (c.fechas && c.fechas[iso]) || 0;
+    if(n > nivel) nivel = n;
+  });
+  return nivel;
+}
+
+function actualizarPreviaColor(){
+  const color = document.getElementById('p-color').value;
+  const nombre = document.getElementById('p-nombre').value.trim() || 'Nombre';
+  const preview = document.getElementById('p-color-preview-name');
+  preview.textContent = nombre;
+  preview.style.background = color;
+  preview.style.color = oscurecerColor(color);
+}
+document.getElementById('p-color').addEventListener('input', actualizarPreviaColor);
+document.getElementById('p-nombre').addEventListener('input', actualizarPreviaColor);
+actualizarPreviaColor();
+
+// Migración: personas guardadas antes de que existiera el color, les asigna uno.
+const PALETA_INICIAL = ['#2F8F82','#C1524B','#E0A458','#4B6FA8','#8A5FB0','#B0655F','#5F8F5A','#B08A2F'];
+personas.forEach((p,i)=>{ if(!p.color) p.color = PALETA_INICIAL[i % PALETA_INICIAL.length]; });
+// Migración: días fijos, de array de días "que no puede" a objeto con nivel de preferencia por día.
+personas.forEach(migrarDiasFijos);
+
+// ---------- Tabs ----------
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('section.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='generar'){
+      if(calViewAnio!==null && calViewMes!==null){
+        document.getElementById('g-mes').value = calViewMes;
+        document.getElementById('g-anio').value = calViewAnio;
+      }
+      refreshGenerarHint(); cargarExclusionesDelMesSeleccionado(); renderExclusiones();
+    }
+    if(btn.dataset.tab==='calendario') renderCalendar();
+    if(btn.dataset.tab==='otros') renderOtrosCalendarios();
+  });
+});
+
+// ---------- Días fijos: ciclo de nivel (0 = disponible ... 5 = no puede) ----------
+document.querySelectorAll('#dias-fijos .chip-toggle').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    const nivel = ((parseInt(el.dataset.nivel,10) || 0) + 1) % (NIVEL_BLOQUEO + 1);
+    aplicarEstiloNivel(el, nivel);
+  });
+});
+document.getElementById('dias-fijos-leyenda').innerHTML = leyendaNivelesHtml();
+
+// ---------- Días puntuales por mes (se cargan al generar, no en el perfil de la persona) ----------
+function exclusionesKey(anio, mes){ return LS_EXCLUSIONES_PREFIX + anio + '_' + mes; }
+
+function cargarExclusionesDelMesSeleccionado(){
+  const mes = parseInt(document.getElementById('g-mes').value, 10);
+  const anio = parseInt(document.getElementById('g-anio').value, 10);
+  exclusionesActuales = JSON.parse(localStorage.getItem(exclusionesKey(anio, mes)) || '{}');
+  migrarExclusiones(exclusionesActuales);
+  // asegurar que exista un objeto por cada persona actual
+  personas.forEach(p=>{ if(!exclusionesActuales[p.id]) exclusionesActuales[p.id] = {}; });
+}
+
+function guardarExclusionesDelMesSeleccionado(){
+  const mes = parseInt(document.getElementById('g-mes').value, 10);
+  const anio = parseInt(document.getElementById('g-anio').value, 10);
+  localStorage.setItem(exclusionesKey(anio, mes), JSON.stringify(exclusionesActuales));
+}
+
+let selectedExclPersonId = null;
+let modoSimpleExclusiones = (function(){
+  const v = localStorage.getItem('turnos_excl_modo_simple');
+  return v === null ? true : v === 'true';
+})();
+
+function renderExclusiones(){
+  const tabsBox = document.getElementById('excl-tabs');
+  const dowRow = document.getElementById('excl-dow-row');
+  const grid = document.getElementById('excl-cal-grid');
+  const resumen = document.getElementById('excl-resumen');
+
+  if(personas.length===0){
+    tabsBox.innerHTML=''; dowRow.innerHTML=''; grid.innerHTML='';
+    resumen.textContent='';
+    document.getElementById('excl-card').style.display='none';
+    return;
+  }
+  document.getElementById('excl-card').style.display='block';
+  document.getElementById('excl-modo-simple').checked = modoSimpleExclusiones;
+
+  if(!selectedExclPersonId || !personas.find(p=>p.id===selectedExclPersonId)){
+    selectedExclPersonId = personas[0].id;
+  }
+
+  tabsBox.innerHTML='';
+  personas.forEach(p=>{
+    const tab = document.createElement('div');
+    tab.className = 'excl-tab' + (p.id===selectedExclPersonId ? ' active':'');
+    tab.textContent = p.nombre;
+    tab.addEventListener('click', ()=>{ selectedExclPersonId = p.id; renderExclusiones(); });
+    tabsBox.appendChild(tab);
+  });
+
+  const mes = parseInt(document.getElementById('g-mes').value, 10);
+  const anio = parseInt(document.getElementById('g-anio').value, 10);
+  const persona = personas.find(p=>p.id===selectedExclPersonId);
+  if(!exclusionesActuales[persona.id]) exclusionesActuales[persona.id] = {};
+
+  dowRow.innerHTML = DOW_LABELS.map(l=>`<div class="cal-dow">${l}</div>`).join('');
+
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  const primerDow = primerOffsetLunes(anio, mes);
+  grid.innerHTML='';
+  for(let i=0;i<primerDow;i++){
+    const e = document.createElement('div');
+    e.className='excl-day empty-cell';
+    grid.appendChild(e);
+  }
+  for(let d=1; d<=diasEnMes; d++){
+    const iso = isoDate(anio, mes, d);
+    const weekday = new Date(anio, mes, d).getDay();
+    const esFijoBloqueante = esBloqueante(nivelDiaFijo(persona, weekday));
+    const nivel = nivelExclusion(exclusionesActuales, persona.id, iso);
+    const esFest = esFechaFestiva(iso) && weekday!==0;
+    const cell = document.createElement('div');
+    cell.className = 'excl-day' + ((weekday===0||weekday===6)?' weekend':'') + (esFest?' feriado':'') + (esFijoBloqueante?' fijo':'');
+    cell.textContent = d;
+    if(esFijoBloqueante){
+      cell.title = 'Ya no disponible por día fijo';
+    } else {
+      aplicarEstiloNivel(cell, nivel);
+      cell.addEventListener('click', ()=>{
+        const actual = exclusionesActuales[persona.id][iso] || 0;
+        const siguiente = modoSimpleExclusiones
+          ? (actual >= NIVEL_BLOQUEO ? 0 : NIVEL_BLOQUEO)
+          : (actual + 1) % (NIVEL_BLOQUEO + 1);
+        if(siguiente) exclusionesActuales[persona.id][iso] = siguiente;
+        else delete exclusionesActuales[persona.id][iso];
+        guardarExclusionesDelMesSeleccionado();
+        renderExclusiones();
+      });
+    }
+    grid.appendChild(cell);
+  }
+
+  const marcados = Object.keys(exclusionesActuales[persona.id])
+    .filter(iso => exclusionesActuales[persona.id][iso] > 0)
+    .sort();
+  resumen.innerHTML = marcados.length
+    ? `${persona.nombre}: ${marcados.map(iso=>`${formatFechaCorta(iso)} (${nombreNivel(exclusionesActuales[persona.id][iso])})`).join(', ')}`
+    : `${persona.nombre}: no marcaste ningún día puntual todavía.`;
+  document.getElementById('excl-leyenda') && (document.getElementById('excl-leyenda').innerHTML = leyendaNivelesHtml());
+}
+
+document.getElementById('g-mes').addEventListener('change', ()=>{ cargarExclusionesDelMesSeleccionado(); renderExclusiones(); });
+document.getElementById('excl-modo-simple').addEventListener('change', (e)=>{
+  modoSimpleExclusiones = e.target.checked;
+  localStorage.setItem('turnos_excl_modo_simple', modoSimpleExclusiones ? 'true' : 'false');
+});
+document.getElementById('g-anio').addEventListener('change', ()=>{ cargarExclusionesDelMesSeleccionado(); renderExclusiones(); });
+
+function formatFechaCorta(iso){
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// ---------- Plegado del formulario "Agregar persona" ----------
+// El formulario arranca oculto debajo del botón "+ Agregar persona"; se
+// despliega al tocar ese botón o al editar una persona existente, y se
+// vuelve a plegar al guardar o cancelar.
+const btnToggleFormPersona = document.getElementById('btn-toggle-form-persona');
+const formPersonaCard = document.getElementById('form-persona-card');
+
+function mostrarFormPersona(){
+  formPersonaCard.style.display = 'block';
+  btnToggleFormPersona.style.display = 'none';
+}
+function ocultarFormPersona(){
+  formPersonaCard.style.display = 'none';
+  btnToggleFormPersona.style.display = 'block';
+}
+
+btnToggleFormPersona.addEventListener('click', ()=>{
+  resetForm();
+  mostrarFormPersona();
+  document.getElementById('p-nombre').focus();
+});
+
+// ---------- Guardar / editar persona ----------
+document.getElementById('btn-guardar-persona').addEventListener('click', ()=>{
+  const btnGuardarPersona = document.getElementById('btn-guardar-persona');
+  if(btnGuardarPersona.disabled) return; // evita doble clic / doble envío
+  btnGuardarPersona.disabled = true;
+  setTimeout(()=>{ btnGuardarPersona.disabled = false; }, 500);
+
+  const nombre = document.getElementById('p-nombre').value.trim();
+  const max = parseInt(document.getElementById('p-max').value, 10);
+  if(!nombre){ alert('Poné un nombre.'); return; }
+  if(!max || max < 0){ alert('Poné el máximo de días.'); return; }
+  const diasFijos = {};
+  document.querySelectorAll('#dias-fijos .chip-toggle').forEach(el=>{
+    const nivel = parseInt(el.dataset.nivel,10) || 0;
+    if(nivel>0) diasFijos[parseInt(el.dataset.day,10)] = nivel;
+  });
+  const maxSeguidosRaw = document.getElementById('p-max-seguidos').value;
+  const minDescansoRaw = document.getElementById('p-min-descanso').value;
+  const maxSeguidos = maxSeguidosRaw ? parseInt(maxSeguidosRaw, 10) : null;
+  const minDescanso = minDescansoRaw ? parseInt(minDescansoRaw, 10) : null;
+  const id = document.getElementById('persona-id').value || uid();
+  const color = document.getElementById('p-color').value || COLOR_DEFAULT;
+
+  const nueva = { id, nombre, maxDias:max, diasFijos, maxSeguidos, minDescanso, color };
+  const idx = personas.findIndex(p=>p.id===id);
+  if(idx>=0) personas[idx]=nueva; else personas.push(nueva);
+  saveAll();
+  resetForm();
+  ocultarFormPersona();
+  renderPersonas();
+});
+
+document.getElementById('btn-cancelar-edit').addEventListener('click', ()=>{
+  resetForm();
+  ocultarFormPersona();
+});
+
+function resetForm(){
+  document.getElementById('persona-id').value='';
+  document.getElementById('p-nombre').value='';
+  document.getElementById('p-max').value='';
+  document.getElementById('p-max-seguidos').value='';
+  document.getElementById('p-min-descanso').value='';
+  document.getElementById('p-color').value=COLOR_DEFAULT;
+  document.querySelectorAll('#dias-fijos .chip-toggle').forEach(el=> aplicarEstiloNivel(el, 0));
+  document.getElementById('form-title').textContent='Agregar persona';
+  document.getElementById('btn-cancelar-edit').style.display='none';
+  actualizarPreviaColor();
+}
+
+function editarPersona(id){
+  const p = personas.find(x=>x.id===id);
+  if(!p) return;
+  mostrarFormPersona();
+  document.getElementById('persona-id').value = p.id;
+  document.getElementById('p-nombre').value = p.nombre;
+  document.getElementById('p-max').value = p.maxDias;
+  document.getElementById('p-max-seguidos').value = p.maxSeguidos ?? '';
+  document.getElementById('p-min-descanso').value = p.minDescanso ?? '';
+  document.getElementById('p-color').value = p.color || COLOR_DEFAULT;
+  document.querySelectorAll('#dias-fijos .chip-toggle').forEach(el=>{
+    aplicarEstiloNivel(el, nivelDiaFijo(p, parseInt(el.dataset.day,10)));
+  });
+  document.getElementById('form-title').textContent='Editar persona';
+  document.getElementById('btn-cancelar-edit').style.display='inline-block';
+  actualizarPreviaColor();
+  formPersonaCard.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function eliminarPersona(id){
+  if(!confirm('¿Eliminar esta persona?')) return;
+  personas = personas.filter(p=>p.id!==id);
+  saveAll();
+  renderPersonas();
+}
+
+function moverPersona(id, delta){
+  const idx = personas.findIndex(p=>p.id===id);
+  if(idx<0) return;
+  const nuevoIdx = idx + delta;
+  if(nuevoIdx<0 || nuevoIdx>=personas.length) return;
+  const tmp = personas[idx];
+  personas[idx] = personas[nuevoIdx];
+  personas[nuevoIdx] = tmp;
+  saveAll();
+  renderPersonas();
+}
+
+function renderPersonas(){
+  const box = document.getElementById('lista-personas');
+  if(personas.length===0){
+    box.innerHTML = '<p class="empty">Todavía no cargaste a nadie.</p>';
+    return;
+  }
+  box.innerHTML='';
+  personas.forEach((p,i)=>{
+    const div = document.createElement('div');
+    div.className='persona-item';
+    const diasFijosKeys = Object.keys(p.diasFijos || {}).filter(d => p.diasFijos[d] > 0);
+    const diasFijosTxt = diasFijosKeys.length
+      ? diasFijosKeys.sort((a,b)=>a-b).map(d => `${DOW_FULL[d]} (${nombreNivel(p.diasFijos[d])})`).join(', ')
+      : 'ninguno';
+    div.innerHTML = `
+      <div class="top">
+        <div class="top-main">
+          <div class="orden-btns">
+            <button type="button" onclick="moverPersona('${p.id}', -1)" ${i===0?'disabled':''} aria-label="Subir" title="Subir">▲</button>
+            <button type="button" onclick="moverPersona('${p.id}', 1)" ${i===personas.length-1?'disabled':''} aria-label="Bajar" title="Bajar">▼</button>
+          </div>
+          <div>
+            <h4><span class="persona-color-dot" style="background:${p.color || COLOR_DEFAULT};"></span> ${p.nombre}</h4>
+            <div class="meta">Máximo ${p.maxDias} días al mes</div>
+          </div>
+        </div>
+        <div class="acciones">
+          <button class="btn btn-ghost btn-sm" onclick="editarPersona('${p.id}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminarPersona('${p.id}')">Eliminar</button>
+        </div>
+      </div>
+      <div class="detalle">
+        <div><b>Días fijos:</b> ${diasFijosTxt}</div>
+        <div><b>Máx. días seguidos:</b> ${p.maxSeguidos ? p.maxSeguidos : 'sin límite'} · <b>Mín. descanso:</b> ${p.minDescanso ? p.minDescanso + ' día(s)' : 'sin mínimo'}</div>
+      </div>`;
+    box.appendChild(div);
+  });
+}
+
+// ---------- Generar ----------
+function initGenerarForm(){
+  const selMes = document.getElementById('g-mes');
+  selMes.innerHTML = MESES.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+  const now = new Date();
+  selMes.value = config.mes ?? now.getMonth();
+  document.getElementById('g-anio').value = config.anio ?? now.getFullYear();
+  document.getElementById('g-personas-dia').value = config.personasPorDia ?? 2;
+  cargarExclusionesDelMesSeleccionado();
+  renderExclusiones();
+}
+function refreshGenerarHint(){
+  document.getElementById('generar-empty-hint').style.display = personas.length===0 ? 'block':'none';
+}
+
+document.getElementById('btn-generar').addEventListener('click', ()=>{
+  if(personas.length===0){ alert('Cargá personas primero.'); return; }
+  const mes = parseInt(document.getElementById('g-mes').value,10);
+  const anio = parseInt(document.getElementById('g-anio').value,10);
+  const personasPorDia = parseInt(document.getElementById('g-personas-dia').value,10) || 1;
+  config = { mes, anio, personasPorDia };
+  saveAll();
+  guardarExclusionesDelMesSeleccionado();
+  const btnGenerar = document.getElementById('btn-generar');
+  const textoOriginalBtn = btnGenerar.textContent;
+  btnGenerar.disabled = true;
+  btnGenerar.textContent = 'Generando...';
+  // setTimeout(0) para que el navegador alcance a pintar el botón como
+  // "Generando..." antes de arrancar el cálculo, que puede tardar un poco
+  // más ahora porque prueba varias tandas completas en vez de una sola.
+  setTimeout(()=>{
+    currentSchedule = generarTurnosRobusto(anio, mes, personas, personasPorDia, exclusionesActuales);
+    currentSchedule.exclusiones = exclusionesActuales;
+  localStorage.setItem(LS_SCHEDULE_PREFIX+anio+'_'+mes, JSON.stringify(currentSchedule));
+  calViewAnio = anio;
+  calViewMes = mes;
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('section.view').forEach(v=>v.classList.remove('active'));
+  document.querySelector('[data-tab="calendario"]').classList.add('active');
+  document.getElementById('view-calendario').classList.add('active');
+  renderCalendar();
+    btnGenerar.disabled = false;
+    btnGenerar.textContent = textoOriginalBtn;
+  }, 10);
+});
+
+// ---------- Navegación entre meses en el calendario ----------
+function irAMesCalendario(anio, mes){
+  if(mes < 0){ mes = 11; anio--; }
+  if(mes > 11){ mes = 0; anio++; }
+  calViewAnio = anio;
+  calViewMes = mes;
+  renderCalendar();
+}
+document.getElementById('btn-mes-anterior').addEventListener('click', ()=>{
+  irAMesCalendario(calViewAnio ?? new Date().getFullYear(), (calViewMes ?? new Date().getMonth()) - 1);
+});
+document.getElementById('btn-mes-siguiente').addEventListener('click', ()=>{
+  irAMesCalendario(calViewAnio ?? new Date().getFullYear(), (calViewMes ?? new Date().getMonth()) + 1);
+});
+document.getElementById('btn-mes-hoy').addEventListener('click', ()=>{
+  const now = new Date();
+  irAMesCalendario(now.getFullYear(), now.getMonth());
+});
+document.getElementById('btn-generar-este-mes').addEventListener('click', ()=>{
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('section.view').forEach(v=>v.classList.remove('active'));
+  document.querySelector('[data-tab="generar"]').classList.add('active');
+  document.getElementById('view-generar').classList.add('active');
+  document.getElementById('g-mes').value = calViewMes ?? new Date().getMonth();
+  document.getElementById('g-anio').value = calViewAnio ?? new Date().getFullYear();
+  cargarExclusionesDelMesSeleccionado();
+  renderExclusiones();
+  refreshGenerarHint();
+});
+
+// ---------- Generación de turnos ----------
+// Cambio de fondo respecto de la versión anterior: en vez de recorrer los
+// días del mes en orden 1, 2, 3... y decidir sobre la marcha, primero se
+// calcula qué días son los MÁS DIFÍCILES de cubrir (menos gente disponible)
+// y esos se rellenan primero. Los días fáciles (donde casi todos pueden)
+// se dejan para el final, porque ahí sobran opciones. Las reglas duras
+// (exclusiones, días fijos, máximo de días, racha máxima, descanso mínimo)
+// se siguen respetando siempre: eso no es negociable en ningún método.
+// Lo que cambia entre métodos es solo el CRITERIO matemático para elegir,
+// entre los elegibles de un día, a quién conviene asignar.
+
+// Cuenta cuántos días del mes una persona podría trabajar en teoría (sin
+// contar racha/descanso/máximo acumulado, solo días fijos y exclusiones
+// puntuales). Sirve para saber qué tan "restringida" está en el mes.
+function contarDiasElegiblesTotales(persona, anio, mes, exclusiones){
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  let count = 0;
+  for(let d=1; d<=diasEnMes; d++){
+    const weekday = new Date(anio, mes, d).getDay();
+    const iso = isoDate(anio, mes, d);
+    if(esBloqueante(nivelPreferenciaDia(persona, weekday, iso, exclusiones))) continue;
+    count++;
+  }
+  return count;
+}
+
+// Para cada día del mes, cuenta cuánta gente podría (en teoría) cubrirlo.
+// Esto es lo único que decide el ORDEN de relleno: primero los días con
+// el número más chico acá.
+function contarDisponiblesPorDia(anio, mes, personasList, exclusiones){
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  const disponibles = {};
+  for(let d=1; d<=diasEnMes; d++){
+    const weekday = new Date(anio, mes, d).getDay();
+    const iso = isoDate(anio, mes, d);
+    disponibles[d] = personasList.filter(p=>
+      !esBloqueante(nivelPreferenciaDia(p, weekday, iso, exclusiones))
+    ).length;
+  }
+  return disponibles;
+}
+
+// Si se asignara a esta persona el día d, ¿cuántos días SEGUIDOS quedaría
+// trabajando? Mira los días vecinos ya decididos (hacia atrás y hacia
+// adelante) en el calendario parcial, que no necesariamente se llenó en
+// orden cronológico. Es una estimación para el relleno inicial: la
+// corrección definitiva pasa por repararCronologicamente.
+function rachaSiAsigna(personaId, d, days, anio, mes){
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  let racha = 1;
+  for(let dd = d-1; dd >= 1; dd--){
+    const iso = isoDate(anio, mes, dd);
+    if(days[iso] && days[iso].includes(personaId)){ racha++; } else break;
+  }
+  for(let dd = d+1; dd <= diasEnMes; dd++){
+    const iso = isoDate(anio, mes, dd);
+    if(days[iso] && days[iso].includes(personaId)){ racha++; } else break;
+  }
+  return racha;
+}
+
+// Ordena los ids de un turno según la posición de cada persona en la
+// lista de personas (la misma que se reordena con las flechitas arriba/
+// abajo del listado de personas). Así la primera persona de la lista
+// queda siempre arriba en el turno (si le toca ese día) y la última
+// persona queda siempre abajo. El resto queda siempre en el mismo orden
+// relativo entre sí de un día a otro (solo entra o sale gente, nunca se
+// reordenan entre ellos), que es lo que hace que el orden varíe lo menos
+// posible día a día.
+function ordenarIdsSegunPersonas(ids, personasList){
+  const indice = {};
+  (personasList || personas).forEach((p,i)=>{ indice[p.id] = i; });
+  return ids.slice().sort((a,b) => (indice[a] ?? 9999) - (indice[b] ?? 9999));
+}
+
+// Cada método es una forma matemática distinta de ordenar a los elegibles
+// de un día. Todos respetan las mismas reglas duras; el orden de relleno
+// de los días (más difíciles primero) también es igual para todos.
+const ESTRATEGIAS_TURNOS = [
+  {
+    nombre: 'equilibrado',
+    repeticiones: 1,
+    // Siempre el que menos días lleva asignados hasta ahora.
+    comparator: (a, b, ctx) => ctx.assignedCount[a.id] - ctx.assignedCount[b.id]
+  },
+  {
+    nombre: 'restringidos_primero',
+    repeticiones: 1,
+    // Entre los elegibles de HOY, prioriza a quien tiene menos días
+    // posibles en TODO el mes (le cuesta más encontrar hueco).
+    comparator: (a, b, ctx) => {
+      const ra = ctx.staticEligible[a.id], rb = ctx.staticEligible[b.id];
+      if(ra !== rb) return ra - rb;
+      return ctx.assignedCount[a.id] - ctx.assignedCount[b.id];
+    }
+  },
+  {
+    nombre: 'cuota_proporcional',
+    repeticiones: 1,
+    // Compara cuánto debería llevar cada quien a esta altura del mes
+    // (regla de tres sobre su máximo) contra lo que realmente lleva.
+    comparator: (a, b, ctx) => {
+      const objA = a.maxDias * (ctx.d / ctx.diasEnMes);
+      const objB = b.maxDias * (ctx.d / ctx.diasEnMes);
+      const atrasoA = objA - ctx.assignedCount[a.id];
+      const atrasoB = objB - ctx.assignedCount[b.id];
+      return atrasoB - atrasoA;
+    }
+  },
+  {
+    nombre: 'divisor_dhondt',
+    repeticiones: 1,
+    // Método D'Hondt (el que se usa para repartir bancas de forma
+    // proporcional): ordena por el cociente maxDias / (asignados+1).
+    // Evita que los cupos grandes se acumulen recién al final del mes.
+    comparator: (a, b, ctx) => {
+      const qa = (a.maxDias || 1) / (ctx.assignedCount[a.id] + 1);
+      const qb = (b.maxDias || 1) / (ctx.assignedCount[b.id] + 1);
+      return qb - qa;
+    }
+  },
+  {
+    nombre: 'resto_mayor_hamilton',
+    repeticiones: 1,
+    // Método de Hamilton (cociente + resto mayor): parecido a la cuota
+    // proporcional, pero usa la parte fraccionaria del objetivo ideal
+    // en vez de una resta lineal simple, así desempata distinto cuando
+    // alguien ya se adelantó a su ritmo.
+    comparator: (a, b, ctx) => {
+      const objA = a.maxDias * (ctx.d / ctx.diasEnMes);
+      const objB = b.maxDias * (ctx.d / ctx.diasEnMes);
+      const restoA = (objA - Math.floor(objA)) + Math.max(0, objA - ctx.assignedCount[a.id]);
+      const restoB = (objB - Math.floor(objB)) + Math.max(0, objB - ctx.assignedCount[b.id]);
+      return restoB - restoA;
+    }
+  },
+  {
+    nombre: 'minimos_cuadrados',
+    repeticiones: 1,
+    // Prioriza a quien, si se lo asigna, queda con la proporción de uso
+    // (asignados / cupo) más baja: minimiza el desvío cuadrático general
+    // acumulado del grupo.
+    comparator: (a, b, ctx) => {
+      const ua = a.maxDias ? (ctx.assignedCount[a.id] + 1) / a.maxDias : Infinity;
+      const ub = b.maxDias ? (ctx.assignedCount[b.id] + 1) / b.maxDias : Infinity;
+      return ua - ub;
+    }
+  },
+  {
+    nombre: 'entropia',
+    repeticiones: 1,
+    // Máxima entropía: castiga con más fuerza (por el logaritmo) a quien
+    // ya está bastante por encima de su proporción esperada, en vez de
+    // penalizar todo por igual como en el reparto lineal.
+    comparator: (a, b, ctx) => {
+      const pa = a.maxDias ? ctx.assignedCount[a.id] / a.maxDias : 1;
+      const pb = b.maxDias ? ctx.assignedCount[b.id] / b.maxDias : 1;
+      const ea = (pa + 0.001) * Math.log(pa + 0.001);
+      const eb = (pb + 0.001) * Math.log(pb + 0.001);
+      return ea - eb;
+    }
+  },
+  {
+    nombre: 'montecarlo_ponderado',
+    repeticiones: 24,
+    // Sorteo ponderado por déficit de cuota: quien tiene más margen tiene
+    // más chances de salir primero, pero no siempre. Se repite muchas
+    // veces y al final se compara todo por puntaje (ver puntuarCalendario).
+    comparator: (a, b, ctx) => {
+      const da = a.maxDias ? Math.max(0.01, 1 - ctx.assignedCount[a.id] / a.maxDias) : 0.01;
+      const db = b.maxDias ? Math.max(0.01, 1 - ctx.assignedCount[b.id] / b.maxDias) : 0.01;
+      return (Math.random() * db) - (Math.random() * da);
+    }
+  }
+];
+
+// Fase 1: rellena los días en el orden de prioridad indicado (más difíciles
+// primero), usando el criterio matemático de una estrategia. Como no se
+// procesa en orden cronológico, acá solo se filtra por reglas fáciles de
+// chequear sin recorrer todo el mes (exclusiones, días fijos, máximo de
+// días, y una estimación de racha mirando los vecinos ya decididos). La
+// corrección final y completa la hace la fase 2.
+function generarTurnosConEstrategiaPorPrioridad(anio, mes, personasList, personasPorDia, exclusiones, comparator, staticEligible, ordenDias){
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  const assignedCount = {};
+  personasList.forEach(p=>{ assignedCount[p.id] = 0; });
+  const days = {};
+
+  ordenDias.forEach(d=>{
+    const weekday = new Date(anio, mes, d).getDay();
+    const iso = isoDate(anio, mes, d);
+
+    const elegibles = personasList.filter(p=>{
+      if(esBloqueante(nivelPreferenciaDia(p, weekday, iso, exclusiones))) return false;
+      if(assignedCount[p.id] >= p.maxDias) return false;
+      if(p.maxSeguidos && rachaSiAsigna(p.id, d, days, anio, mes) > p.maxSeguidos) return false;
+      return true;
+    });
+
+    const ctx = { d, diasEnMes, assignedCount, staticEligible };
+    // Primero se ordena por preferencia (a quien menos le molesta trabajar
+    // ese día se lo prioriza), y recién como desempate se usa el criterio
+    // matemático propio de la estrategia.
+    elegibles.sort((a,b) => {
+      const na = nivelPreferenciaDia(a, weekday, iso, exclusiones);
+      const nb = nivelPreferenciaDia(b, weekday, iso, exclusiones);
+      if(na !== nb) return na - nb;
+      return comparator(a,b,ctx);
+    });
+
+    const elegidos = elegibles.slice(0, personasPorDia);
+    days[iso] = elegidos.map(p=>p.id);
+    elegidos.forEach(p=> assignedCount[p.id]++);
+  });
+
+  return days;
+}
+
+// Fase 2 (obligatoria para TODOS los métodos): recorre el mes en orden
+// cronológico real y valida racha/descanso/máximo tal como corresponde.
+// Si alguien de la propuesta de la fase 1 ya no es válido en ese punto del
+// mes, se lo saca y se busca reemplazo entre los elegibles restantes
+// (el que menos días lleva asignados). Esto es lo que garantiza que el
+// resultado final sea siempre correcto, sin importar en qué orden se haya
+// decidido cada día.
+function repararCronologicamente(anio, mes, personasList, personasPorDia, exclusiones, daysPropuestos){
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  const assignedCount = {};
+  const lastDayIdx = {};
+  const rachaActual = {};
+  const descansoActual = {};
+  personasList.forEach(p=>{
+    assignedCount[p.id] = 0;
+    rachaActual[p.id] = 0;
+    descansoActual[p.id] = Infinity;
+  });
+  const days = {};
+  const warnings = [];
+
+  for(let d=1; d<=diasEnMes; d++){
+    const weekday = new Date(anio, mes, d).getDay();
+    const iso = isoDate(anio, mes, d);
+
+    const elegibles = personasList.filter(p=>{
+      if(esBloqueante(nivelPreferenciaDia(p, weekday, iso, exclusiones))) return false;
+      if(assignedCount[p.id] >= p.maxDias) return false;
+      if(rachaActual[p.id] > 0){
+        if(p.maxSeguidos && rachaActual[p.id] >= p.maxSeguidos) return false;
+      } else if(p.minDescanso){
+        if(descansoActual[p.id] < p.minDescanso) return false;
+      }
+      return true;
+    });
+    const elegiblesIds = new Set(elegibles.map(p=>p.id));
+
+    // Dedup defensivo: nunca debería llegar el mismo id dos veces para un
+    // mismo día, pero si pasara (por ejemplo por un intercambio externo),
+    // acá se corta antes de que se note en el calendario final.
+    const vistosHoy = new Set();
+    const propuestos = (daysPropuestos[iso] || []).filter(id => {
+      if(!elegiblesIds.has(id) || vistosHoy.has(id)) return false;
+      vistosHoy.add(id);
+      return true;
+    });
+    let elegidos = propuestos.slice(0, personasPorDia);
+
+    if(elegidos.length < personasPorDia){
+      const yaElegidos = new Set(elegidos);
+      const candidatosExtra = elegibles
+        .filter(p => !yaElegidos.has(p.id))
+        .sort((a,b) => {
+          const na = nivelPreferenciaDia(a, weekday, iso, exclusiones);
+          const nb = nivelPreferenciaDia(b, weekday, iso, exclusiones);
+          if(na !== nb) return na - nb;
+          return assignedCount[a.id] - assignedCount[b.id];
+        });
+      for(const p of candidatosExtra){
+        if(elegidos.length >= personasPorDia) break;
+        elegidos.push(p.id);
+      }
+    }
+
+    days[iso] = elegidos;
+    const elegidosSet = new Set(elegidos);
+
+    personasList.forEach(p=>{
+      if(elegidosSet.has(p.id)){
+        rachaActual[p.id] = (lastDayIdx[p.id] === d-1) ? rachaActual[p.id]+1 : 1;
+        descansoActual[p.id] = 0;
+        lastDayIdx[p.id] = d;
+        assignedCount[p.id]++;
+      } else {
+        if(rachaActual[p.id] > 0) rachaActual[p.id] = 0;
+        if(lastDayIdx[p.id] !== undefined) descansoActual[p.id]++;
+      }
+    });
+
+    if(elegidos.length < personasPorDia){
+      const detalles = [];
+      personasList.forEach(p=>{
+        if(elegiblesIds.has(p.id)) return; // ya está entre los elegibles de este día, no es motivo del faltante
+        const nivel = nivelPreferenciaDia(p, weekday, iso, exclusiones);
+        if(esBloqueante(nivel)){
+          detalles.push(`${p.nombre} no puede ese día`);
+        } else if(assignedCount[p.id] >= p.maxDias){
+          detalles.push(`${p.nombre} ya llegó a su máximo de ${p.maxDias} día(s) en el mes`);
+        } else if(rachaActual[p.id] > 0 && p.maxSeguidos && rachaActual[p.id] >= p.maxSeguidos){
+          detalles.push(`${p.nombre} lleva ${rachaActual[p.id]} día(s) seguidos, llegó al límite de días seguidos (${p.maxSeguidos})`);
+        } else if(rachaActual[p.id] === 0 && p.minDescanso && descansoActual[p.id] < p.minDescanso){
+          detalles.push(`${p.nombre} descansa (necesita ${p.minDescanso} día(s) de descanso, lleva ${descansoActual[p.id]})`);
+        }
+      });
+      let msg = `${d} de ${MESES[mes]}: faltan ${personasPorDia - elegidos.length} persona(s) disponible(s).`;
+      if(detalles.length) msg += ' Motivos: ' + detalles.join('; ') + '.';
+      warnings.push(msg);
+    }
+  }
+
+  return { anio, mes, days, warnings, assignedCount };
+}
+
+// Puntaje de un calendario candidato: más bajo es mejor. Penaliza fuerte
+// los días sin cubrir, y penaliza el desbalance en el uso de los "cupos"
+// de cada persona (que no sea siempre la misma gente la que se queda
+// corta o la que se pasa de trabajar respecto de su máximo).
+function puntuarCalendario(sched, personasList, personasPorDia, exclusiones){
+  let huecos = 0;
+  Object.keys(sched.days).forEach(iso=>{
+    huecos += Math.max(0, personasPorDia - sched.days[iso].length);
+  });
+
+  // "resto" junta todo lo demás (balance de cupos y preferencias pisadas).
+  // Se mantiene separado de los huecos a propósito: los huecos (turnos sin
+  // cubrir) siempre deciden primero cuál calendario es mejor, y "resto"
+  // solo desempata entre calendarios que ya dejan la misma cantidad de
+  // turnos pendientes. Ver compararPuntajes() más abajo.
+  let resto = 0;
+
+  const conMaximo = personasList.filter(p => p.maxDias > 0);
+  if(conMaximo.length){
+    const usos = conMaximo.map(p => (sched.assignedCount[p.id] || 0) / p.maxDias);
+    const media = usos.reduce((a,b)=>a+b,0) / usos.length;
+    const varianza = usos.reduce((a,u)=>a+(u-media)**2,0) / usos.length;
+    resto += varianza * 200;
+  }
+
+  personasList.forEach(p=>{
+    const usado = sched.assignedCount[p.id] || 0;
+    if(usado > p.maxDias) resto += (usado - p.maxDias) * 500; // no debería pasar, red de seguridad
+  });
+
+  // Penaliza asignar a alguien en un día donde tiene preferencia blanda de
+  // no trabajar (niveles 1 a 4; el nivel 5 ya está bloqueado y nunca llega
+  // acá). Cuanto más alto el nivel, más caro sale para el puntaje, así el
+  // recocido simulado va a intentar mover a esa persona a otro día si puede.
+  if(exclusiones){
+    Object.keys(sched.days).forEach(iso=>{
+      const [y,m,d] = iso.split('-').map(Number);
+      const weekday = new Date(y, m-1, d).getDay();
+      (sched.days[iso] || []).forEach(id=>{
+        const persona = personasList.find(p=>p.id===id);
+        if(!persona) return;
+        const nivel = nivelPreferenciaDia(persona, weekday, iso, exclusiones);
+        if(nivel > 0 && nivel < NIVEL_BLOQUEO) resto += PESO_NIVEL[nivel];
+      });
+    });
+  }
+
+  return { huecos, resto, total: huecos * 1000 + resto };
+}
+
+// Compara dos puntajes de calendarios (los objetos que devuelve
+// puntuarCalendario). Negativo => "a" es mejor que "b".
+// Regla explícita: el número de turnos pendientes (huecos) manda siempre.
+// Un calendario con menos huecos gana, sin excepción, sin importar qué tan
+// bien repartido esté el resto. Solo si empatan en huecos se mira el resto
+// del puntaje (balance de cupos entre personas y preferencias pisadas)
+// como desempate.
+function compararPuntajes(a, b){
+  if(a.huecos !== b.huecos) return a.huecos - b.huecos;
+  return a.resto - b.resto;
+}
+
+// Pulido final: recocido simulado (simulated annealing). Prueba
+// intercambiar a una persona de un día por otra de otro día, y siempre
+// vuelve a pasar el resultado por la fase 2 (repararCronologicamente) para
+// que el intercambio nunca rompa una regla dura. Acepta el intercambio si
+// mejora el puntaje, o a veces aunque empeore un poco (con probabilidad
+// decreciente, la "temperatura"), para no quedarse atascado en un óptimo
+// local. Al final devuelve el mejor calendario que haya visto en el camino.
+function mejorarConRecocido(schedInicial, personasList, personasPorDia, exclusiones, anio, mes, iteraciones){
+  let mejor = schedInicial;
+  let mejorScore = puntuarCalendario(mejor, personasList, personasPorDia, exclusiones);
+  let actual = mejor;
+  let actualScore = mejorScore;
+
+  const isos = Object.keys(actual.days);
+  if(isos.length < 2) return mejor;
+
+  let temperatura = 1.0;
+  for(let it=0; it<iteraciones; it++){
+    temperatura *= 0.985;
+    const iso1 = isos[Math.floor(Math.random()*isos.length)];
+    const iso2 = isos[Math.floor(Math.random()*isos.length)];
+    if(iso1 === iso2) continue;
+    const lista1 = actual.days[iso1] || [];
+    const lista2 = actual.days[iso2] || [];
+    if(!lista1.length || !lista2.length) continue;
+    const idA = lista1[Math.floor(Math.random()*lista1.length)];
+    const idB = lista2[Math.floor(Math.random()*lista2.length)];
+    if(idA === idB) continue;
+    // Si la persona que "entra" a un día ya estaba asignada ese mismo día
+    // en otro cupo, el intercambio la duplicaría: se descarta ese intento.
+    if(lista1.includes(idB) || lista2.includes(idA)) continue;
+
+    const propuesta = {};
+    Object.keys(actual.days).forEach(iso => { propuesta[iso] = actual.days[iso].slice(); });
+    propuesta[iso1] = propuesta[iso1].map(id => id===idA ? idB : id);
+    propuesta[iso2] = propuesta[iso2].map(id => id===idB ? idA : id);
+
+    const candidato = repararCronologicamente(anio, mes, personasList, personasPorDia, exclusiones, propuesta);
+    const score = puntuarCalendario(candidato, personasList, personasPorDia, exclusiones);
+
+    // La tolerancia a aceptar un intercambio algo peor (para no quedarse
+    // atascado en un óptimo local) se mide sobre el puntaje total; pero
+    // qué candidato es "mejor" u "peor" en primer lugar lo decide siempre
+    // la cantidad de huecos antes que nada (compararPuntajes).
+    const acepta = compararPuntajes(score, actualScore) <= 0
+      || Math.random() < Math.exp((actualScore.total-score.total)/Math.max(temperatura,0.0001));
+    if(acepta){
+      actual = candidato; actualScore = score;
+      if(compararPuntajes(score, mejorScore) < 0){ mejor = candidato; mejorScore = score; }
+    }
+  }
+  return mejor;
+}
+
+// Prueba varios métodos matemáticos (rellenando siempre primero los días
+// más difíciles de cubrir), corrige cada propuesta con la pasada
+// cronológica, pule el mejor resultado con recocido simulado, y se queda
+// con el calendario de mejor puntaje. Esto es UNA ronda completa. Como
+// varias estrategias tienen componentes al azar (montecarlo_ponderado,
+// recocido simulado), dos rondas completas pueden salir bastante distintas
+// en calidad. generarTurnos() (más abajo) repite esta ronda varias veces y
+// descarta las que salen peores, en vez de depender de tener suerte en una
+// sola pasada.
+function generarTurnosUnaRonda(anio, mes, personasList, personasPorDia, exclusiones){
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+
+  const staticEligible = {};
+  personasList.forEach(p=>{
+    staticEligible[p.id] = contarDiasElegiblesTotales(p, anio, mes, exclusiones);
+  });
+
+  // Orden de relleno: primero los días donde menos gente puede ir.
+  const disponiblesPorDia = contarDisponiblesPorDia(anio, mes, personasList, exclusiones);
+  const ordenDias = [];
+  for(let d=1; d<=diasEnMes; d++) ordenDias.push(d);
+  ordenDias.sort((d1,d2) => {
+    const diff = disponiblesPorDia[d1] - disponiblesPorDia[d2];
+    return diff !== 0 ? diff : d1 - d2;
+  });
+
+  let mejor = null;
+  let mejorScore = null;
+  let mejorMetodo = '';
+  let intentos = 0;
+
+  ESTRATEGIAS_TURNOS.forEach(estr=>{
+    for(let i=0; i<estr.repeticiones; i++){
+      const propuesta = generarTurnosConEstrategiaPorPrioridad(anio, mes, personasList, personasPorDia, exclusiones, estr.comparator, staticEligible, ordenDias);
+      const candidato = repararCronologicamente(anio, mes, personasList, personasPorDia, exclusiones, propuesta);
+      const score = puntuarCalendario(candidato, personasList, personasPorDia, exclusiones);
+      intentos++;
+      // compararPuntajes prioriza siempre la opción con menos turnos
+      // pendientes (huecos); solo desempata por el resto del puntaje.
+      if(mejor === null || compararPuntajes(score, mejorScore) < 0){
+        mejorScore = score;
+        mejor = candidato;
+        mejorMetodo = estr.nombre;
+      }
+    }
+  });
+
+  const pulido = mejorarConRecocido(mejor, personasList, personasPorDia, exclusiones, anio, mes, 200);
+  const scorePulido = puntuarCalendario(pulido, personasList, personasPorDia, exclusiones);
+  if(compararPuntajes(scorePulido, mejorScore) < 0){
+    mejor = pulido;
+    mejorScore = scorePulido;
+    mejorMetodo += ' + recocido_simulado';
+  }
+
+  mejor._metodo = mejorMetodo;
+  mejor._score = mejorScore.total;
+  mejor._huecos = mejorScore.huecos;
+  mejor._resto = mejorScore.resto;
+  mejor._intentos = intentos;
+  return mejor;
+}
+
+// Rescate final para los huecos que sobrevivieron a todas las rondas.
+// El recocido simulado (mejorarConRecocido) solo prueba intercambios 1x1
+// entre dos días al azar, así que si tapar un hueco requiere una cadena
+// (mover a alguien de OTRO día para que quede libre y recién ahí pueda
+// cubrir el día con problemas) puede no encontrarla nunca en la cantidad
+// de pasos que hace, sobre todo si el movimiento útil es poco probable al
+// azar. Esta función busca esa cadena a propósito: por cada día con
+// hueco, prueba sacar a cada persona elegible de cada uno de los otros
+// días en que ya está anotada, y usa repararCronologicamente (la misma
+// función que garantiza que todo siga siendo válido) para ver si de paso
+// ese otro día se vuelve a llenar solo con gente disponible. Si el
+// resultado mejora el puntaje, se queda con ese cambio y sigue probando
+// hasta que no haya más mejoras o se acaben los huecos.
+function rescatarHuecos(anio, mes, personasList, personasPorDia, exclusiones, schedInicial){
+  let actual = schedInicial;
+  let actualScore = puntuarCalendario(actual, personasList, personasPorDia, exclusiones);
+  if(actualScore.huecos === 0) return actual;
+
+  const MAX_PASADAS = 40;
+
+  for(let pasada=0; pasada<MAX_PASADAS && actualScore.huecos>0; pasada++){
+    let mejoro = false;
+    const isosConHueco = Object.keys(actual.days).filter(iso => actual.days[iso].length < personasPorDia);
+
+    for(const isoHueco of isosConHueco){
+      const [y,m,d] = isoHueco.split('-').map(Number);
+      const weekday = new Date(y, m-1, d).getDay();
+      const yaEnHueco = new Set(actual.days[isoHueco]);
+
+      // Candidatos: cualquier persona sin bloqueo duro (exclusión) ese día
+      // que todavía no esté anotada ahí (si pudiera estar sin más, ya
+      // estaría: repararCronologicamente la habría sumado).
+      const candidatos = personasList.filter(p => !yaEnHueco.has(p.id)
+        && !esBloqueante(nivelPreferenciaDia(p, weekday, isoHueco, exclusiones)));
+
+      let arreglado = false;
+      for(const p of candidatos){
+        const diasDeP = Object.keys(actual.days).filter(iso => actual.days[iso].includes(p.id));
+        for(const isoLibera of diasDeP){
+          if(isoLibera === isoHueco) continue;
+
+          const propuesta = {};
+          Object.keys(actual.days).forEach(iso => { propuesta[iso] = actual.days[iso].slice(); });
+          propuesta[isoLibera] = propuesta[isoLibera].filter(id => id !== p.id);
+          propuesta[isoHueco] = propuesta[isoHueco].concat([p.id]);
+
+          const candidato = repararCronologicamente(anio, mes, personasList, personasPorDia, exclusiones, propuesta);
+          const score = puntuarCalendario(candidato, personasList, personasPorDia, exclusiones);
+
+          if(compararPuntajes(score, actualScore) < 0){
+            actual = candidato;
+            actualScore = score;
+            arreglado = true;
+            mejoro = true;
+            break;
+          }
+        }
+        if(arreglado) break;
+      }
+    }
+
+    if(!mejoro) break; // pasada completa sin mejoras: no insistir en vano
+  }
+
+  return actual;
+}
+
+// Cuántas rondas completas probar como máximo. Cada ronda ya de por sí
+// prueba ~29 propuestas + 200 pasos de recocido. Se subió de 6 a 10
+// rondas porque ahora, mientras queden turnos sin cubrir, el generador no
+// corta por "rondas sin mejora" (ver más abajo) y sigue insistiendo con
+// rondas nuevas —cada una con su propio componente al azar— en vez de
+// conformarse con la primera opción incompleta que encuentra.
+const RONDAS_MAX_TURNOS = 10;
+// Si varias rondas seguidas dan el mismo resultado (o peor) y YA NO quedan
+// turnos pendientes, asumimos que el generador convergió a su mejor
+// resultado posible para estos datos y no vale la pena seguir probando
+// rondas prácticamente idénticas.
+const RONDAS_SIN_MEJORA_PARA_CORTAR = 2;
+
+// Corre varias rondas completas de generarTurnosUnaRonda y descarta las
+// que salen peores, en vez de devolver la primera que sale y obligar a la
+// persona a apretar "Generar" varias veces a mano hasta que salga una
+// opción buena. Se queda con la ronda que deja MENOS TURNOS PENDIENTES de
+// todas las que probó (ese es el criterio decisivo: compararPuntajes),
+// desempatando por el resto del puntaje solo si dos rondas empatan en
+// huecos. Corta antes si ya encontró un calendario perfecto, o si varias
+// rondas seguidas dejaron de mejorar Y ADEMÁS ya no quedan huecos —si
+// todavía queda algún turno sin cubrir, sigue probando rondas hasta el
+// máximo en vez de conformarse, porque la próxima ronda (con su propio
+// componente al azar) todavía puede ser la que lo resuelva.
+function generarTurnos(anio, mes, personasList, personasPorDia, exclusiones){
+  exclusiones = exclusiones || {};
+
+  let mejorGlobal = null;
+  let mejorScoreGlobal = null;
+  let rondasProbadas = 0;
+  let intentosTotales = 0;
+  let rondasSinMejora = 0;
+
+  for(let ronda=0; ronda<RONDAS_MAX_TURNOS; ronda++){
+    const candidato = generarTurnosUnaRonda(anio, mes, personasList, personasPorDia, exclusiones);
+    rondasProbadas++;
+    intentosTotales += candidato._intentos;
+
+    const scoreCandidato = { huecos: candidato._huecos, resto: candidato._resto, total: candidato._score };
+
+    if(mejorGlobal === null || compararPuntajes(scoreCandidato, mejorScoreGlobal) < 0){
+      mejorScoreGlobal = scoreCandidato;
+      mejorGlobal = candidato;
+      rondasSinMejora = 0;
+    } else {
+      rondasSinMejora++;
+    }
+
+    // Calendario perfecto (sin huecos, sin desbalance, sin pisar
+    // preferencias): no tiene sentido seguir gastando rondas.
+    if(mejorScoreGlobal.total <= 0) break;
+    // Solo cortamos por "rondas sin mejora" cuando ya no queda ningún
+    // turno pendiente. Si todavía hay huecos, jamás cortamos por esta
+    // razón: seguimos hasta RONDAS_MAX_TURNOS buscando la combinación que
+    // los tape, en vez de resignarnos a un calendario incompleto.
+    if(mejorScoreGlobal.huecos === 0 && rondasSinMejora >= RONDAS_SIN_MEJORA_PARA_CORTAR) break;
+  }
+
+  // Si después de todas las rondas todavía queda algún hueco, se intenta
+  // el rescate dirigido (ver rescatarHuecos) antes de darse por vencido.
+  if(mejorScoreGlobal.huecos > 0){
+    const metodoPrevio = mejorGlobal._metodo;
+    const intentosPrevios = mejorGlobal._intentos;
+    const rescatado = rescatarHuecos(anio, mes, personasList, personasPorDia, exclusiones, mejorGlobal);
+    const scoreRescatado = puntuarCalendario(rescatado, personasList, personasPorDia, exclusiones);
+    if(compararPuntajes(scoreRescatado, mejorScoreGlobal) < 0){
+      mejorGlobal = rescatado;
+      mejorScoreGlobal = scoreRescatado;
+      mejorGlobal._metodo = metodoPrevio + ' + rescate_huecos';
+      mejorGlobal._intentos = intentosPrevios;
+    }
+  }
+
+  Object.keys(mejorGlobal.days).forEach(iso=>{
+    mejorGlobal.days[iso] = ordenarIdsSegunPersonas(mejorGlobal.days[iso], personasList);
+  });
+
+  mejorGlobal._metodoElegido = mejorGlobal._metodo + (rondasProbadas > 1 ? ` (mejor de ${rondasProbadas} rondas)` : '');
+  mejorGlobal._intentosProbados = intentosTotales;
+  mejorGlobal._rondasProbadas = rondasProbadas;
+  return mejorGlobal;
+}
+
+// generarTurnos() ya prueba hasta RONDAS_MAX_TURNOS rondas con componente
+// al azar antes de rendirse. El problema reportado es que, aun así, a
+// veces esas rondas no alcanzan para encontrar la combinación que cierra
+// TODOS los huecos, y el botón "Generar" devuelve un calendario incompleto
+// -aunque sí exista una combinación completa-, que recién aparece si la
+// persona vuelve a apretar "Generar" (nueva tanda de rondas, con otra
+// semilla al azar, que esta vez sí la encuentra). Eso no puede depender de
+// que el usuario reintente a mano: esta función hace ese reintento sola,
+// tantas veces como haga falta (hasta un tope generoso), y solo se detiene
+// apenas encuentra un calendario sin huecos o si agotó el tope sin
+// lograrlo (en cuyo caso al menos devuelve la mejor de todas las tandas
+// probadas, nunca una peor que la que ya tenía).
+const MEGA_TANDAS_MAX = 6;
+function generarTurnosRobusto(anio, mes, personasList, personasPorDia, exclusiones){
+  let mejor = null;
+  let mejorScore = null;
+  let tandasProbadas = 0;
+
+  for(let tanda=0; tanda<MEGA_TANDAS_MAX; tanda++){
+    const candidato = generarTurnos(anio, mes, personasList, personasPorDia, exclusiones);
+    tandasProbadas++;
+    const score = { huecos: candidato._huecos, resto: candidato._resto, total: candidato._score };
+
+    if(mejor === null || compararPuntajes(score, mejorScore) < 0){
+      mejor = candidato;
+      mejorScore = score;
+    }
+    // Ya salió completo (sin huecos) y sin desbalance: no hace falta seguir
+    // gastando más tandas, esto ya es lo mejor que se puede pedir.
+    if(mejorScore.total <= 0) break;
+  }
+
+  mejor._tandasProbadas = tandasProbadas;
+  if(tandasProbadas > 1){
+    mejor._metodoElegido = (mejor._metodoElegido || mejor._metodo || '') + ` [robusto: mejor de ${tandasProbadas} tanda(s)]`;
+  }
+  return mejor;
+}
+
+function isoDate(anio, mesIdx, dia){
+  return `${anio}-${String(mesIdx+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+}
+// Domingo (getDay()===0) cuenta como festivo, y también cualquier fecha
+// que se haya cargado a mano en la lista de feriados (Año Nuevo, feriados
+// nacionales, etc.), aunque no sea domingo.
+function esFechaFestiva(iso){
+  const [y, m, d] = iso.split('-').map(Number);
+  const weekday = new Date(y, m-1, d).getDay();
+  return weekday === 0 || feriados.includes(iso);
+}
+
+function guardarFeriados(){
+  localStorage.setItem(LS_FERIADOS, JSON.stringify(feriados));
+}
+
+function renderFeriados(){
+  const chips = document.getElementById('feriados-chips');
+  if(!chips) return;
+  if(feriados.length === 0){
+    chips.innerHTML = '<p class="empty" style="padding:6px 0; text-align:left;">Todavía no agregaste ningún feriado.</p>';
+    return;
+  }
+  chips.innerHTML = '';
+  feriados.slice().sort().forEach(iso=>{
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.innerHTML = `<span>${formatFechaCorta(iso)}</span> <button type="button">×</button>`;
+    chip.querySelector('button').addEventListener('click', ()=>{
+      feriados = feriados.filter(f=>f!==iso);
+      guardarFeriados();
+      renderFeriados();
+      renderExclusiones();
+      renderCalendar();
+    });
+    chips.appendChild(chip);
+  });
+}
+
+document.getElementById('btn-abrir-selector-feriados').addEventListener('click', ()=>{
+  abrirSelectorFechas('feriados');
+});
+
+// ---------- Otros calendarios (F1, cumpleaños, etc.) ----------
+function guardarCalendariosExtra(){
+  localStorage.setItem(LS_CALENDARIOS_EXTRA, JSON.stringify(calendariosExtra));
+}
+
+// Devuelve los calendarios personales que tienen marcado ese día, para
+// pintar sus puntitos de color en la celda correspondiente.
+function calendariosExtraEnDia(iso){
+  return calendariosExtra.filter(c => (c.fechas||{})[iso] > 0);
+}
+
+function dotsHtmlParaDia(iso){
+  const matches = calendariosExtraEnDia(iso);
+  if(!matches.length) return '';
+  const puntos = matches.map(c=>`<span class="otros-dot" style="background:${c.color};" title="${etiquetaCalendarioExtra(c)}"></span>`).join('');
+  return `<div class="otros-dots">${puntos}</div>`;
+}
+
+// Nombre de la persona dueña de un calendario extra, o texto genérico si
+// no tiene ninguna asignada (o si esa persona ya no existe).
+function nombrePersonaDeCalendario(c){
+  const p = personas.find(pp=>pp.id===c.personaId);
+  return p ? p.nombre : 'Sin persona asignada';
+}
+function etiquetaCalendarioExtra(c){
+  return `${c.nombre} · ${nombrePersonaDeCalendario(c)}`;
+}
+// Llena un <select> con la lista de personas cargadas, dejando seleccionada
+// la que corresponda (o la primera si no hay ninguna todavía elegida).
+function poblarSelectPersonas(selectEl, selectedId){
+  if(!selectEl) return;
+  if(personas.length===0){
+    selectEl.innerHTML = '<option value="">No hay personas cargadas</option>';
+    return;
+  }
+  selectEl.innerHTML = personas.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join('');
+  if(selectedId && personas.some(p=>p.id===selectedId)) selectEl.value = selectedId;
+}
+
+function renderOtrosLegend(){
+  const legend = document.getElementById('cal-otros-legend');
+  const legendCard = document.getElementById('cal-otros-legend-card');
+  if(!legend || !legendCard) return;
+  if(calendariosExtra.length===0){
+    legend.innerHTML='';
+    legendCard.style.display='none';
+    return;
+  }
+  legendCard.style.display='block';
+  legend.innerHTML = calendariosExtra.map(c=>
+    `<div class="chip"><span class="persona-color-dot" style="background:${c.color};"></span>${etiquetaCalendarioExtra(c)}</div>`
+  ).join('');
+}
+
+document.getElementById('btn-toggle-crear-calendario').addEventListener('click', ()=>{
+  const card = document.getElementById('crear-calendario-card');
+  card.style.display = (card.style.display==='none') ? 'block' : 'none';
+});
+document.getElementById('btn-crear-calendario-extra').addEventListener('click', ()=>{
+  const nombre = document.getElementById('oc-nombre').value.trim();
+  const color = document.getElementById('oc-color').value || '#4B6FA8';
+  const personaId = document.getElementById('oc-persona').value || null;
+  if(!nombre){ alert('Poné un nombre para el calendario.'); return; }
+  if(personas.length && !personaId){ alert('Elegí a qué persona pertenece este calendario.'); return; }
+  calendariosExtra.push({ id: uid(), nombre, color, personaId, fechas: {} });
+  guardarCalendariosExtra();
+  document.getElementById('oc-nombre').value='';
+  document.getElementById('crear-calendario-card').style.display='none';
+  renderOtrosCalendarios();
+  renderCalendar();
+});
+
+function renderOtrosCalendarios(){
+  poblarSelectPersonas(document.getElementById('oc-persona'), null);
+  const box = document.getElementById('lista-otros-calendarios');
+  if(!box) return;
+  if(calendariosExtra.length===0){
+    box.innerHTML = '<p class="empty">Todavía no creaste ningún calendario aparte.</p>';
+    return;
+  }
+  box.innerHTML='';
+  calendariosExtra.forEach(c=>{
+    const div = document.createElement('div');
+    div.className='card';
+    div.innerHTML = `
+      <div class="top" style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
+          <input type="color" data-color-cal="${c.id}" value="${c.color}"
+            style="width:38px; height:34px; padding:0; border:1px solid var(--line); border-radius:8px; background:var(--paper); cursor:pointer; flex-shrink:0;">
+          <input type="text" data-nombre-cal="${c.id}" value="${c.nombre}"
+            style="flex:1; min-width:0; padding:8px 10px; border:1px solid var(--line); border-radius:9px; font-family:'Inter'; font-size:.95rem; background:var(--paper); color:var(--ink);">
+        </div>
+        <button class="btn btn-danger btn-sm" data-eliminar-cal="${c.id}">Eliminar</button>
+      </div>
+      <label style="margin-top:10px;">Persona</label>
+      <select data-persona-cal="${c.id}"></select>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn btn-accent btn-full" data-abrir-selector="${c.id}" type="button">+ Elegir fechas en el calendario</button>
+      </div>`;
+    box.appendChild(div);
+    poblarSelectPersonas(div.querySelector(`[data-persona-cal="${c.id}"]`), c.personaId);
+  });
+
+  box.querySelectorAll('[data-nombre-cal]').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const cal = calendariosExtra.find(c=>c.id===inp.dataset.nombreCal);
+      if(!cal) return;
+      const val = inp.value.trim();
+      if(!val){ inp.value = cal.nombre; return; }
+      cal.nombre = val;
+      guardarCalendariosExtra();
+      renderOtrosLegend();
+      renderCalendar();
+      renderPersonaCalCompleto();
+    });
+  });
+  box.querySelectorAll('[data-color-cal]').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      const cal = calendariosExtra.find(c=>c.id===inp.dataset.colorCal);
+      if(!cal) return;
+      cal.color = inp.value;
+      guardarCalendariosExtra();
+      renderOtrosLegend();
+      renderCalendar();
+      renderPersonaCalCompleto();
+    });
+  });
+
+  box.querySelectorAll('[data-persona-cal]').forEach(sel=>{
+    sel.addEventListener('change', ()=>{
+      const cal = calendariosExtra.find(c=>c.id===sel.dataset.personaCal);
+      if(!cal) return;
+      cal.personaId = sel.value || null;
+      guardarCalendariosExtra();
+      renderCalendar();
+    });
+  });
+  box.querySelectorAll('[data-abrir-selector]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      abrirSelectorFechas('otro', btn.dataset.abrirSelector);
+    });
+  });
+  box.querySelectorAll('[data-eliminar-cal]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(!confirm('¿Eliminar este calendario y todas sus fechas cargadas?')) return;
+      calendariosExtra = calendariosExtra.filter(c=>c.id!==btn.dataset.eliminarCal);
+      guardarCalendariosExtra();
+      renderOtrosCalendarios();
+      renderCalendar();
+    });
+  });
+  renderPersonaCalCompleto();
+}
+
+// ---------- Calendario completo de una persona (turnos + sus calendarios extra) ----------
+function irAMesPcc(anio, mes){
+  if(mes < 0){ mes = 11; anio--; }
+  if(mes > 11){ mes = 0; anio++; }
+  pccAnio = anio;
+  pccMes = mes;
+  renderPersonaCalCompleto();
+}
+document.getElementById('btn-pcc-mes-anterior').addEventListener('click', ()=>{
+  irAMesPcc(pccAnio ?? new Date().getFullYear(), (pccMes ?? new Date().getMonth()) - 1);
+});
+document.getElementById('btn-pcc-mes-siguiente').addEventListener('click', ()=>{
+  irAMesPcc(pccAnio ?? new Date().getFullYear(), (pccMes ?? new Date().getMonth()) + 1);
+});
+document.getElementById('btn-pcc-mes-hoy').addEventListener('click', ()=>{
+  const now = new Date();
+  irAMesPcc(now.getFullYear(), now.getMonth());
+});
+document.getElementById('pcc-persona').addEventListener('change', (e)=>{
+  pccPersonaId = e.target.value || null;
+  renderPersonaCalCompleto();
+});
+
+function renderPersonaCalCompleto(){
+  const card = document.getElementById('pcc-card');
+  if(!card) return;
+  if(personas.length===0){
+    card.style.display='none';
+    return;
+  }
+  card.style.display='block';
+
+  if(!pccPersonaId || !personas.some(p=>p.id===pccPersonaId)) pccPersonaId = personas[0].id;
+  poblarSelectPersonas(document.getElementById('pcc-persona'), pccPersonaId);
+  const persona = personas.find(p=>p.id===pccPersonaId);
+
+  if(pccAnio===null || pccMes===null){
+    const now = new Date();
+    pccAnio = now.getFullYear();
+    pccMes = now.getMonth();
+  }
+
+  document.getElementById('pcc-titulo').textContent = `${MESES[pccMes]} ${pccAnio}`;
+  document.getElementById('pcc-dow-row').innerHTML = DOW_LABELS.map(l=>`<div class="cal-dow">${l}</div>`).join('');
+
+  const schedule = JSON.parse(localStorage.getItem(LS_SCHEDULE_PREFIX+pccAnio+'_'+pccMes) || 'null');
+  const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
+
+  const grid = document.getElementById('pcc-grid');
+  grid.innerHTML='';
+  const diasEnMes = new Date(pccAnio, pccMes+1, 0).getDate();
+  const primerDow = primerOffsetLunes(pccAnio, pccMes);
+  for(let i=0;i<primerDow;i++){
+    const e = document.createElement('div');
+    e.className='cal-cell empty-cell';
+    grid.appendChild(e);
+  }
+  for(let d=1; d<=diasEnMes; d++){
+    const iso = isoDate(pccAnio, pccMes, d);
+    const weekday = new Date(pccAnio, pccMes, d).getDay();
+    const esFest = esFechaFestiva(iso) && weekday!==0;
+    const asignado = !!(schedule && new Set(schedule.days[iso]||[]).has(persona.id));
+    const calsHoy = calendariosDePersona.filter(c => (c.fechas||{})[iso] > 0);
+    const dots = calsHoy.map(c=>`<span class="otros-dot" style="background:${c.color};" title="${c.nombre} · ${nombreNivel(c.fechas[iso])}"></span>`).join('');
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell' + ((weekday===0||weekday===6)?' weekend':'') + (esFest?' feriado':'');
+    cell.title = esFest ? 'Feriado' : '';
+    let etiquetaTurno = '';
+    if(asignado){
+      const bg = persona.color || COLOR_DEFAULT;
+      etiquetaTurno = `<div class="name" style="background:${bg}; color:${oscurecerColor(bg)};">Turno</div>`;
+    }
+    cell.innerHTML = `<div class="num">${d}</div>` + (dots ? `<div class="otros-dots">${dots}</div>` : '') + etiquetaTurno;
+    cell.addEventListener('click', ()=> abrirDialogoDiaPcc(iso, d, weekday));
+    grid.appendChild(cell);
+  }
+
+  const legend = document.getElementById('pcc-legend');
+  const itemsLegend = [`<div class="chip"><span class="persona-color-dot" style="background:${persona.color || COLOR_DEFAULT};"></span>Turno de trabajo</div>`]
+    .concat(calendariosDePersona.map(c=>`<div class="chip"><span class="persona-color-dot" style="background:${c.color};"></span>${c.nombre}</div>`));
+  legend.innerHTML = itemsLegend.join('');
+  if(!schedule){
+    legend.innerHTML += `<p class="sub-hint" style="width:100%; margin:6px 0 0;">Todavía no generaste turnos para ${MESES[pccMes]} de ${pccAnio}.</p>`;
+  }
+}
+
+// ---------- Edición manual de un día en "Calendario completo de la persona" ----------
+// A diferencia del diálogo del calendario de turnos (que solo marca quién
+// trabaja ese día), acá se edita UNA persona a la vez: si tiene turno de
+// trabajo asignado ese día y en qué nivel queda cada uno de sus calendarios
+// extra. Si todavía no existe un "schedule" generado para ese mes, se crea
+// uno vacío al vuelo para poder guardar la marca manual igual.
+let pccDialogFecha = null;
+function obtenerOCrearScheduleParaPcc(anio, mes){
+  const key = LS_SCHEDULE_PREFIX+anio+'_'+mes;
+  let sched = JSON.parse(localStorage.getItem(key) || 'null');
+  if(!sched){
+    sched = { anio, mes, days:{}, warnings:[], assignedCount:{}, exclusiones:{} };
+  }
+  return sched;
+}
+function abrirDialogoDiaPcc(iso, dia, weekday){
+  pccDialogFecha = iso;
+  const persona = personas.find(p=>p.id===pccPersonaId);
+  if(!persona) return;
+  document.getElementById('pcc-dialog-fecha-titulo').textContent = `${dia} de ${MESES[pccMes]} (${DOW_FULL[weekday]}) · ${persona.nombre}`;
+
+  // Días fijos (por día de semana) + días puntuales marcados en "Generar"
+  // para este mes: se muestran acá porque antes esta ventana no avisaba
+  // nada, y alguien podía marcar "No puede" en Días puntuales sin darse
+  // cuenta de que acá seguía dejando pasar el turno.
+  const exclusionesDelMesPcc = migrarExclusiones(
+    JSON.parse(localStorage.getItem(exclusionesKey(pccAnio, pccMes)) || '{}')
+  );
+  const nivelFijo = nivelDiaFijo(persona, weekday);
+  const nivelPuntual = nivelExclusion(exclusionesDelMesPcc, persona.id, iso);
+  const nivelBase = Math.max(nivelFijo, nivelPuntual);
+  const dispBox = document.getElementById('pcc-dialog-disponibilidad');
+  if(nivelBase >= NIVEL_BLOQUEO){
+    dispBox.innerHTML = `<span class="restringido">No disponible ese día (marcado como "No puede"${nivelFijo>=NIVEL_BLOQUEO ? ' por día fijo' : ' en días puntuales'})</span>`;
+  } else if(nivelBase > 0){
+    const bg = colorParaNivel(nivelBase);
+    dispBox.innerHTML = `<span class="nivel-tag" style="background:${bg}; color:${textoContraste(bg)};">${nombreNivel(nivelBase)}</span>`;
+  } else {
+    dispBox.innerHTML = '';
+  }
+
+  const sched = obtenerOCrearScheduleParaPcc(pccAnio, pccMes);
+  const asignado = new Set(sched.days[iso] || []).has(persona.id);
+  document.getElementById('pcc-dialog-turno').checked = asignado;
+
+  const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
+  const cont = document.getElementById('pcc-dialog-calendarios');
+  if(calendariosDePersona.length===0){
+    cont.innerHTML = '<p class="sub-hint" style="margin:0;">Esta persona no tiene calendarios extra creados.</p>';
+  } else {
+    cont.innerHTML = calendariosDePersona.map(c=>{
+      const nivel = (c.fechas && c.fechas[iso]) || 0;
+      return `<div class="chip pcc-dialog-chip" data-cal-id="${c.id}" data-nivel="${nivel}" style="cursor:pointer; margin-bottom:6px; width:100%; justify-content:space-between;">
+        <span><span class="persona-color-dot" style="background:${c.color};"></span> ${c.nombre}</span>
+        <span class="pcc-dialog-chip-nivel">${nombreNivel(nivel)}</span>
+      </div>`;
+    }).join('');
+    cont.querySelectorAll('.pcc-dialog-chip').forEach(chip=>{
+      aplicarEstiloNivelChipPcc(chip, parseInt(chip.dataset.nivel,10)||0);
+      chip.addEventListener('click', ()=>{
+        const siguiente = ((parseInt(chip.dataset.nivel,10)||0) + 1) % (NIVEL_BLOQUEO + 1);
+        chip.dataset.nivel = siguiente;
+        aplicarEstiloNivelChipPcc(chip, siguiente);
+      });
+    });
+  }
+  const leyenda = document.getElementById('pcc-dialog-leyenda');
+  leyenda.innerHTML = calendariosDePersona.length ? leyendaNivelesHtml() : '';
+
+  document.getElementById('dialog-dia-pcc').showModal();
+}
+function aplicarEstiloNivelChipPcc(chip, nivel){
+  const etiqueta = chip.querySelector('.pcc-dialog-chip-nivel');
+  if(!nivel){
+    chip.style.background = '';
+    chip.style.borderColor = '';
+    chip.style.color = '';
+    if(etiqueta) etiqueta.textContent = 'Disponible';
+    return;
+  }
+  const bg = colorParaNivel(nivel);
+  chip.style.background = bg;
+  chip.style.borderColor = bg;
+  chip.style.color = textoContraste(bg);
+  if(etiqueta) etiqueta.textContent = nombreNivel(nivel);
+}
+document.getElementById('btn-cerrar-dialog-pcc').addEventListener('click', ()=> document.getElementById('dialog-dia-pcc').close());
+document.getElementById('btn-guardar-dia-pcc').addEventListener('click', ()=>{
+  const persona = personas.find(p=>p.id===pccPersonaId);
+  if(!persona || !pccDialogFecha) return;
+
+  const sched = obtenerOCrearScheduleParaPcc(pccAnio, pccMes);
+  const marcado = document.getElementById('pcc-dialog-turno').checked;
+  const idsDelDia = new Set(sched.days[pccDialogFecha] || []);
+  if(marcado) idsDelDia.add(persona.id); else idsDelDia.delete(persona.id);
+  sched.days[pccDialogFecha] = ordenarIdsSegunPersonas([...idsDelDia], personas);
+  // Recalcula el total asignado por persona, igual que hace el diálogo del
+  // calendario de turnos, para que el resumen no quede desactualizado.
+  const assignedCount = {};
+  personas.forEach(p=>assignedCount[p.id]=0);
+  Object.values(sched.days).forEach(ids=>{
+    new Set(ids).forEach(id=>{ if(assignedCount[id]!==undefined) assignedCount[id]++; });
+  });
+  sched.assignedCount = assignedCount;
+  localStorage.setItem(LS_SCHEDULE_PREFIX+pccAnio+'_'+pccMes, JSON.stringify(sched));
+
+  document.querySelectorAll('#pcc-dialog-calendarios .pcc-dialog-chip').forEach(chip=>{
+    const cal = calendariosExtra.find(c=>c.id===chip.dataset.calId);
+    if(!cal) return;
+    if(!cal.fechas) cal.fechas = {};
+    const nivel = parseInt(chip.dataset.nivel,10) || 0;
+    if(nivel) cal.fechas[pccDialogFecha] = nivel;
+    else delete cal.fechas[pccDialogFecha];
+  });
+  guardarCalendariosExtra();
+
+  document.getElementById('dialog-dia-pcc').close();
+  renderPersonaCalCompleto();
+  // Si el mes que se está editando es el mismo que se ve en la pestaña
+  // "Calendario", la refrescamos también para que quede todo en sincro.
+  if(calViewAnio===pccAnio && calViewMes===pccMes) renderCalendar();
+  renderOtrosCalendarios();
+});
+
+// ---------- Selector flotante de fechas (multi-selección) ----------
+// Se usa tanto para feriados como para las fechas de "otros calendarios":
+// abre una ventana con un calendario navegable donde cada toque agrega o
+// quita esa fecha al vuelo (se guarda enseguida, no hace falta un botón
+// "confirmar" aparte), y se puede seguir cambiando de mes sin cerrarla.
+function abrirSelectorFechas(tipo, calId=null){
+  selectorFechasContext = { tipo, calId };
+  const now = new Date();
+  selectorFechasAnio = now.getFullYear();
+  selectorFechasMes = now.getMonth();
+  const titulo = document.getElementById('selector-fechas-titulo');
+  if(tipo==='feriados'){
+    titulo.textContent = 'Elegí los feriados';
+  } else {
+    const cal = calendariosExtra.find(c=>c.id===calId);
+    titulo.textContent = 'Elegí las fechas' + (cal ? ' · ' + cal.nombre : '');
+  }
+  renderSelectorFechas();
+  document.getElementById('dialog-selector-fechas').showModal();
+}
+
+function estaMarcadoEnSelector(iso){
+  if(!selectorFechasContext) return false;
+  if(selectorFechasContext.tipo==='feriados') return feriados.includes(iso);
+  const cal = calendariosExtra.find(c=>c.id===selectorFechasContext.calId);
+  return cal ? ((cal.fechas||{})[iso] > 0) : false;
+}
+// Nivel de preferencia marcado en el selector (0 si no aplica o si es de tipo feriados).
+function nivelEnSelector(iso){
+  if(!selectorFechasContext || selectorFechasContext.tipo==='feriados') return 0;
+  const cal = calendariosExtra.find(c=>c.id===selectorFechasContext.calId);
+  return cal ? ((cal.fechas||{})[iso] || 0) : 0;
+}
+
+function toggleFechaEnSelector(iso){
+  if(selectorFechasContext.tipo==='feriados'){
+    const idx = feriados.indexOf(iso);
+    if(idx>=0) feriados.splice(idx,1); else feriados.push(iso);
+    guardarFeriados();
+    renderFeriados();
+    renderExclusiones();
+  } else {
+    const cal = calendariosExtra.find(c=>c.id===selectorFechasContext.calId);
+    if(!cal) return;
+    if(!cal.fechas) cal.fechas={};
+    const actual = cal.fechas[iso] || 0;
+    const siguiente = (actual + 1) % (NIVEL_BLOQUEO + 1);
+    if(siguiente) cal.fechas[iso] = siguiente;
+    else delete cal.fechas[iso];
+    guardarCalendariosExtra();
+    renderOtrosCalendarios();
+  }
+  renderCalendar();
+  renderSelectorFechas();
+}
+
+function renderSelectorFechas(){
+  if(!selectorFechasContext) return;
+  document.getElementById('selector-fechas-mes-titulo').textContent = `${MESES[selectorFechasMes]} ${selectorFechasAnio}`;
+  const dowRow = document.getElementById('selector-fechas-dow-row');
+  const grid = document.getElementById('selector-fechas-grid');
+  dowRow.innerHTML = DOW_LABELS.map(l=>`<div class="cal-dow">${l}</div>`).join('');
+
+  const diasEnMes = new Date(selectorFechasAnio, selectorFechasMes+1, 0).getDate();
+  const primerDow = primerOffsetLunes(selectorFechasAnio, selectorFechasMes);
+  grid.innerHTML='';
+  for(let i=0;i<primerDow;i++){
+    const e = document.createElement('div');
+    e.className='excl-day empty-cell';
+    grid.appendChild(e);
+  }
+  const esOtro = selectorFechasContext.tipo==='otro';
+  for(let d=1; d<=diasEnMes; d++){
+    const iso = isoDate(selectorFechasAnio, selectorFechasMes, d);
+    const weekday = new Date(selectorFechasAnio, selectorFechasMes, d).getDay();
+    const marcado = estaMarcadoEnSelector(iso);
+    // Los domingos ya cuentan como festivo automáticamente, así que no
+    // tiene sentido dejarlos elegir en el selector de feriados.
+    const bloqueado = selectorFechasContext.tipo==='feriados' && weekday===0;
+    const cell = document.createElement('div');
+    cell.className = 'excl-day' + ((weekday===0||weekday===6)?' weekend':'') + (bloqueado?' fijo':'') + (!esOtro && marcado?' marcado':'');
+    cell.textContent = d;
+    if(bloqueado){
+      cell.title = 'Los domingos ya cuentan como festivo automáticamente';
+    } else {
+      if(esOtro) aplicarEstiloNivel(cell, nivelEnSelector(iso));
+      else cell.title = marcado ? 'Tocá para quitarlo' : 'Tocá para agregarlo';
+      cell.addEventListener('click', ()=> toggleFechaEnSelector(iso));
+    }
+    grid.appendChild(cell);
+  }
+  const leyendaBox = document.getElementById('selector-fechas-leyenda');
+  if(leyendaBox) leyendaBox.innerHTML = esOtro ? leyendaNivelesHtml() : '';
+}
+
+document.getElementById('btn-selector-fechas-mes-anterior').addEventListener('click', ()=>{
+  selectorFechasMes--;
+  if(selectorFechasMes < 0){ selectorFechasMes = 11; selectorFechasAnio--; }
+  renderSelectorFechas();
+});
+document.getElementById('btn-selector-fechas-mes-siguiente').addEventListener('click', ()=>{
+  selectorFechasMes++;
+  if(selectorFechasMes > 11){ selectorFechasMes = 0; selectorFechasAnio++; }
+  renderSelectorFechas();
+});
+document.getElementById('btn-cerrar-selector-fechas').addEventListener('click', ()=>{
+  document.getElementById('dialog-selector-fechas').close();
+});
+
+// El resumen por persona necesita separar cuántos de los días asignados
+// fueron festivos (domingo o feriado cargado a mano) y cuántos normales;
+// esto no cambia el máximo de días (maxDias sigue contando el total),
+// solo cómo se muestra el detalle.
+function contarNormalesYFestivosPorPersona(anio, mes, days, personasList){
+  const normales = {}, festivos = {};
+  personasList.forEach(p=>{ normales[p.id] = 0; festivos[p.id] = 0; });
+  Object.keys(days || {}).forEach(iso=>{
+    const esFestivo = esFechaFestiva(iso);
+    const idsDelDia = [...new Set(days[iso] || [])];
+    idsDelDia.forEach(id=>{
+      if(esFestivo){ if(festivos[id] !== undefined) festivos[id]++; }
+      else { if(normales[id] !== undefined) normales[id]++; }
+    });
+    // Si ese día quedó cubierto por una sola persona (nadie más pudo ir),
+    // se le suma un festivo extra a esa persona como compensación, además
+    // de lo que ya le tocaba contar por ese mismo día.
+    if(idsDelDia.length === 1){
+      const soloId = idsDelDia[0];
+      if(festivos[soloId] !== undefined) festivos[soloId]++;
+    }
+  });
+  return { normales, festivos };
+}
+function primerOffsetLunes(anio, mesIdx){
+  // getDay(): 0=domingo..6=sábado. Convertimos a offset con lunes=0..domingo=6.
+  const dow = new Date(anio, mesIdx, 1).getDay();
+  return (dow + 6) % 7;
+}
+
+// ---------- Calendario ----------
+// Ajusta el tamaño de letra de las etiquetas de nombre del calendario para
+// que cada nombre entre completo en su celda. Se mide con un <canvas>
+// oculto usando exactamente la misma fuente que se está usando en pantalla
+// (por eso espera a que la tipografía haya terminado de cargar antes de
+// medir: si se mide con la fuente de reemplazo mientras "Inter" todavía
+// está bajando de internet, el cálculo queda mal y el texto puede terminar
+// cortado igual). Si ni al tamaño mínimo legible entra en una línea
+// (nombre y apellido muy largos en una celda angosta), en vez de cortarlo
+// con "..." se lo deja pasar a una segunda línea.
+const _canvasMedidorEtiquetas = document.createElement('canvas');
+const _ctxMedidorEtiquetas = _canvasMedidorEtiquetas.getContext('2d');
+function ajustarEtiquetasCalendario(){
+  document.querySelectorAll('#cal-grid .name').forEach(el=>{
+    el.style.fontSize = '';
+    el.style.whiteSpace = 'nowrap';
+    el.style.overflow = 'hidden';
+    el.style.textOverflow = 'ellipsis';
+    el.style.wordBreak = '';
+    if(el.clientWidth === 0) return; // celda todavía no visible (pestaña oculta)
+
+    const cs = getComputedStyle(el);
+    const fontFamily = cs.fontFamily;
+    const maxSize = parseFloat(cs.fontSize);
+    const MIN_SIZE = 6.5; // px, piso para que siga siendo legible en una línea
+    const padH = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    const MARGEN = 2; // px de holgura extra, por las dudas de que la fuente real
+                       // (una vez cargada del todo) sea un poco más ancha que la medida.
+    const avail = el.clientWidth - padH - MARGEN;
+    const texto = el.textContent;
+
+    let size = maxSize;
+    _ctxMedidorEtiquetas.font = `${size}px ${fontFamily}`;
+    while(_ctxMedidorEtiquetas.measureText(texto).width > avail && size > MIN_SIZE){
+      size -= 0.25;
+      _ctxMedidorEtiquetas.font = `${size}px ${fontFamily}`;
+    }
+    el.style.fontSize = size + 'px';
+
+    if(_ctxMedidorEtiquetas.measureText(texto).width > avail){
+      el.style.whiteSpace = 'normal';
+      el.style.overflow = 'visible';
+      el.style.textOverflow = 'clip';
+      el.style.wordBreak = 'break-word';
+    }
+  });
+}
+// Si la tipografía "Inter" todavía no había terminado de descargarse cuando
+// se armó el calendario por primera vez, en cuanto esté lista se vuelve a
+// ajustar el tamaño de las etiquetas con la métrica real (no la de
+// reemplazo), para que nunca quede nada cortado por haber medido con la
+// fuente equivocada.
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(()=>{ if(currentSchedule) ajustarEtiquetasCalendario(); });
+}
+// Si cambia el ancho de pantalla (rotar el celular, mostrar/ocultar la
+// barra del navegador, etc.) también conviene recalcular.
+let _resizeTimeoutEtiquetas = null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(_resizeTimeoutEtiquetas);
+  _resizeTimeoutEtiquetas = setTimeout(()=>{ if(currentSchedule) ajustarEtiquetasCalendario(); }, 150);
+});
+
+function renderCalendar(){
+  const dowRow = document.getElementById('cal-dow-row');
+  const grid = document.getElementById('cal-grid');
+  const titulo = document.getElementById('cal-titulo');
+  const warningsBox = document.getElementById('cal-warnings');
+  const resumenCard = document.getElementById('resumen-card');
+  const actions = document.getElementById('cal-actions');
+
+  // Determina qué mes se está mirando: si todavía no se navegó nada en esta
+  // sesión, arranca directamente en el mes real de hoy (haya o no turnos
+  // generados para ese mes; si no hay, se muestra el aviso para generarlos).
+  if(calViewAnio===null || calViewMes===null){
+    const now = new Date();
+    calViewAnio = now.getFullYear();
+    calViewMes = now.getMonth();
+  }
+  currentSchedule = JSON.parse(localStorage.getItem(LS_SCHEDULE_PREFIX+calViewAnio+'_'+calViewMes) || 'null');
+  renderOtrosLegend();
+
+  const sinTurnosHint = document.getElementById('cal-sin-turnos-hint');
+  if(!currentSchedule){
+    titulo.textContent = `${MESES[calViewMes]} ${calViewAnio}`;
+    dowRow.innerHTML = DOW_LABELS.map(l=>`<div class="cal-dow">${l}</div>`).join('');
+    grid.innerHTML='';
+    const diasEnMesVacio = new Date(calViewAnio, calViewMes+1, 0).getDate();
+    const primerDowVacio = primerOffsetLunes(calViewAnio, calViewMes);
+    for(let i=0;i<primerDowVacio;i++){
+      const e = document.createElement('div');
+      e.className='cal-cell empty-cell';
+      grid.appendChild(e);
+    }
+    for(let d=1; d<=diasEnMesVacio; d++){
+      const weekday = new Date(calViewAnio, calViewMes, d).getDay();
+      const iso = isoDate(calViewAnio, calViewMes, d);
+      const esFest = esFechaFestiva(iso) && weekday!==0;
+      const cell = document.createElement('div');
+      cell.className='cal-cell' + ((weekday===0||weekday===6) ? ' weekend':'') + (esFest ? ' feriado':'');
+      cell.title = esFest ? 'Feriado' : '';
+      cell.innerHTML = `<div class="num">${d}</div>` + dotsHtmlParaDia(iso);
+      cell.addEventListener('click', ()=> openDialog(iso, d, weekday));
+      grid.appendChild(cell);
+    }
+    warningsBox.innerHTML='';
+    resumenCard.style.display='none';
+    actions.style.display='none';
+    if(sinTurnosHint) sinTurnosHint.style.display='block';
+    return;
+  }
+  if(sinTurnosHint) sinTurnosHint.style.display='none';
+
+  const {anio, mes, days, warnings, assignedCount} = currentSchedule;
+  titulo.textContent = `${MESES[mes]} ${anio}`;
+  actions.style.display='flex';
+
+  dowRow.innerHTML = DOW_LABELS.map(l=>`<div class="cal-dow">${l}</div>`).join('');
+
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  const primerDow = primerOffsetLunes(anio, mes);
+  grid.innerHTML='';
+  for(let i=0;i<primerDow;i++){
+    const e = document.createElement('div');
+    e.className='cal-cell empty-cell';
+    grid.appendChild(e);
+  }
+  for(let d=1; d<=diasEnMes; d++){
+    const iso = isoDate(anio, mes, d);
+    const weekday = new Date(anio,mes,d).getDay();
+    const ids = [...new Set(days[iso] || [])];
+    const esFest = esFechaFestiva(iso) && weekday!==0;
+    const cell = document.createElement('div');
+    cell.className='cal-cell' + ((weekday===0||weekday===6) ? ' weekend':'') + (esFest ? ' feriado':'');
+    cell.title = esFest ? 'Feriado' : '';
+    const etiquetas = ids.map(id=>{
+      const p = personas.find(pp=>pp.id===id);
+      const nombre = p?.nombre || '?';
+      const bg = p?.color || COLOR_DEFAULT;
+      const fg = oscurecerColor(bg);
+      return `<div class="name" style="background:${bg};color:${fg};">${nombre}</div>`;
+    });
+    cell.innerHTML = `<div class="num">${d}</div>` + dotsHtmlParaDia(iso) + etiquetas.join('');
+    cell.addEventListener('click', ()=> openDialog(iso, d, weekday));
+    grid.appendChild(cell);
+  }
+
+  // Ajuste fino de tamaño de letra: para cada etiqueta de nombre, se va
+  // bajando el tamaño de a poco hasta que el nombre completo entre en una
+  // sola línea dentro de su celda. Si aun en el tamaño mínimo legible no
+  // Ajuste fino de tamaño de letra: para cada etiqueta se mide con un
+  // canvas oculto cuánto ancho ocupa su nombre a distintos tamaños de
+  // letra (más preciso y estable que medir con scrollWidth, que tiene
+  // errores de redondeo de sub-píxel) y se usa el tamaño más grande que
+  // entre completo en una línea. Si ni al tamaño mínimo legible entra
+  // (nombre y apellido muy largos en una celda muy chica), en vez de
+  // cortarlo con "..." se lo deja pasar a una segunda línea.
+  ajustarEtiquetasCalendario();
+
+  warningsBox.innerHTML = warnings.length
+    ? warnings.map(w=>`<div class="warning-item">⚠ ${w}</div>`).join('')
+    : '';
+
+  resumenCard.style.display = personas.length ? 'block':'none';
+  const resumenBox = document.getElementById('resumen-lista');
+  resumenBox.innerHTML='';
+  const { normales: normalesPorPersona, festivos: festivosPorPersona } = contarNormalesYFestivosPorPersona(anio, mes, days, personas);
+  // Se guarda una copia simple (nombre + sumas) para que el botón de
+  // "Exportar resumen como imagen" pueda armar su propia tarjeta sin
+  // tener que recalcular nada ni depender del resto del calendario.
+  ultimoResumenSimple = personas.map(p=>({
+    nombre: p.nombre,
+    normales: normalesPorPersona[p.id] ?? 0,
+    festivos: festivosPorPersona[p.id] ?? 0
+  }));
+  personas.forEach(p=>{
+    const usados = assignedCount[p.id] ?? 0;
+    const normales = normalesPorPersona[p.id] ?? 0;
+    const festivos = festivosPorPersona[p.id] ?? 0;
+    const over = usados > p.maxDias;
+    const row = document.createElement('div');
+    row.className = 'resumen-total' + (over?' warn':'');
+    row.innerHTML = `
+      <div class="resumen-fila"><span>${p.nombre}</span><b>${usados} / ${p.maxDias} días</b></div>
+      <div class="resumen-detalle">${normales} normales · ${festivos} festivos (domingos, feriados y días en solitario)</div>`;
+    resumenBox.appendChild(row);
+  });
+}
+
+// ---------- Edición manual de un día ----------
+let dialogFecha = null;
+function openDialog(iso, dia, weekday){
+  dialogFecha = iso;
+  // Si todavía no hay turnos generados/guardados para este mes (por ejemplo,
+  // el usuario quiere cargar los turnos a mano sin usar el generador
+  // automático), se arranca un horario vacío en memoria. Recién se guarda
+  // en localStorage cuando el usuario aprieta "Guardar" en el diálogo.
+  if(!currentSchedule){
+    currentSchedule = { anio: calViewAnio, mes: calViewMes, days:{}, warnings:[], exclusiones:{}, assignedCount:{} };
+  }
+  document.getElementById('dialog-fecha-titulo').textContent = `${dia} de ${MESES[currentSchedule.mes]} (${DOW_FULL[weekday]})`;
+  const list = document.getElementById('dialog-personas-list');
+  const asignados = new Set(currentSchedule.days[iso] || []);
+  list.innerHTML='';
+  const exclusionesDelMes = migrarExclusiones(
+    JSON.parse(localStorage.getItem(exclusionesKey(currentSchedule.anio, currentSchedule.mes)) || '{}')
+  );
+  personas.forEach(p=>{
+    const nivel = nivelPreferenciaDia(p, weekday, iso, exclusionesDelMes);
+    let etiqueta = '';
+    if(nivel >= NIVEL_BLOQUEO){
+      etiqueta = '<span class="restringido">no disponible</span>';
+    } else if(nivel > 0){
+      const bg = colorParaNivel(nivel);
+      etiqueta = `<span class="nivel-tag" style="background:${bg}; color:${textoContraste(bg)};">${nombreNivel(nivel)}</span>`;
+    }
+    const row = document.createElement('div');
+    row.className='persona-check';
+    row.innerHTML = `
+      <label>
+        <input type="checkbox" value="${p.id}" ${asignados.has(p.id)?'checked':''}>
+        ${p.nombre}
+      </label>
+      ${etiqueta}`;
+    list.appendChild(row);
+  });
+  document.getElementById('dialog-dia').showModal();
+}
+document.getElementById('btn-cerrar-dialog').addEventListener('click', ()=> document.getElementById('dialog-dia').close());
+document.getElementById('btn-guardar-dia').addEventListener('click', ()=>{
+  const checked = [...new Set([...document.querySelectorAll('#dialog-personas-list input:checked')].map(el=>el.value))];
+  currentSchedule.days[dialogFecha] = ordenarIdsSegunPersonas(checked, personas);
+  // recalcular resumen
+  const assignedCount = {};
+  personas.forEach(p=>assignedCount[p.id]=0);
+  Object.values(currentSchedule.days).forEach(ids=>{
+    new Set(ids).forEach(id=>{ if(assignedCount[id]!==undefined) assignedCount[id]++; });
+  });
+  currentSchedule.assignedCount = assignedCount;
+  localStorage.setItem(LS_SCHEDULE_PREFIX+currentSchedule.anio+'_'+currentSchedule.mes, JSON.stringify(currentSchedule));
+  document.getElementById('dialog-dia').close();
+  renderCalendar();
+});
+
+// ---------- Exportar ----------
+// ---------- Exportar el calendario como imagen (PNG) ----------
+// Usa html2canvas (cargado bajo demanda desde cdnjs, igual que sql.js más
+// abajo) para "fotografiar" la tarjeta del calendario tal cual se ve en
+// pantalla y descargarla como PNG.
+let _html2canvasPromise = null;
+function cargarHtml2Canvas(){
+  if(_html2canvasPromise) return _html2canvasPromise;
+  _html2canvasPromise = new Promise((resolve, reject)=>{
+    if(window.html2canvas){ resolve(window.html2canvas); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = ()=> resolve(window.html2canvas);
+    s.onerror = ()=> reject(new Error('No se pudo cargar la librería para generar la imagen (¿hay conexión a internet?).'));
+    document.head.appendChild(s);
+  });
+  return _html2canvasPromise;
+}
+
+document.getElementById('btn-exportar-imagen').addEventListener('click', async ()=>{
+  const btn = document.getElementById('btn-exportar-imagen');
+  if(btn.disabled) return;
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Generando imagen...';
+  try{
+    const html2canvas = await cargarHtml2Canvas();
+    const nodo = document.querySelector('.card.print-cal');
+
+    // Oculta los botones de navegación de mes, el aviso de "sin turnos" y
+    // los puntitos de otros calendarios: la imagen exportada solo debe
+    // mostrar los turnos de trabajo de este calendario.
+    const aOcultar = nodo.querySelectorAll('.btn-nav-mes, .btn-hoy, #cal-sin-turnos-hint, .otros-dots');
+    const displayPrevio = [];
+    aOcultar.forEach(el=>{ displayPrevio.push(el.style.display); el.style.display='none'; });
+
+    let canvas;
+    try{
+      canvas = await html2canvas(nodo, {
+        backgroundColor: getCssVarHex('--paper'),
+        scale: 2,
+        useCORS: true
+      });
+    } finally {
+      aOcultar.forEach((el,i)=>{ el.style.display = displayPrevio[i]; });
+    }
+
+    const anio = calViewAnio ?? new Date().getFullYear();
+    const mes = calViewMes ?? new Date().getMonth();
+    const link = document.createElement('a');
+    link.download = `turnos_${MESES[mes].toLowerCase()}_${anio}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(err){
+    alert('No se pudo generar la imagen. ' + (err && err.message ? err.message : 'Probá de nuevo.'));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+});
+// ---------- Exportar el resumen por persona como imagen (PNG) ----------
+// Arma una tarjeta simple y oculta (fuera de pantalla) con solo el nombre,
+// los días normales y los días festivos de cada persona, la "fotografía"
+// con html2canvas y descarga el PNG. No usa la tarjeta de resumen que se
+// ve en pantalla porque esa también muestra el total usado / máximo.
+document.getElementById('btn-exportar-resumen-imagen').addEventListener('click', async ()=>{
+  const btn = document.getElementById('btn-exportar-resumen-imagen');
+  if(btn.disabled) return;
+  if(!ultimoResumenSimple.length){
+    alert('Todavía no hay un resumen generado para exportar.');
+    return;
+  }
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Generando imagen...';
+  let nodo;
+  try{
+    const html2canvas = await cargarHtml2Canvas();
+
+    const anio = calViewAnio ?? new Date().getFullYear();
+    const mes = calViewMes ?? new Date().getMonth();
+
+    nodo = document.createElement('div');
+    nodo.style.position = 'fixed';
+    nodo.style.left = '-9999px';
+    nodo.style.top = '0';
+    nodo.style.width = '360px';
+    nodo.style.background = getCssVarHex('--paper');
+    nodo.style.color = getCssVarHex('--ink');
+    nodo.style.fontFamily = "'Inter', sans-serif";
+    nodo.style.padding = '18px';
+    nodo.style.borderRadius = '14px';
+    nodo.style.border = `1px solid ${getCssVarHex('--line')}`;
+
+    const filas = ultimoResumenSimple.map(r=>`
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid ${getCssVarHex('--line')};">
+        <span>${r.nombre}</span>
+        <span style="font-family:'JetBrains Mono', monospace; font-size:.85rem; text-align:right; white-space:nowrap;">
+          ${r.normales} normales · ${r.festivos} festivos
+        </span>
+      </div>`).join('');
+
+    nodo.innerHTML = `
+      <h3 style="font-family:'Space Grotesk', sans-serif; margin:0 0 10px;">Resumen por persona — ${MESES[mes]} ${anio}</h3>
+      ${filas}`;
+
+    document.body.appendChild(nodo);
+
+    const canvas = await html2canvas(nodo, {
+      backgroundColor: getCssVarHex('--paper'),
+      scale: 2,
+      useCORS: true
+    });
+
+    const link = document.createElement('a');
+    link.download = `resumen_${MESES[mes].toLowerCase()}_${anio}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(err){
+    alert('No se pudo generar la imagen. ' + (err && err.message ? err.message : 'Probá de nuevo.'));
+  } finally {
+    if(nodo && nodo.parentNode) nodo.parentNode.removeChild(nodo);
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+});
+
+document.getElementById('btn-copiar').addEventListener('click', ()=>{
+  if(!currentSchedule) return;
+  const {anio, mes, days} = currentSchedule;
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  let txt = `Turnos - ${MESES[mes]} ${anio}\n\n`;
+  for(let d=1; d<=diasEnMes; d++){
+    const iso = isoDate(anio, mes, d);
+    const nombres = (days[iso]||[]).map(id=>personas.find(p=>p.id===id)?.nombre || '?');
+    txt += `${String(d).padStart(2,'0')}/${String(mes+1).padStart(2,'0')}: ${nombres.length ? nombres.join(', ') : '(sin asignar)'}\n`;
+  }
+  navigator.clipboard.writeText(txt).then(()=> alert('Copiado al portapapeles.'));
+});
+
+// ---------- Tema oscuro / claro ----------
+const btnTheme = document.getElementById('btn-theme-toggle');
+function actualizarIconoTheme(){
+  const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
+  btnTheme.textContent = esClaro ? '☀️' : '🌙';
+}
+btnTheme.addEventListener('click', ()=>{
+  const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
+  if(esClaro){
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('turnos_theme','dark');
+  } else {
+    document.documentElement.setAttribute('data-theme','light');
+    localStorage.setItem('turnos_theme','light');
+  }
+  actualizarIconoTheme();
+});
+actualizarIconoTheme();
+
+// ---------- Exportar a Shifter (.Shifter) ----------
+// Shifter guarda sus datos como una base SQLite. Para exportar generamos
+// una base con el mismo esquema, usando sql.js (SQLite compilado a
+// WebAssembly) cargado bajo demanda desde cdnjs, así el archivo resultante
+// se puede restaurar directamente dentro de esa app.
+let _sqlJsPromise = null;
+function cargarSqlJs(){
+  if(_sqlJsPromise) return _sqlJsPromise;
+  _sqlJsPromise = new Promise((resolve, reject)=>{
+    if(window.initSqlJs){ resolve(window.initSqlJs); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.5.0/sql-wasm.js';
+    s.onload = ()=> resolve(window.initSqlJs);
+    s.onerror = ()=> reject(new Error('No se pudo cargar la librería para generar el archivo (¿hay conexión a internet?).'));
+    document.head.appendChild(s);
+  }).then(initSqlJsFn => initSqlJsFn({
+    locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.5.0/${f}`
+  }));
+  return _sqlJsPromise;
+}
+
+// Convierte un color "#RRGGBB" al entero con signo de 32 bits que usa
+// Android (ARGB con alpha=FF, representado como negativo).
+function colorHexAAndroidInt(hex){
+  const {r,g,b} = hexToRgb(hex || COLOR_DEFAULT);
+  return ((0xFF<<24) | (r<<16) | (g<<8) | b) | 0;
+}
+
+async function exportarAShifter(){
+  if(personas.length===0){
+    alert('Todavía no cargaste personas, no hay nada para exportar.');
+    return;
+  }
+  const btn = document.getElementById('btn-exportar-shifter');
+  const textoOriginal = btn.textContent;
+
+  const nombreCalPrevio = (config.nombreCalendarioShifter || 'Turnos');
+  const nombreCalEntrada = prompt('Nombre del calendario en Shifter:', nombreCalPrevio);
+  if(nombreCalEntrada === null) return; // canceló
+  const nombreCal = (nombreCalEntrada.trim() || 'Turnos').slice(0,60);
+  config.nombreCalendarioShifter = nombreCal;
+  saveAll();
+
+  btn.disabled = true;
+  btn.textContent = 'Generando...';
+  try{
+    const SQL = await cargarSqlJs();
+    const db = new SQL.Database();
+
+    // Shifter guarda un número de versión de esquema en el propio archivo
+    // SQLite (PRAGMA user_version) y lo usa para validar que un backup sea
+    // compatible antes de dejarlo seleccionar al restaurar. Sin esto, el
+    // archivo se genera bien pero la app lo muestra "grisado".
+    db.run(`PRAGMA user_version = 7`);
+
+    db.run(`CREATE TABLE android_metadata (locale TEXT)`);
+    db.run(`CREATE TABLE dias (fecha INTEGER PRIMARY KEY, turno1 INTEGER, turno2 INTEGER, alarma1 INTEGER, alarma2 INTEGER, notas TEXT, notificacion INTEGER, hora INTEGER, alarma1T2 INTEGER, alarma2T2 INTEGER, sonido TEXT, notificacionDiaAntes INTEGER,notificacion2 INTEGER, notificacion2DiaAntes INTEGER, hora2 INTEGER, sonido2 TEXT, instruccionesDibujo TEXT, foto BLOB,horasExtraT1 INTEGER, horasExtraT2 INTEGER, ingresoExtra INTEGER, salidaAnticipadaT1 INTEGER, salidaAnticipadaT2 INTEGER,icono INTEGER, horasExtraT1Acumula INTEGER, horasExtraT2Acumula INTEGER)`);
+    db.run(`CREATE TABLE tablaTurnos (_id INTEGER PRIMARY KEY, texto TEXT, horaAlarma TEXT, alarma INTEGER, alarmaDiaAntes INTEGER, color INTEGER, colorTexto INTEGER, codigoSecuencial INTEGER, textSize REAL, horaAlarma2 TEXT, alarma2 INTEGER, alarma2DiaAntes INTEGER, sonido1 TEXT, sonido2 TEXT,abreviatura TEXT, horaInicio1 TEXT, horaFinal1 TEXT, horaInicio2 TEXT, horaFinal2 TEXT, turnoPartido INTEGER, realizarAccion TEXT,ingresosHora INTEGER, ingresoHoraExtra INTEGER, tiempoDescanso INTEGER, tiempoTurno INTEGER, calcularTiempoTurnoManual INTEGER)`);
+    db.run(`CREATE TABLE nombreCalendario (_id INTEGER PRIMARY KEY, nombre TEXT, posicion INTEGER, moneda TEXT)`);
+    db.run(`CREATE TABLE patrones (_id INTEGER PRIMARY KEY, nombre TEXT, numeroDias INTEGER)`);
+    db.run(`CREATE TABLE contenidoPatron (_id INTEGER PRIMARY KEY, idPatron INTEGER, dia INTEGER, turno1 INTEGER, turno2 INTEGER)`);
+    db.run(`CREATE TABLE festivos (_id INTEGER PRIMARY KEY, fecha INTEGER, fiesta TEXT, oculto INTEGER)`);
+
+    db.run(`INSERT INTO android_metadata (locale) VALUES ('es_ES')`);
+    db.run(`INSERT INTO nombreCalendario (_id, nombre, posicion, moneda) VALUES (1, ?, NULL, NULL)`, [nombreCal]);
+
+    // Cada persona se exporta como un "turno" de Shifter (así funciona esa
+    // app: usa turnos con nombre y color para representar quién trabaja).
+    const idMap = {};
+    const stmtTurno = db.prepare(`INSERT INTO tablaTurnos
+      (_id, texto, horaAlarma, alarma, alarmaDiaAntes, color, colorTexto, codigoSecuencial, textSize,
+       horaAlarma2, alarma2, alarma2DiaAntes, sonido1, sonido2, abreviatura,
+       horaInicio1, horaFinal1, horaInicio2, horaFinal2, turnoPartido, realizarAccion,
+       ingresosHora, ingresoHoraExtra, tiempoDescanso, tiempoTurno, calcularTiempoTurnoManual)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`);
+    personas.forEach((p, i)=>{
+      const shifterId = i+1;
+      idMap[p.id] = shifterId;
+      const color = colorHexAAndroidInt(p.color);
+      const colorTexto = colorHexAAndroidInt(oscurecerColor(p.color || COLOR_DEFAULT));
+      stmtTurno.run([
+        shifterId, p.nombre, '08:00', 0, 0, color, colorTexto, shifterId, 16.0,
+        '17:00', 0, 0, '', '', (p.nombre||'').toUpperCase().slice(0,10),
+        '14:00', '14:00', '15:00', '15:00', 0, '000000',
+        null, null, 0, 0, 0
+      ]);
+    });
+    stmtTurno.free();
+
+    // Junta los días de TODOS los meses que se generaron y quedaron
+    // guardados en este dispositivo (no solo el mes que se está viendo).
+    const diasUnificados = {};
+    Object.keys(localStorage)
+      .filter(k=>k.startsWith(LS_SCHEDULE_PREFIX))
+      .forEach(k=>{
+        try{
+          const sched = JSON.parse(localStorage.getItem(k));
+          if(sched && sched.days) Object.assign(diasUnificados, sched.days);
+        }catch(e){ /* ignorar entradas corruptas */ }
+      });
+
+    const stmtDia = db.prepare(`INSERT OR REPLACE INTO dias (fecha, turno1, turno2) VALUES (?,?,?)`);
+    Object.keys(diasUnificados).forEach(iso=>{
+      const ids = diasUnificados[iso] || [];
+      // Shifter codifica la fecha como año*10000 + mes*100 + día, pero el
+      // mes lo guarda con base 0 (0=enero, 8=setiembre, 11=diciembre), al
+      // estilo java.util.Calendar. Nuestro iso usa mes normal (1=enero),
+      // así que hay que restarle 1 antes de armar el entero.
+      const [y, m, d] = iso.split('-').map(Number);
+      if(!y || !m || !d) return;
+      const fecha = y*10000 + (m-1)*100 + d;
+      const t1 = ids[0] !== undefined ? (idMap[ids[0]] ?? 0) : 0;
+      const t2 = ids[1] !== undefined ? (idMap[ids[1]] ?? 0) : 0;
+      stmtDia.run([fecha, t1, t2]);
+    });
+    stmtDia.free();
+
+    // Feriados cargados a mano en la pestaña de configuración.
+    const stmtFest = db.prepare(`INSERT INTO festivos (fecha, fiesta, oculto) VALUES (?,?,0)`);
+    feriados.forEach(iso=>{
+      const [y, m, d] = iso.split('-').map(Number);
+      if(y && m && d) stmtFest.run([y*10000 + (m-1)*100 + d, 'Feriado']);
+    });
+    stmtFest.free();
+
+    const bytes = db.export();
+    db.close();
+    const blob = new Blob([bytes], {type:'application/octet-stream'});
+    const url = URL.createObjectURL(blob);
+    const pad = n => String(n).padStart(2,'0');
+    const now = new Date();
+    const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}m${pad(now.getSeconds())}s`;
+    const nombreArchivo = `Shifter_backup_${nombreCal.replace(/[^a-zA-Z0-9]+/g,'')||'Turnos'}_${stamp}.Shifter`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }catch(err){
+    console.error(err);
+    alert('No se pudo generar el archivo para Shifter.\n' + (err && err.message ? err.message : err));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+}
+document.getElementById('btn-exportar-shifter').addEventListener('click', exportarAShifter);
+
+// ---------- Exportar UNA persona a Shifter, convirtiendo también sus ----------
+// ---------- calendarios extra en "turnos" (no solo puntitos) ----------
+// Shifter no tiene concepto de "calendario extra": todo lo que se ve ahí es
+// un turno. Para que esta persona se vea completa en Shifter (turno de
+// trabajo + Fórmula 1 + cumpleaños, etc.) cada calendario extra se exporta
+// como si fuera un turno más, con su propio color. La limitación real de
+// Shifter es que cada día solo tiene 2 casilleros (turno1 y turno2): acá el
+// turno de trabajo siempre ocupa el primero, y como segundo se usa el
+// primer calendario extra marcado ese día (si hay más de uno, los demás
+// quedan afuera y se avisa al final).
+async function exportarPersonaComoTurnosAShifter(){
+  const persona = personas.find(p=>p.id===pccPersonaId);
+  if(!persona){
+    alert('Elegí primero una persona.');
+    return;
+  }
+  const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
+  const btn = document.getElementById('btn-exportar-pcc-shifter');
+  const textoOriginal = btn.textContent;
+
+  // Se sugiere el mismo nombre de calendario que el usuario ya venía usando
+  // desde la primera vez que exportó a Shifter (guardado en
+  // config.nombreCalendarioShifter), no el nombre de la persona: es el
+  // nombre del turno de trabajo que se ve en el calendario global, y es lo
+  // que también se usa como etiqueta del turno de trabajo más abajo.
+  const nombreCalPrevioPersona = (config.nombreCalendarioShifter || 'Turno');
+  const nombreCalEntrada = prompt('Nombre del calendario en Shifter:', nombreCalPrevioPersona);
+  if(nombreCalEntrada === null) return; // canceló
+  const nombreCal = (nombreCalEntrada.trim() || nombreCalPrevioPersona || 'Turno').slice(0,60);
+  config.nombreCalendarioShifter = nombreCal;
+  saveAll();
+
+  btn.disabled = true;
+  btn.textContent = 'Generando...';
+  try{
+    const SQL = await cargarSqlJs();
+    const db = new SQL.Database();
+    db.run(`PRAGMA user_version = 7`);
+    db.run(`CREATE TABLE android_metadata (locale TEXT)`);
+    db.run(`CREATE TABLE dias (fecha INTEGER PRIMARY KEY, turno1 INTEGER, turno2 INTEGER, alarma1 INTEGER, alarma2 INTEGER, notas TEXT, notificacion INTEGER, hora INTEGER, alarma1T2 INTEGER, alarma2T2 INTEGER, sonido TEXT, notificacionDiaAntes INTEGER,notificacion2 INTEGER, notificacion2DiaAntes INTEGER, hora2 INTEGER, sonido2 TEXT, instruccionesDibujo TEXT, foto BLOB,horasExtraT1 INTEGER, horasExtraT2 INTEGER, ingresoExtra INTEGER, salidaAnticipadaT1 INTEGER, salidaAnticipadaT2 INTEGER,icono INTEGER, horasExtraT1Acumula INTEGER, horasExtraT2Acumula INTEGER)`);
+    db.run(`CREATE TABLE tablaTurnos (_id INTEGER PRIMARY KEY, texto TEXT, horaAlarma TEXT, alarma INTEGER, alarmaDiaAntes INTEGER, color INTEGER, colorTexto INTEGER, codigoSecuencial INTEGER, textSize REAL, horaAlarma2 TEXT, alarma2 INTEGER, alarma2DiaAntes INTEGER, sonido1 TEXT, sonido2 TEXT,abreviatura TEXT, horaInicio1 TEXT, horaFinal1 TEXT, horaInicio2 TEXT, horaFinal2 TEXT, turnoPartido INTEGER, realizarAccion TEXT,ingresosHora INTEGER, ingresoHoraExtra INTEGER, tiempoDescanso INTEGER, tiempoTurno INTEGER, calcularTiempoTurnoManual INTEGER)`);
+    db.run(`CREATE TABLE nombreCalendario (_id INTEGER PRIMARY KEY, nombre TEXT, posicion INTEGER, moneda TEXT)`);
+    db.run(`CREATE TABLE patrones (_id INTEGER PRIMARY KEY, nombre TEXT, numeroDias INTEGER)`);
+    db.run(`CREATE TABLE contenidoPatron (_id INTEGER PRIMARY KEY, idPatron INTEGER, dia INTEGER, turno1 INTEGER, turno2 INTEGER)`);
+    db.run(`CREATE TABLE festivos (_id INTEGER PRIMARY KEY, fecha INTEGER, fiesta TEXT, oculto INTEGER)`);
+
+    db.run(`INSERT INTO android_metadata (locale) VALUES ('es_ES')`);
+    db.run(`INSERT INTO nombreCalendario (_id, nombre, posicion, moneda) VALUES (1, ?, NULL, NULL)`, [nombreCal]);
+
+    // _id 1 = el turno de trabajo de la persona; el resto, uno por cada
+    // calendario extra que tenga (en el mismo orden en que aparecen en "Tus
+    // calendarios").
+    const stmtTurno = db.prepare(`INSERT INTO tablaTurnos
+      (_id, texto, horaAlarma, alarma, alarmaDiaAntes, color, colorTexto, codigoSecuencial, textSize,
+       horaAlarma2, alarma2, alarma2DiaAntes, sonido1, sonido2, abreviatura,
+       horaInicio1, horaFinal1, horaInicio2, horaFinal2, turnoPartido, realizarAccion,
+       ingresosHora, ingresoHoraExtra, tiempoDescanso, tiempoTurno, calcularTiempoTurnoManual)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`);
+    function insertarTurno(shifterId, nombre, colorHex){
+      const color = colorHexAAndroidInt(colorHex);
+      const colorTexto = colorHexAAndroidInt(oscurecerColor(colorHex || COLOR_DEFAULT));
+      stmtTurno.run([
+        shifterId, nombre, '08:00', 0, 0, color, colorTexto, shifterId, 16.0,
+        '17:00', 0, 0, '', '', (nombre||'').toUpperCase().slice(0,10),
+        '14:00', '14:00', '15:00', '15:00', 0, '000000',
+        null, null, 0, 0, 0
+      ]);
+    }
+    const TURNO_TRABAJO_ID = 1;
+    // El turno de trabajo se etiqueta con el nombre de calendario (el mismo
+    // que se ve en el calendario global de Shifter), no con el nombre de la
+    // persona.
+    insertarTurno(TURNO_TRABAJO_ID, nombreCal, persona.color);
+    const idCalendario = {}; // calId -> shifterId
+    calendariosDePersona.forEach((c, i)=>{
+      const shifterId = i+2;
+      idCalendario[c.id] = shifterId;
+      insertarTurno(shifterId, c.nombre, c.color);
+    });
+    stmtTurno.free();
+
+    // Junta todos los días de todos los meses guardados en este dispositivo
+    // donde esta persona tiene turno de trabajo asignado o algún calendario
+    // extra marcado, para no depender solo del mes que se está mirando.
+    const fechasConDatos = new Set();
+    Object.keys(localStorage)
+      .filter(k=>k.startsWith(LS_SCHEDULE_PREFIX))
+      .forEach(k=>{
+        try{
+          const sched = JSON.parse(localStorage.getItem(k));
+          if(sched && sched.days){
+            Object.keys(sched.days).forEach(iso=>{
+              if(new Set(sched.days[iso]||[]).has(persona.id)) fechasConDatos.add(iso);
+            });
+          }
+        }catch(e){ /* ignorar entradas corruptas */ }
+      });
+    calendariosDePersona.forEach(c=>{
+      Object.keys(c.fechas||{}).forEach(iso=>{ if(c.fechas[iso]>0) fechasConDatos.add(iso); });
+    });
+
+    let diasConVariosExtra = 0;
+    const stmtDia = db.prepare(`INSERT OR REPLACE INTO dias (fecha, turno1, turno2) VALUES (?,?,?)`);
+    fechasConDatos.forEach(iso=>{
+      const [y, m, d] = iso.split('-').map(Number);
+      if(!y || !m || !d) return;
+      const fecha = y*10000 + (m-1)*100 + d;
+
+      const sched = JSON.parse(localStorage.getItem(LS_SCHEDULE_PREFIX+y+'_'+(m-1)) || 'null');
+      const tieneTurno = !!(sched && new Set(sched.days[iso]||[]).has(persona.id));
+      const t1 = tieneTurno ? TURNO_TRABAJO_ID : 0;
+
+      const calsHoy = calendariosDePersona.filter(c => (c.fechas||{})[iso] > 0);
+      if(calsHoy.length > 1) diasConVariosExtra++;
+      const t2 = calsHoy.length ? idCalendario[calsHoy[0].id] : 0;
+
+      stmtDia.run([fecha, t1, t2]);
+    });
+    stmtDia.free();
+
+    const stmtFest = db.prepare(`INSERT INTO festivos (fecha, fiesta, oculto) VALUES (?,?,0)`);
+    feriados.forEach(iso=>{
+      const [y, m, d] = iso.split('-').map(Number);
+      if(y && m && d) stmtFest.run([y*10000 + (m-1)*100 + d, 'Feriado']);
+    });
+    stmtFest.free();
+
+    const bytes = db.export();
+    db.close();
+    const blob = new Blob([bytes], {type:'application/octet-stream'});
+    const url = URL.createObjectURL(blob);
+    const pad = n => String(n).padStart(2,'0');
+    const now = new Date();
+    const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}m${pad(now.getSeconds())}s`;
+    const nombreArchivo = `Shifter_${(persona.nombre||'persona').replace(/[^a-zA-Z0-9]+/g,'')||'Turnos'}_${stamp}.Shifter`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    if(diasConVariosExtra > 0){
+      alert(`Listo. Ojo: ${diasConVariosExtra} día(s) tenían más de un calendario extra marcado ese mismo día. Shifter solo admite 2 turnos por día, así que en esos días solo se incluyó el turno de trabajo y el primer calendario extra; el resto quedó afuera de este archivo.`);
+    }
+  }catch(err){
+    console.error(err);
+    alert('No se pudo generar el archivo para Shifter.\n' + (err && err.message ? err.message : err));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+}
+document.getElementById('btn-exportar-pcc-shifter').addEventListener('click', exportarPersonaComoTurnosAShifter);
+
+// ---------- Exportar a Groups (experimental) ----------
+// MISMA ADVERTENCIA que el importador: no tengo el esquema real de Groups.
+// Esto genera un archivo SQLite reutilizando la estructura de Shifter (que
+// sí está confirmada, porque Shifter la documenta al leer/escribir sus
+// propios backups) pero SIN el límite fijo de 2 columnas turno1/turno2: la
+// tabla "dias" se crea con tantas columnas turnoN como el máximo de turnos
+// que haya en un mismo día en tus datos, para no cortar nada. Es una
+// apuesta a que Groups, del mismo desarrollador, entienda ese mismo patrón
+// extendido. Si Groups no lo reconoce al importar el archivo, avisame qué
+// pasa (¿no aparece nada? ¿aparecen los primeros 2 turnos igual que con
+// Shifter? ¿error al abrir el archivo?) para ajustar el esquema.
+
+function crearEsquemaGroups(db, maxTurnos){
+  const colsTurno = [];
+  for(let i=1;i<=maxTurnos;i++) colsTurno.push(`turno${i} INTEGER`);
+  db.run(`PRAGMA user_version = 7`);
+  db.run(`CREATE TABLE android_metadata (locale TEXT)`);
+  db.run(`CREATE TABLE dias (fecha INTEGER PRIMARY KEY, ${colsTurno.join(', ')}, notas TEXT)`);
+  db.run(`CREATE TABLE tablaTurnos (_id INTEGER PRIMARY KEY, texto TEXT, horaAlarma TEXT, alarma INTEGER, alarmaDiaAntes INTEGER, color INTEGER, colorTexto INTEGER, codigoSecuencial INTEGER, textSize REAL, horaAlarma2 TEXT, alarma2 INTEGER, alarma2DiaAntes INTEGER, sonido1 TEXT, sonido2 TEXT,abreviatura TEXT, horaInicio1 TEXT, horaFinal1 TEXT, horaInicio2 TEXT, horaFinal2 TEXT, turnoPartido INTEGER, realizarAccion TEXT,ingresosHora INTEGER, ingresoHoraExtra INTEGER, tiempoDescanso INTEGER, tiempoTurno INTEGER, calcularTiempoTurnoManual INTEGER)`);
+  db.run(`CREATE TABLE nombreCalendario (_id INTEGER PRIMARY KEY, nombre TEXT, posicion INTEGER, moneda TEXT)`);
+  db.run(`CREATE TABLE festivos (_id INTEGER PRIMARY KEY, fecha INTEGER, fiesta TEXT, oculto INTEGER)`);
+  db.run(`INSERT INTO android_metadata (locale) VALUES ('es_ES')`);
+}
+
+function insertarTurnoGroups(db, id, nombre, colorHex){
+  const color = colorHexAAndroidInt(colorHex);
+  const colorTexto = colorHexAAndroidInt(oscurecerColor(colorHex || COLOR_DEFAULT));
+  db.run(`INSERT INTO tablaTurnos
+    (_id, texto, horaAlarma, alarma, alarmaDiaAntes, color, colorTexto, codigoSecuencial, textSize,
+     horaAlarma2, alarma2, alarma2DiaAntes, sonido1, sonido2, abreviatura,
+     horaInicio1, horaFinal1, horaInicio2, horaFinal2, turnoPartido, realizarAccion,
+     ingresosHora, ingresoHoraExtra, tiempoDescanso, tiempoTurno, calcularTiempoTurnoManual)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    [id, nombre, '08:00', 0, 0, color, colorTexto, id, 16.0,
+     '17:00', 0, 0, '', '', (nombre||'').toUpperCase().slice(0,10),
+     '14:00', '14:00', '15:00', '15:00', 0, '000000',
+     null, null, 0, 0, 0]);
+}
+
+function descargarDbComoArchivo(db, nombreBase, extension){
+  const bytes = db.export();
+  db.close();
+  const blob = new Blob([bytes], {type:'application/octet-stream'});
+  const url = URL.createObjectURL(blob);
+  const pad = n => String(n).padStart(2,'0');
+  const now = new Date();
+  const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}m${pad(now.getSeconds())}s`;
+  const nombreArchivo = `${nombreBase}_${stamp}${extension}`;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nombreArchivo;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function exportarAGroups(){
+  if(personas.length===0){
+    alert('Todavía no cargaste personas, no hay nada para exportar.');
+    return;
+  }
+  const btn = document.getElementById('btn-exportar-groups');
+  const textoOriginal = btn.textContent;
+  const nombreCalPrevio = (config.nombreCalendarioShifter || 'Turnos');
+  const nombreCalEntrada = prompt('Nombre del calendario:', nombreCalPrevio);
+  if(nombreCalEntrada === null) return;
+  const nombreCal = (nombreCalEntrada.trim() || 'Turnos').slice(0,60);
+
+  btn.disabled = true;
+  btn.textContent = 'Generando...';
+  try{
+    const diasUnificados = {};
+    Object.keys(localStorage)
+      .filter(k=>k.startsWith(LS_SCHEDULE_PREFIX))
+      .forEach(k=>{
+        try{
+          const sched = JSON.parse(localStorage.getItem(k));
+          if(sched && sched.days) Object.assign(diasUnificados, sched.days);
+        }catch(e){}
+      });
+
+    const maxTurnos = Math.max(2, ...Object.values(diasUnificados).map(ids=>(ids||[]).length), 1);
+
+    const SQL = await cargarSqlJs();
+    const db = new SQL.Database();
+    crearEsquemaGroups(db, maxTurnos);
+    db.run(`INSERT INTO nombreCalendario (_id, nombre, posicion, moneda) VALUES (1, ?, NULL, NULL)`, [nombreCal]);
+
+    const idMap = {};
+    personas.forEach((p, i)=>{
+      const id = i+1;
+      idMap[p.id] = id;
+      insertarTurnoGroups(db, id, p.nombre, p.color);
+    });
+
+    const colsNombres = []; for(let i=1;i<=maxTurnos;i++) colsNombres.push(`turno${i}`);
+    const stmtDia = db.prepare(`INSERT OR REPLACE INTO dias (fecha, ${colsNombres.join(', ')}) VALUES (?, ${colsNombres.map(_=>'?').join(', ')})`);
+    Object.keys(diasUnificados).forEach(iso=>{
+      const ids = diasUnificados[iso] || [];
+      const [y, m, d] = iso.split('-').map(Number);
+      if(!y || !m || !d) return;
+      const fecha = y*10000 + (m-1)*100 + d;
+      const valores = colsNombres.map((_,i)=> ids[i]!==undefined ? (idMap[ids[i]] ?? 0) : 0);
+      stmtDia.run([fecha, ...valores]);
+    });
+    stmtDia.free();
+
+    const stmtFest = db.prepare(`INSERT INTO festivos (fecha, fiesta, oculto) VALUES (?,?,0)`);
+    feriados.forEach(iso=>{
+      const [y, m, d] = iso.split('-').map(Number);
+      if(y && m && d) stmtFest.run([y*10000 + (m-1)*100 + d, 'Feriado']);
+    });
+    stmtFest.free();
+
+    descargarDbComoArchivo(db, `Groups_backup_${nombreCal.replace(/[^a-zA-Z0-9]+/g,'')||'Turnos'}`, '.db');
+    alert('Listo (experimental). Se generó con ' + maxTurnos + ' columna(s) de turno por día, así que no debería haberse cortado nada. Probalo importándolo en Groups y contame si lo reconoce.');
+  }catch(err){
+    console.error(err);
+    alert('No se pudo generar el archivo.\n' + (err && err.message ? err.message : err));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+}
+document.getElementById('btn-exportar-groups').addEventListener('click', exportarAGroups);
+
+// Igual que exportarPersonaComoTurnosAShifter, pero sin el límite de 2:
+// crea tantas columnas turnoN como el máximo de calendarios extra + turno de
+// trabajo que haya coincidido en un mismo día para esta persona.
+async function exportarPersonaComoTurnosAGroups(){
+  const persona = personas.find(p=>p.id===pccPersonaId);
+  if(!persona){
+    alert('Elegí primero una persona.');
+    return;
+  }
+  const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
+  const btn = document.getElementById('btn-exportar-pcc-groups');
+  const textoOriginal = btn.textContent;
+  const nombreCalPrevioPersona = (config.nombreCalendarioShifter || 'Turno');
+  const nombreCalEntrada = prompt('Nombre del calendario:', nombreCalPrevioPersona);
+  if(nombreCalEntrada === null) return;
+  const nombreCal = (nombreCalEntrada.trim() || nombreCalPrevioPersona || 'Turno').slice(0,60);
+
+  btn.disabled = true;
+  btn.textContent = 'Generando...';
+  try{
+    const fechasConDatos = new Set();
+    Object.keys(localStorage)
+      .filter(k=>k.startsWith(LS_SCHEDULE_PREFIX))
+      .forEach(k=>{
+        try{
+          const sched = JSON.parse(localStorage.getItem(k));
+          if(sched && sched.days){
+            Object.keys(sched.days).forEach(iso=>{
+              if(new Set(sched.days[iso]||[]).has(persona.id)) fechasConDatos.add(iso);
+            });
+          }
+        }catch(e){}
+      });
+    calendariosDePersona.forEach(c=>{
+      Object.keys(c.fechas||{}).forEach(iso=>{ if(c.fechas[iso]>0) fechasConDatos.add(iso); });
+    });
+
+    // Precalcula, por fecha, la lista completa de ids (turno de trabajo +
+    // todos los calendarios extra marcados ese día) para saber el máximo.
+    const TURNO_TRABAJO_ID = 1;
+    const idCalendario = {};
+    calendariosDePersona.forEach((c, i)=>{ idCalendario[c.id] = i+2; });
+
+    const porFecha = {};
+    fechasConDatos.forEach(iso=>{
+      const [y, m] = iso.split('-').map(Number);
+      const sched = JSON.parse(localStorage.getItem(LS_SCHEDULE_PREFIX+y+'_'+(m-1)) || 'null');
+      const tieneTurno = !!(sched && new Set(sched.days[iso]||[]).has(persona.id));
+      const ids = [];
+      if(tieneTurno) ids.push(TURNO_TRABAJO_ID);
+      calendariosDePersona.forEach(c=>{ if((c.fechas||{})[iso] > 0) ids.push(idCalendario[c.id]); });
+      porFecha[iso] = ids;
+    });
+    const maxTurnos = Math.max(2, ...Object.values(porFecha).map(ids=>ids.length), 1);
+
+    const SQL = await cargarSqlJs();
+    const db = new SQL.Database();
+    crearEsquemaGroups(db, maxTurnos);
+    db.run(`INSERT INTO nombreCalendario (_id, nombre, posicion, moneda) VALUES (1, ?, NULL, NULL)`, [nombreCal]);
+
+    insertarTurnoGroups(db, TURNO_TRABAJO_ID, nombreCal, persona.color);
+    calendariosDePersona.forEach(c=>{ insertarTurnoGroups(db, idCalendario[c.id], c.nombre, c.color); });
+
+    const colsNombres = []; for(let i=1;i<=maxTurnos;i++) colsNombres.push(`turno${i}`);
+    const stmtDia = db.prepare(`INSERT OR REPLACE INTO dias (fecha, ${colsNombres.join(', ')}) VALUES (?, ${colsNombres.map(_=>'?').join(', ')})`);
+    Object.keys(porFecha).forEach(iso=>{
+      const [y, m, d] = iso.split('-').map(Number);
+      if(!y || !m || !d) return;
+      const fecha = y*10000 + (m-1)*100 + d;
+      const ids = porFecha[iso];
+      const valores = colsNombres.map((_,i)=> ids[i] !== undefined ? ids[i] : 0);
+      stmtDia.run([fecha, ...valores]);
+    });
+    stmtDia.free();
+
+    const stmtFest = db.prepare(`INSERT INTO festivos (fecha, fiesta, oculto) VALUES (?,?,0)`);
+    feriados.forEach(iso=>{
+      const [y, m, d] = iso.split('-').map(Number);
+      if(y && m && d) stmtFest.run([y*10000 + (m-1)*100 + d, 'Feriado']);
+    });
+    stmtFest.free();
+
+    descargarDbComoArchivo(db, `Groups_${(persona.nombre||'persona').replace(/[^a-zA-Z0-9]+/g,'')||'Turnos'}`, '.db');
+    alert('Listo (experimental), sin límite de 2: se generó con ' + maxTurnos + ' columna(s) de turno por día, así que todos los calendarios extra quedaron incluidos. Probalo importándolo en Groups y contame si lo reconoce.');
+  }catch(err){
+    console.error(err);
+    alert('No se pudo generar el archivo.\n' + (err && err.message ? err.message : err));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+}
+document.getElementById('btn-exportar-pcc-groups').addEventListener('click', exportarPersonaComoTurnosAGroups);
+
+// ---------- Importar desde Shifter (.Shifter) ----------
+// Lee el mismo esquema SQLite que genera exportarAShifter (y que también
+// entiende la app Shifter real) y reconstruye personas, turnos por mes y
+// feriados a partir de ahí. Es el camino inverso de la exportación.
+
+// Convierte el entero ARGB con signo de 32 bits (como lo guarda Android)
+// de vuelta a "#RRGGBB". Es el inverso exacto de colorHexAAndroidInt.
+function androidIntAColorHex(colorInt){
+  if(colorInt === null || colorInt === undefined) return null;
+  const c = (colorInt | 0) >>> 0; // fuerza a 32 bits y lo pasa a sin signo
+  const r = (c >> 16) & 0xFF;
+  const g = (c >> 8) & 0xFF;
+  const b = c & 0xFF;
+  return rgbToHex(r, g, b);
+}
+
+// Shifter guarda la fecha como año*10000 + mes*100 + día, con mes en base 0
+// (0=enero...11=diciembre). Esto la separa en {y, m0 (base 0), d}.
+function descomponerFechaShifter(fecha){
+  if(fecha === null || fecha === undefined) return null;
+  const y = Math.floor(fecha / 10000);
+  const m0 = Math.floor((fecha % 10000) / 100);
+  const d = fecha % 100;
+  if(!y || d < 1) return null;
+  return { y, m0, d };
+}
+
+document.getElementById('btn-importar-shifter').addEventListener('click', ()=>{
+  document.getElementById('input-importar-shifter').click();
+});
+document.getElementById('input-importar-shifter').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  e.target.value = ''; // permite volver a elegir el mismo archivo después
+  if(!file) return;
+  await importarDesdeShifter(file);
+});
+
+async function importarDesdeShifter(file){
+  if(!confirm('Importar va a REEMPLAZAR las personas, los turnos generados y los feriados guardados en este dispositivo por los del archivo elegido. ¿Continuar?')){
+    return;
+  }
+  const btn = document.getElementById('btn-importar-shifter');
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Importando...';
+  try{
+    const buffer = await file.arrayBuffer();
+    const SQL = await cargarSqlJs();
+    const db = new SQL.Database(new Uint8Array(buffer));
+
+    // Personas: cada fila de tablaTurnos es una persona (así se exportó).
+    const idMap = {}; // _id de Shifter -> id nuevo de esta app
+    const nuevasPersonas = [];
+    const resTurnos = db.exec('SELECT _id, texto, color FROM tablaTurnos ORDER BY _id');
+    if(resTurnos[0]){
+      resTurnos[0].values.forEach(row=>{
+        const [shifterId, texto, color] = row;
+        const nuevoId = uid();
+        idMap[shifterId] = nuevoId;
+        nuevasPersonas.push({
+          id: nuevoId,
+          nombre: (texto || 'Sin nombre').trim(),
+          maxDias: 31,
+          diasFijos: {},
+          maxSeguidos: null,
+          minDescanso: null,
+          color: androidIntAColorHex(color) || COLOR_DEFAULT
+        });
+      });
+    }
+
+    if(nuevasPersonas.length === 0){
+      db.close();
+      alert('El archivo no tiene personas cargadas (tabla "tablaTurnos" vacía); no hay nada para importar.');
+      return;
+    }
+
+    // Nombre del calendario, si el archivo lo trae (dato cosmético).
+    let nombreCalendarioImportado = null;
+    try{
+      const resNombre = db.exec('SELECT nombre FROM nombreCalendario LIMIT 1');
+      if(resNombre[0] && resNombre[0].values[0]) nombreCalendarioImportado = resNombre[0].values[0][0];
+    }catch(e){ /* tabla ausente en algún backup viejo: no es grave */ }
+
+    // Turnos por día, agrupados por año-mes para armar un calendario por mes.
+    const schedulesPorMes = {}; // 'anio_mes0' -> {anio, mes, days:{iso:[ids]}}
+    const resDias = db.exec('SELECT fecha, turno1, turno2 FROM dias');
+    if(resDias[0]){
+      resDias[0].values.forEach(row=>{
+        const [fecha, turno1, turno2] = row;
+        const f = descomponerFechaShifter(fecha);
+        if(!f) return;
+        const iso = `${f.y}-${String(f.m0+1).padStart(2,'0')}-${String(f.d).padStart(2,'0')}`;
+        const key = `${f.y}_${f.m0}`;
+        if(!schedulesPorMes[key]) schedulesPorMes[key] = { anio: f.y, mes: f.m0, days: {} };
+        const ids = [];
+        [turno1, turno2].forEach(t=>{ if(t && idMap[t]) ids.push(idMap[t]); });
+        if(ids.length) schedulesPorMes[key].days[iso] = ordenarIdsSegunPersonas(ids, personas);
+      });
+    }
+
+    // Feriados cargados a mano.
+    const nuevosFeriados = new Set();
+    try{
+      const resFest = db.exec('SELECT fecha FROM festivos');
+      if(resFest[0]){
+        resFest[0].values.forEach(row=>{
+          const f = descomponerFechaShifter(row[0]);
+          if(f) nuevosFeriados.add(`${f.y}-${String(f.m0+1).padStart(2,'0')}-${String(f.d).padStart(2,'0')}`);
+        });
+      }
+    }catch(e){ /* tabla ausente: no es grave */ }
+
+    db.close();
+
+    // A partir de acá sí pisamos lo que había guardado.
+    personas = nuevasPersonas;
+    if(nombreCalendarioImportado) config.nombreCalendarioShifter = nombreCalendarioImportado;
+
+    feriados = [...nuevosFeriados].sort();
+    guardarFeriados();
+
+    // Se borran los meses generados previamente y se guardan los que trae el archivo.
+    Object.keys(localStorage)
+      .filter(k=>k.startsWith(LS_SCHEDULE_PREFIX))
+      .forEach(k=>localStorage.removeItem(k));
+
+    const clavesMeses = Object.keys(schedulesPorMes).sort();
+    clavesMeses.forEach(key=>{
+      const sched = schedulesPorMes[key];
+      const assignedCount = {};
+      personas.forEach(p=>assignedCount[p.id]=0);
+      Object.values(sched.days).forEach(ids=>{
+        new Set(ids).forEach(id=>{ if(assignedCount[id]!==undefined) assignedCount[id]++; });
+      });
+      sched.assignedCount = assignedCount;
+      sched.warnings = [];
+      sched.exclusiones = {};
+      localStorage.setItem(LS_SCHEDULE_PREFIX+sched.anio+'_'+sched.mes, JSON.stringify(sched));
+    });
+
+    currentSchedule = null;
+    if(clavesMeses.length){
+      const ultimo = schedulesPorMes[clavesMeses[clavesMeses.length-1]];
+      config.anio = ultimo.anio;
+      config.mes = ultimo.mes;
+      calViewAnio = ultimo.anio;
+      calViewMes = ultimo.mes;
+    }
+    saveAll();
+
+    renderPersonas();
+    refreshGenerarHint();
+    renderFeriados();
+    renderCalendar();
+
+    const partesResumen = [`${nuevasPersonas.length} persona(s)`];
+    if(clavesMeses.length) partesResumen.push(`${clavesMeses.length} mes(es) de turnos`);
+    if(nuevosFeriados.size) partesResumen.push(`${nuevosFeriados.size} feriado(s)`);
+    alert('Importación lista: se cargaron ' + partesResumen.join(', ') + '.\n\n'
+      + 'Ojo: el formato de Shifter no guarda el máximo de días, los días fijos ni el descanso mínimo de cada persona, así que quedaron con valores por defecto. Revisalos arriba, en la lista de personas.');
+  }catch(err){
+    console.error(err);
+    alert('No se pudo importar el archivo. ¿Seguro que es un backup de Shifter (.Shifter)?\n' + (err && err.message ? err.message : err));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+}
+
+// ---------- Importar desde Groups (experimental) ----------
+// ADVERTENCIA: esto es una apuesta educada, no un importador probado contra
+// un archivo real de Groups. Asume que, al ser del mismo desarrollador que
+// Shifter, reutiliza una estructura parecida (una tabla de personas con
+// id/texto/color, y una tabla de días con "fecha" + columnas turno1, turno2,
+// turno3... una por cada turno posible ese día). La diferencia clave con el
+// importador de Shifter es que NO asume que son exactamente 2: lee todas las
+// columnas que matcheen el patrón turnoN que existan en la tabla, así cubre
+// 2, 3, 4 o más sin tocar el código. Si el esquema real es distinto (por
+// ejemplo, una tabla separada con una fila por turno en vez de columnas),
+// esto va a fallar o traer 0 turnos, y ahí sí vamos a necesitar el
+// diagnóstico de más abajo para verlo de verdad.
+
+function buscarTablaPersonasGroups(db){
+  // Intenta primero el nombre que usa Shifter, por si Groups lo heredó tal cual.
+  const candidatos = ['tablaTurnos', 'personas', 'tablaPersonas', 'workers', 'people'];
+  for(const nombre of candidatos){
+    try{
+      const r = db.exec(`SELECT * FROM "${nombre}" LIMIT 1`);
+      if(r[0]) return nombre;
+    }catch(e){ /* la tabla no existe, seguimos probando */ }
+  }
+  // Si ninguno de los nombres conocidos existe, buscamos cualquier tabla que
+  // tenga pinta de "lista de personas": una columna tipo texto/nombre y otra
+  // de color.
+  const resTablas = db.exec("SELECT name FROM sqlite_master WHERE type='table'");
+  if(!resTablas[0]) return null;
+  for(const [nombre] of resTablas[0].values){
+    try{
+      const info = db.exec(`PRAGMA table_info("${nombre}")`);
+      if(!info[0]) continue;
+      const cols = info[0].values.map(v=>String(v[1]).toLowerCase());
+      const tieneTexto = cols.some(c=>/texto|nombre|name|title/.test(c));
+      const tieneColor = cols.some(c=>/color/.test(c));
+      if(tieneTexto && tieneColor) return nombre;
+    }catch(e){}
+  }
+  return null;
+}
+
+function buscarTablaDiasGroups(db){
+  const resTablas = db.exec("SELECT name FROM sqlite_master WHERE type='table'");
+  if(!resTablas[0]) return null;
+  let mejor = null, mejorCantTurnos = 0;
+  for(const [nombre] of resTablas[0].values){
+    try{
+      const info = db.exec(`PRAGMA table_info("${nombre}")`);
+      if(!info[0]) continue;
+      const cols = info[0].values.map(v=>String(v[1]));
+      const tieneFecha = cols.some(c=>/^fecha$/i.test(c));
+      const colsTurno = cols.filter(c=>/^turno\d+$/i.test(c));
+      if(tieneFecha && colsTurno.length > mejorCantTurnos){
+        mejor = { nombre, colsTurno: colsTurno.sort() };
+        mejorCantTurnos = colsTurno.length;
+      }
+    }catch(e){}
+  }
+  return mejor;
+}
+
+document.getElementById('btn-importar-groups').addEventListener('click', ()=>{
+  document.getElementById('input-importar-groups').value = '';
+  document.getElementById('input-importar-groups').click();
+});
+document.getElementById('input-importar-groups').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  await importarDesdeGroups(file);
+});
+
+async function importarDesdeGroups(file){
+  if(!confirm('Esto es EXPERIMENTAL: todavía no está probado contra un archivo real de Groups.\n\nSi funciona, va a REEMPLAZAR las personas, los turnos generados y los feriados guardados en este dispositivo por los del archivo elegido.\n\n¿Continuar de todas formas?')){
+    return;
+  }
+  const btn = document.getElementById('btn-importar-groups');
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Importando...';
+  try{
+    const buffer = await file.arrayBuffer();
+    const SQL = await cargarSqlJs();
+    const db = new SQL.Database(new Uint8Array(buffer));
+
+    const tablaPersonas = buscarTablaPersonasGroups(db);
+    if(!tablaPersonas){
+      db.close();
+      alert('No encontré una tabla de personas reconocible en este archivo.\n\nUsá el botón "Analizar archivo de Groups (diagnóstico)" y pegame el resultado para ajustar el importador.');
+      return;
+    }
+
+    const tablaDias = buscarTablaDiasGroups(db);
+    if(!tablaDias){
+      db.close();
+      alert('Encontré personas (tabla "' + tablaPersonas + '") pero no una tabla de días con columnas turno1, turno2, etc.\n\nUsá "Analizar archivo de Groups (diagnóstico)" y pegame el resultado.');
+      return;
+    }
+
+    // Personas
+    const infoP = db.exec(`PRAGMA table_info("${tablaPersonas}")`)[0];
+    const cols = infoP.values.map(v=>v[1]);
+    const colId = cols.find(c=>/^_?id$/i.test(c)) || cols[0];
+    const colTexto = cols.find(c=>/texto|nombre|name|title/i.test(c));
+    const colColor = cols.find(c=>/color/i.test(c));
+
+    const idMap = {};
+    const nuevasPersonas = [];
+    const resP = db.exec(`SELECT "${colId}", "${colTexto}", "${colColor}" FROM "${tablaPersonas}" ORDER BY "${colId}"`);
+    if(resP[0]){
+      resP[0].values.forEach(row=>{
+        const [gId, texto, color] = row;
+        const nuevoId = uid();
+        idMap[gId] = nuevoId;
+        nuevasPersonas.push({
+          id: nuevoId,
+          nombre: (texto || 'Sin nombre').trim(),
+          maxDias: 31, diasFijos: {}, maxSeguidos: null, minDescanso: null,
+          color: androidIntAColorHex(color) || COLOR_DEFAULT
+        });
+      });
+    }
+    if(nuevasPersonas.length === 0){
+      db.close();
+      alert('La tabla "' + tablaPersonas + '" está vacía; no hay nada para importar.');
+      return;
+    }
+
+    // Días/turnos: usa TODAS las columnas turnoN que haya, no solo 2.
+    const schedulesPorMes = {};
+    const colsTurnoSQL = tablaDias.colsTurno.map(c=>`"${c}"`).join(', ');
+    const resDias = db.exec(`SELECT fecha, ${colsTurnoSQL} FROM "${tablaDias.nombre}"`);
+    if(resDias[0]){
+      resDias[0].values.forEach(row=>{
+        const fecha = row[0];
+        const turnos = row.slice(1);
+        const f = descomponerFechaShifter(fecha); // asume mismo formato de fecha que Shifter
+        if(!f) return;
+        const iso = `${f.y}-${String(f.m0+1).padStart(2,'0')}-${String(f.d).padStart(2,'0')}`;
+        const key = `${f.y}_${f.m0}`;
+        if(!schedulesPorMes[key]) schedulesPorMes[key] = { anio: f.y, mes: f.m0, days: {} };
+        const ids = [];
+        turnos.forEach(t=>{ if(t && idMap[t]) ids.push(idMap[t]); });
+        if(ids.length) schedulesPorMes[key].days[iso] = ordenarIdsSegunPersonas(ids, personas);
+      });
+    }
+
+    // Feriados (si existe una tabla reconocible; si no, se ignora sin frenar el resto)
+    const nuevosFeriados = new Set();
+    try{
+      const resFest = db.exec('SELECT fecha FROM festivos');
+      if(resFest[0]){
+        resFest[0].values.forEach(row=>{
+          const f = descomponerFechaShifter(row[0]);
+          if(f) nuevosFeriados.add(`${f.y}-${String(f.m0+1).padStart(2,'0')}-${String(f.d).padStart(2,'0')}`);
+        });
+      }
+    }catch(e){}
+
+    db.close();
+
+    personas = nuevasPersonas;
+    feriados = [...nuevosFeriados].sort();
+    guardarFeriados();
+
+    Object.keys(localStorage)
+      .filter(k=>k.startsWith(LS_SCHEDULE_PREFIX))
+      .forEach(k=>localStorage.removeItem(k));
+
+    const clavesMeses = Object.keys(schedulesPorMes).sort();
+    clavesMeses.forEach(key=>{
+      const sched = schedulesPorMes[key];
+      const assignedCount = {};
+      personas.forEach(p=>assignedCount[p.id]=0);
+      Object.values(sched.days).forEach(ids=>{
+        new Set(ids).forEach(id=>{ if(assignedCount[id]!==undefined) assignedCount[id]++; });
+      });
+      sched.assignedCount = assignedCount;
+      sched.warnings = [];
+      sched.exclusiones = {};
+      localStorage.setItem(LS_SCHEDULE_PREFIX+sched.anio+'_'+sched.mes, JSON.stringify(sched));
+    });
+
+    currentSchedule = null;
+    if(clavesMeses.length){
+      const ultimo = schedulesPorMes[clavesMeses[clavesMeses.length-1]];
+      config.anio = ultimo.anio; config.mes = ultimo.mes;
+      calViewAnio = ultimo.anio; calViewMes = ultimo.mes;
+    }
+    saveAll();
+
+    renderPersonas();
+    refreshGenerarHint();
+    renderFeriados();
+    renderCalendar();
+
+    const partesResumen = [`${nuevasPersonas.length} persona(s)`];
+    if(clavesMeses.length) partesResumen.push(`${clavesMeses.length} mes(es) de turnos`);
+    if(nuevosFeriados.size) partesResumen.push(`${nuevosFeriados.size} feriado(s)`);
+    alert('Importación experimental terminada: ' + partesResumen.join(', ') + '.\n\n'
+      + 'Tabla de personas usada: "' + tablaPersonas + '". Tabla de días: "' + tablaDias.nombre + '" con columnas: ' + tablaDias.colsTurno.join(', ') + '.\n\n'
+      + 'Revisá con cuidado que los turnos por día coincidan con lo que ves en Groups (fechas, cantidad de turnos por día y qué persona quedó en cada uno). Si algo no coincide, contámelo con detalle para ajustar el importador.');
+  }catch(err){
+    console.error(err);
+    alert('No se pudo importar el archivo.\n' + (err && err.message ? err.message : err) + '\n\nUsá "Analizar archivo de Groups (diagnóstico)" y pegame el resultado para ajustar esto.');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+}
+
+// ---------- Analizar archivo de Groups (diagnóstico de esquema) ----------
+// Esto NO importa nada. Solo abre el archivo, lee qué tablas y columnas
+// tiene, y arma un texto con esa info + un puñado de filas de muestra
+// para poder diseñar el importador real a partir de datos concretos,
+// en lugar de adivinar el esquema.
+document.getElementById('btn-analizar-groups').addEventListener('click', ()=>{
+  document.getElementById('input-analizar-groups').value = '';
+  document.getElementById('input-analizar-groups').click();
+});
+document.getElementById('input-analizar-groups').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const btn = document.getElementById('btn-analizar-groups');
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Analizando...';
+  try{
+    const buffer = await file.arrayBuffer();
+    const SQL = await cargarSqlJs();
+    const db = new SQL.Database(new Uint8Array(buffer));
+
+    const lineas = [];
+    lineas.push('=== DIAGNÓSTICO GROUPS ===');
+    lineas.push('Archivo: ' + file.name + ' (' + file.size + ' bytes)');
+
+    try{
+      const uv = db.exec('PRAGMA user_version');
+      lineas.push('user_version: ' + (uv[0] ? uv[0].values[0][0] : '?'));
+    }catch(e){}
+
+    const resTablas = db.exec("SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name");
+    if(!resTablas[0]){
+      lineas.push('(No se encontraron tablas. ¿Seguro que es un archivo SQLite?)');
+    } else {
+      resTablas[0].values.forEach(([nombre, sqlCreate])=>{
+        lineas.push('');
+        lineas.push('--- TABLA: ' + nombre + ' ---');
+        lineas.push(sqlCreate || '(sin CREATE TABLE, posible tabla virtual)');
+
+        let cantidad = null;
+        try{
+          const c = db.exec('SELECT COUNT(*) FROM "' + nombre + '"');
+          cantidad = c[0] ? c[0].values[0][0] : null;
+        }catch(e){}
+        lineas.push('Filas: ' + (cantidad===null?'(no se pudo contar)':cantidad));
+
+        try{
+          const muestra = db.exec('SELECT * FROM "' + nombre + '" LIMIT 5');
+          if(muestra[0]){
+            lineas.push('Columnas: ' + muestra[0].columns.join(' | '));
+            muestra[0].values.forEach(fila=>{
+              const filaTexto = fila.map(v=>{
+                if(v === null) return 'NULL';
+                if(typeof v === 'string' && v.length > 60) return v.slice(0,60)+'…';
+                if(v instanceof Uint8Array) return '[BLOB ' + v.length + ' bytes]';
+                return String(v);
+              }).join(' | ');
+              lineas.push('  ' + filaTexto);
+            });
+          }
+        }catch(e){
+          lineas.push('(no se pudo leer muestra: ' + e.message + ')');
+        }
+      });
+    }
+
+    db.close();
+    const texto = lineas.join('\n');
+
+    let copiado = false;
+    try{
+      await navigator.clipboard.writeText(texto);
+      copiado = true;
+    }catch(e){ /* portapapeles no disponible, seguimos igual */ }
+
+    // Ventana con el texto seleccionable, por si el portapapeles falla
+    // o querés revisarlo antes de pegarlo.
+    const win = window.open('', '_blank');
+    if(win){
+      win.document.write('<pre style="white-space:pre-wrap; font-family:monospace; font-size:12px; padding:12px;">'
+        + texto.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>');
+    } else {
+      alert(texto.slice(0, 1500) + (texto.length>1500 ? '\n\n[...] (se cortó, revisá el portapapeles)' : ''));
+    }
+
+    alert(copiado
+      ? 'Diagnóstico copiado al portapapeles. Pegalo en el chat.'
+      : 'No se pudo copiar automáticamente. Se abrió una pestaña con el texto: copialo de ahí y pegalo en el chat.');
+  }catch(err){
+    console.error(err);
+    alert('No se pudo abrir el archivo como base SQLite.\n' + (err && err.message ? err.message : err));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+});
+
+// ---------- Init ----------
+renderPersonas();
+initGenerarForm();
+refreshGenerarHint();
+renderFeriados();
+renderOtrosCalendarios();
+renderCalendar();
+</script>
+</body>
+</html>
