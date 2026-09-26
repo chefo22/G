@@ -1383,6 +1383,21 @@ function repararCronologicamente(anio, mes, personasList, personasPorDia, exclus
     days[iso] = elegidos;
     const elegidosSet = new Set(elegidos);
 
+    // Foto de racha/descanso ANTES de contar el día de hoy: son los valores
+    // que realmente se usaron para decidir quién era elegible hoy, y son
+    // los que hay que mostrar en el motivo del cartel. Si se usaran los
+    // valores ya actualizados (después del forEach de abajo), el motivo
+    // podía "desaparecer" justo el día en que alguien deja de ser elegible
+    // (p.ej. el día exacto en que se cumple el descanso mínimo, ese mismo
+    // día ya cuenta y el motivo deja de verse aunque siga siendo la razón
+    // real del hueco).
+    const rachaAntes = {};
+    const descansoAntes = {};
+    personasList.forEach(p=>{
+      rachaAntes[p.id] = rachaActual[p.id];
+      descansoAntes[p.id] = descansoActual[p.id];
+    });
+
     personasList.forEach(p=>{
       if(elegidosSet.has(p.id)){
         rachaActual[p.id] = (lastDayIdx[p.id] === d-1) ? rachaActual[p.id]+1 : 1;
@@ -1404,10 +1419,10 @@ function repararCronologicamente(anio, mes, personasList, personasPorDia, exclus
           detalles.push(`${p.nombre} no puede ese día`);
         } else if(assignedCount[p.id] >= p.maxDias){
           detalles.push(`${p.nombre} ya llegó a su máximo de ${p.maxDias} día(s) en el mes`);
-        } else if(rachaActual[p.id] > 0 && p.maxSeguidos && rachaActual[p.id] >= p.maxSeguidos){
-          detalles.push(`${p.nombre} lleva ${rachaActual[p.id]} día(s) seguidos, llegó al límite de días seguidos (${p.maxSeguidos})`);
-        } else if(rachaActual[p.id] === 0 && p.minDescanso && descansoActual[p.id] < p.minDescanso){
-          detalles.push(`${p.nombre} descansa (necesita ${p.minDescanso} día(s) de descanso, lleva ${descansoActual[p.id]})`);
+        } else if(rachaAntes[p.id] > 0 && p.maxSeguidos && rachaAntes[p.id] >= p.maxSeguidos){
+          detalles.push(`${p.nombre} lleva ${rachaAntes[p.id]} día(s) seguidos, llegó al límite de días seguidos (${p.maxSeguidos})`);
+        } else if(rachaAntes[p.id] === 0 && p.minDescanso && descansoAntes[p.id] < p.minDescanso){
+          detalles.push(`${p.nombre} descansa (necesita ${p.minDescanso} día(s) de descanso, lleva ${descansoAntes[p.id]})`);
         }
       });
       let msg = `${d} de ${MESES[mes]}: faltan ${personasPorDia - elegidos.length} persona(s) disponible(s).`;
