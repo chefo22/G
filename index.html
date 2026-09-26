@@ -415,6 +415,10 @@
       <input type="file" id="input-analizar-groups" accept=".db,.sqlite,application/octet-stream,*/*" style="display:none;">
     </div>
     <div class="btn-row" id="cal-actions" style="display:none;">
+      <label class="sub-hint" style="display:flex; align-items:center; gap:6px; margin:2px 0 4px;">
+        <input type="checkbox" id="chk-exportar-avisos" checked>
+        Incluir avisos de días incompletos en la imagen
+      </label>
       <button class="btn btn-ghost btn-full" id="btn-exportar-imagen">Exportar como imagen</button>
       <button class="btn btn-ghost btn-full" id="btn-copiar">Copiar como texto</button>
       <button class="btn btn-accent btn-full" id="btn-exportar-shifter">Exportar a Shifter (.Shifter)</button>
@@ -2625,7 +2629,12 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
     // Oculta los botones de navegación de mes, el aviso de "sin turnos" y
     // los puntitos de otros calendarios: la imagen exportada solo debe
     // mostrar los turnos de trabajo de este calendario.
-    const aOcultar = nodo.querySelectorAll('.btn-nav-mes, .btn-hoy, #cal-sin-turnos-hint, .otros-dots');
+    const selectoresAOcultar = ['.btn-nav-mes', '.btn-hoy', '#cal-sin-turnos-hint', '.otros-dots'];
+    // Si el usuario destildó la opción, los avisos de días incompletos
+    // (faltan personas disponibles) tampoco salen en la imagen.
+    const incluirAvisos = document.getElementById('chk-exportar-avisos').checked;
+    if(!incluirAvisos) selectoresAOcultar.push('#cal-warnings');
+    const aOcultar = nodo.querySelectorAll(selectoresAOcultar.join(', '));
     const displayPrevio = [];
     aOcultar.forEach(el=>{ displayPrevio.push(el.style.display); el.style.display='none'; });
 
