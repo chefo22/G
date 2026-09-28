@@ -159,6 +159,20 @@
     display:flex; align-items:center; justify-content:center;
   }
   .cal-nav .btn-hoy{flex-shrink:0;}
+  .cal-nav .btn-lock{
+    width:36px; height:36px; padding:0; flex-shrink:0; font-size:1rem; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cal-nav .btn-lock.activo{background:var(--teal); color:#fff;}
+  #cal-bloqueado-aviso{margin:6px 0 8px; font-size:.78rem;}
+  .cal-grid.bloqueado .cal-cell:not(.empty-cell){cursor:not-allowed;}
+  #toast-bloqueo{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
+    background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:100px;
+    font-size:.82rem; z-index:9999; max-width:90vw; text-align:center;
+    opacity:0; pointer-events:none; transition:opacity .2s;
+  }
+  #toast-bloqueo.visible{opacity:1;}
 
   .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
   .chip{
@@ -264,7 +278,7 @@
 
   @media print{
     header, nav.tabs, .btn-row, .card:not(.print-cal){display:none !important;}
-    .cal-nav .btn-nav-mes, .cal-nav .btn-hoy, #cal-sin-turnos-hint{display:none !important;}
+    .cal-nav .btn-nav-mes, .cal-nav .btn-hoy, .cal-nav .btn-lock, #cal-bloqueado-aviso, #cal-sin-turnos-hint{display:none !important;}
     body{padding:0;}
   }
 </style>
@@ -388,7 +402,9 @@
         <h3 id="cal-titulo">Sin turnos generados</h3>
         <button class="btn btn-ghost btn-nav-mes" id="btn-mes-siguiente" aria-label="Mes siguiente" title="Mes siguiente">›</button>
         <button class="btn btn-ghost btn-sm btn-hoy" id="btn-mes-hoy" title="Ir al mes actual">Hoy</button>
+        <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes" type="button" style="display:none;" aria-pressed="false" title="Bloquear este mes">🔓</button>
       </div>
+      <p class="sub-hint" id="cal-bloqueado-aviso" style="display:none;">🔒 Mes bloqueado: no se puede editar ni volver a generar. Tocá el candado para desbloquearlo.</p>
       <div class="cal-grid" id="cal-dow-row"></div>
       <div class="cal-grid" id="cal-grid"></div>
       <div class="warnings" id="cal-warnings"></div>
@@ -471,6 +487,8 @@
 
 </main>
 
+<div id="toast-bloqueo" role="status" aria-live="polite"></div>
+
 <dialog id="dialog-dia">
   <div class="dialog-body">
     <h3 id="dialog-fecha-titulo">Día</h3>
@@ -507,6 +525,7 @@
       <input type="checkbox" id="pcc-dialog-turno" style="width:auto;">
       Turno de trabajo asignado
     </label>
+    <p class="sub-hint" id="pcc-dialog-bloqueo" style="display:none; margin:4px 0 0;">🔒 Mes bloqueado: el turno de trabajo no se puede cambiar (los otros calendarios sí).</p>
     <div id="pcc-dialog-calendarios" style="margin-top:12px;"></div>
     <div id="pcc-dialog-leyenda"></div>
     <div class="btn-row">
@@ -525,6 +544,53 @@ const LS_SCHEDULE_PREFIX = 'turnos_schedule_';
 const LS_EXCLUSIONES_PREFIX = 'turnos_exclusiones_';
 const LS_FERIADOS = 'turnos_feriados';
 const LS_CALENDARIOS_EXTRA = 'turnos_calendarios_extra';
+
+// ---------- Meses bloqueados ----------
+// Lista de meses ('anio_mes0') que no se pueden modificar. Se guarda aparte de
+// los turnos para que regenerar, editar o importar no pueda borrar la marca.
+const LS_MESES_BLOQUEADOS = 'turnos_meses_bloqueados';
+function leerMesesBloqueados(){
+  try{
+    const a = JSON.parse(localStorage.getItem(LS_MESES_BLOQUEADOS) || '[]');
+    return Array.isArray(a) ? a : [];
+  }catch(e){ return []; }
+}
+function mesBloqueado(anio, mes){ return leerMesesBloqueados().includes(anio + '_' + mes); }
+function setMesBloqueado(anio, mes, valor){
+  const set = new Set(leerMesesBloqueados());
+  const k = anio + '_' + mes;
+  if(valor) set.add(k); else set.delete(k);
+  localStorage.setItem(LS_MESES_BLOQUEADOS, JSON.stringify([...set]));
+}
+let _toastBloqueoTimer = null;
+function avisoBreveBloqueo(texto){
+  const t = document.getElementById('toast-bloqueo');
+  if(!t) return;
+  t.textContent = texto;
+  t.classList.add('visible');
+  clearTimeout(_toastBloqueoTimer);
+  _toastBloqueoTimer = setTimeout(()=> t.classList.remove('visible'), 2400);
+}
+function nombresMesesBloqueadosConTurnos(){
+  return leerMesesBloqueados()
+    .filter(k=> localStorage.getItem(LS_SCHEDULE_PREFIX + k) !== null)
+    .map(k=>{ const [a,m] = k.split('_'); return `${MESES[parseInt(m,10)]} ${a}`; });
+}
+function actualizarUiBloqueo(){
+  const btn = document.getElementById('btn-bloquear-mes');
+  const aviso = document.getElementById('cal-bloqueado-aviso');
+  const grid = document.getElementById('cal-grid');
+  const hayMes = !!currentSchedule;
+  const bloqueado = hayMes && mesBloqueado(calViewAnio, calViewMes);
+  btn.style.display = hayMes ? 'flex' : 'none';
+  btn.textContent = bloqueado ? '🔒' : '🔓';
+  btn.classList.toggle('activo', bloqueado);
+  btn.title = bloqueado ? 'Mes bloqueado: tocá para desbloquear' : 'Bloquear este mes';
+  btn.setAttribute('aria-label', btn.title);
+  btn.setAttribute('aria-pressed', bloqueado ? 'true' : 'false');
+  aviso.style.display = bloqueado ? 'block' : 'none';
+  grid.classList.toggle('bloqueado', bloqueado);
+}
 
 let personas = JSON.parse(localStorage.getItem(LS_PERSONAS) || '[]');
 // Blindaje: si por algún motivo quedaron dos registros con el mismo id
@@ -1046,6 +1112,10 @@ document.getElementById('btn-generar').addEventListener('click', ()=>{
   const mes = parseInt(document.getElementById('g-mes').value,10);
   const anio = parseInt(document.getElementById('g-anio').value,10);
   const personasPorDia = parseInt(document.getElementById('g-personas-dia').value,10) || 1;
+  if(mesBloqueado(anio, mes) && localStorage.getItem(LS_SCHEDULE_PREFIX+anio+'_'+mes) !== null){
+    alert(`${MESES[mes]} ${anio} está bloqueado, así que no se puede volver a generar.\n\nSi querés regenerarlo, primero desbloquealo con el candado de la pestaña Calendario.`);
+    return;
+  }
   config = { mes, anio, personasPorDia };
   saveAll();
   guardarExclusionesDelMesSeleccionado();
@@ -1089,6 +1159,11 @@ document.getElementById('btn-mes-siguiente').addEventListener('click', ()=>{
 document.getElementById('btn-mes-hoy').addEventListener('click', ()=>{
   const now = new Date();
   irAMesCalendario(now.getFullYear(), now.getMonth());
+});
+document.getElementById('btn-bloquear-mes').addEventListener('click', ()=>{
+  if(!currentSchedule || calViewAnio===null || calViewMes===null) return;
+  setMesBloqueado(calViewAnio, calViewMes, !mesBloqueado(calViewAnio, calViewMes));
+  actualizarUiBloqueo();
 });
 document.getElementById('btn-generar-este-mes').addEventListener('click', ()=>{
   document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
@@ -2134,6 +2209,9 @@ function abrirDialogoDiaPcc(iso, dia, weekday){
   const sched = obtenerOCrearScheduleParaPcc(pccAnio, pccMes);
   const asignado = new Set(sched.days[iso] || []).has(persona.id);
   document.getElementById('pcc-dialog-turno').checked = asignado;
+  const pccBloqueado = mesBloqueado(pccAnio, pccMes);
+  document.getElementById('pcc-dialog-turno').disabled = pccBloqueado;
+  document.getElementById('pcc-dialog-bloqueo').style.display = pccBloqueado ? 'block' : 'none';
 
   const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
   const cont = document.getElementById('pcc-dialog-calendarios');
@@ -2181,20 +2259,24 @@ document.getElementById('btn-guardar-dia-pcc').addEventListener('click', ()=>{
   const persona = personas.find(p=>p.id===pccPersonaId);
   if(!persona || !pccDialogFecha) return;
 
-  const sched = obtenerOCrearScheduleParaPcc(pccAnio, pccMes);
-  const marcado = document.getElementById('pcc-dialog-turno').checked;
-  const idsDelDia = new Set(sched.days[pccDialogFecha] || []);
-  if(marcado) idsDelDia.add(persona.id); else idsDelDia.delete(persona.id);
-  sched.days[pccDialogFecha] = ordenarIdsSegunPersonas([...idsDelDia], personas);
-  // Recalcula el total asignado por persona, igual que hace el diálogo del
-  // calendario de turnos, para que el resumen no quede desactualizado.
-  const assignedCount = {};
-  personas.forEach(p=>assignedCount[p.id]=0);
-  Object.values(sched.days).forEach(ids=>{
-    new Set(ids).forEach(id=>{ if(assignedCount[id]!==undefined) assignedCount[id]++; });
-  });
-  sched.assignedCount = assignedCount;
-  localStorage.setItem(LS_SCHEDULE_PREFIX+pccAnio+'_'+pccMes, JSON.stringify(sched));
+  // Si el mes está bloqueado, el turno de trabajo no se toca (solo los
+  // calendarios extra de más abajo).
+  if(!mesBloqueado(pccAnio, pccMes)){
+    const sched = obtenerOCrearScheduleParaPcc(pccAnio, pccMes);
+    const marcado = document.getElementById('pcc-dialog-turno').checked;
+    const idsDelDia = new Set(sched.days[pccDialogFecha] || []);
+    if(marcado) idsDelDia.add(persona.id); else idsDelDia.delete(persona.id);
+    sched.days[pccDialogFecha] = ordenarIdsSegunPersonas([...idsDelDia], personas);
+    // Recalcula el total asignado por persona, igual que hace el diálogo del
+    // calendario de turnos, para que el resumen no quede desactualizado.
+    const assignedCount = {};
+    personas.forEach(p=>assignedCount[p.id]=0);
+    Object.values(sched.days).forEach(ids=>{
+      new Set(ids).forEach(id=>{ if(assignedCount[id]!==undefined) assignedCount[id]++; });
+    });
+    sched.assignedCount = assignedCount;
+    localStorage.setItem(LS_SCHEDULE_PREFIX+pccAnio+'_'+pccMes, JSON.stringify(sched));
+  }
 
   document.querySelectorAll('#pcc-dialog-calendarios .pcc-dialog-chip').forEach(chip=>{
     const cal = calendariosExtra.find(c=>c.id===chip.dataset.calId);
@@ -2462,9 +2544,11 @@ function renderCalendar(){
     resumenCard.style.display='none';
     actions.style.display='none';
     if(sinTurnosHint) sinTurnosHint.style.display='block';
+    actualizarUiBloqueo();
     return;
   }
   if(sinTurnosHint) sinTurnosHint.style.display='none';
+  actualizarUiBloqueo();
 
   const {anio, mes, days, warnings, assignedCount} = currentSchedule;
   titulo.textContent = `${MESES[mes]} ${anio}`;
@@ -2545,6 +2629,10 @@ function renderCalendar(){
 // ---------- Edición manual de un día ----------
 let dialogFecha = null;
 function openDialog(iso, dia, weekday){
+  if(mesBloqueado(calViewAnio, calViewMes)){
+    avisoBreveBloqueo('🔒 Mes bloqueado: desbloquealo con el candado para editar.');
+    return;
+  }
   dialogFecha = iso;
   // Si todavía no hay turnos generados/guardados para este mes (por ejemplo,
   // el usuario quiere cargar los turnos a mano sin usar el generador
@@ -2583,6 +2671,11 @@ function openDialog(iso, dia, weekday){
 }
 document.getElementById('btn-cerrar-dialog').addEventListener('click', ()=> document.getElementById('dialog-dia').close());
 document.getElementById('btn-guardar-dia').addEventListener('click', ()=>{
+  if(mesBloqueado(currentSchedule.anio, currentSchedule.mes)){
+    document.getElementById('dialog-dia').close();
+    avisoBreveBloqueo('🔒 Mes bloqueado: no se guardó ningún cambio.');
+    return;
+  }
   const checked = [...new Set([...document.querySelectorAll('#dialog-personas-list input:checked')].map(el=>el.value))];
   currentSchedule.days[dialogFecha] = ordenarIdsSegunPersonas(checked, personas);
   // recalcular resumen
@@ -2629,7 +2722,7 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
     // Oculta los botones de navegación de mes, el aviso de "sin turnos" y
     // los puntitos de otros calendarios: la imagen exportada solo debe
     // mostrar los turnos de trabajo de este calendario.
-    const selectoresAOcultar = ['.btn-nav-mes', '.btn-hoy', '#cal-sin-turnos-hint', '.otros-dots'];
+    const selectoresAOcultar = ['.btn-nav-mes', '.btn-hoy', '.btn-lock', '#cal-bloqueado-aviso', '#cal-sin-turnos-hint', '.otros-dots'];
     // Si el usuario destildó la opción, los avisos de días incompletos
     // (faltan personas disponibles) tampoco salen en la imagen.
     const incluirAvisos = document.getElementById('chk-exportar-avisos').checked;
@@ -3326,6 +3419,11 @@ document.getElementById('input-importar-shifter').addEventListener('change', asy
 });
 
 async function importarDesdeShifter(file){
+  const bloqueadosImp = nombresMesesBloqueadosConTurnos();
+  if(bloqueadosImp.length){
+    alert('No se puede importar: hay meses bloqueados (' + bloqueadosImp.join(', ') + ').\n\nImportar reemplaza todos los turnos. Desbloqueá esos meses primero desde el candado del calendario.');
+    return;
+  }
   if(!confirm('Importar va a REEMPLAZAR las personas, los turnos generados y los feriados guardados en este dispositivo por los del archivo elegido. ¿Continuar?')){
     return;
   }
@@ -3529,6 +3627,11 @@ document.getElementById('input-importar-groups').addEventListener('change', asyn
 });
 
 async function importarDesdeGroups(file){
+  const bloqueadosImp = nombresMesesBloqueadosConTurnos();
+  if(bloqueadosImp.length){
+    alert('No se puede importar: hay meses bloqueados (' + bloqueadosImp.join(', ') + ').\n\nImportar reemplaza todos los turnos. Desbloqueá esos meses primero desde el candado del calendario.');
+    return;
+  }
   if(!confirm('Esto es EXPERIMENTAL: todavía no está probado contra un archivo real de Groups.\n\nSi funciona, va a REEMPLAZAR las personas, los turnos generados y los feriados guardados en este dispositivo por los del archivo elegido.\n\n¿Continuar de todas formas?')){
     return;
   }
