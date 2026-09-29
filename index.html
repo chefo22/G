@@ -116,6 +116,23 @@
   .color-preview-name{
     display:inline-block; padding:5px 12px; border-radius:100px; font-size:.82rem; font-weight:600;
   }
+  .color-btn{
+    display:flex; align-items:center; gap:8px; padding:6px 12px 6px 8px; min-height:44px;
+    border:1px solid var(--line); border-radius:9px; background:var(--paper); color:var(--ink);
+    font-family:'Inter'; font-size:.8rem; cursor:pointer; text-align:left; line-height:1.2;
+  }
+  .color-btn .sw{width:28px; height:28px; border-radius:50%; border:1px solid var(--line); flex-shrink:0;}
+  .color-btn small{display:block; color:var(--ink-soft); font-size:.66rem; text-transform:uppercase; letter-spacing:.04em;}
+  .color-btn b{font-family:'JetBrains Mono'; font-weight:600; font-size:.78rem;}
+  #cw-wheel{display:block; width:100%; max-width:260px; aspect-ratio:1; margin:6px auto 4px; touch-action:none; cursor:crosshair; border-radius:50%;}
+  #cw-val{
+    -webkit-appearance:none; appearance:none; width:100%; height:22px; border-radius:11px; padding:0;
+    border:1px solid var(--line); outline-offset:3px;
+  }
+  #cw-val::-webkit-slider-thumb{-webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:#fff; border:3px solid #333; box-shadow:0 0 0 1px #fff;}
+  #cw-val::-moz-range-thumb{width:22px; height:22px; border-radius:50%; background:#fff; border:3px solid #333;}
+  #cw-texto{font-family:'JetBrains Mono';}
+  .cw-fila{display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;}
   .persona-color-dot{width:10px; height:10px; border-radius:50%; flex-shrink:0; display:inline-block;}
 
   .dias-semana{display:flex; gap:6px; flex-wrap:wrap;}
@@ -255,7 +272,7 @@
   .cal-cell .name{
     font-size:.74rem; background:var(--teal-dim); color:var(--teal); border-radius:5px;
     padding:2px 3px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    max-width:100%; display:block;
+    max-width:100%; display:block; text-align:center;
   }
 
   dialog{
@@ -354,9 +371,18 @@
           <input type="number" id="p-min-descanso" min="0" placeholder="Sin mínimo">
         </div>
       </div>
-      <label for="p-color">Color</label>
-      <div class="color-editor">
-        <input type="color" id="p-color" value="#2F8F82">
+      <label>Colores del turno</label>
+      <input type="hidden" id="p-color" value="#2F8F82">
+      <input type="hidden" id="p-color-texto" value="">
+      <div class="color-editor" style="flex-wrap:wrap;">
+        <button type="button" class="color-btn" id="btn-p-color-fondo" title="Elegir color de fondo">
+          <span class="sw" id="sw-p-fondo"></span>
+          <span><small>Fondo</small><b id="lbl-p-fondo">#2F8F82</b></span>
+        </button>
+        <button type="button" class="color-btn" id="btn-p-color-texto" title="Elegir color del texto">
+          <span class="sw" id="sw-p-texto"></span>
+          <span><small>Texto</small><b id="lbl-p-texto">Auto</b></span>
+        </button>
         <div class="color-preview" id="p-color-preview">
           <span class="color-preview-name" id="p-color-preview-name">Nombre</span>
         </div>
@@ -488,6 +514,28 @@
 </main>
 
 <div id="toast-bloqueo" role="status" aria-live="polite"></div>
+
+<dialog id="dialog-color">
+  <div class="dialog-body">
+    <h3 id="cw-titulo">Elegir color</h3>
+    <canvas id="cw-wheel" width="320" height="320" aria-label="Círculo cromático: tocá o arrastrá para elegir el tono y la intensidad"></canvas>
+    <label for="cw-val">Brillo</label>
+    <input type="range" id="cw-val" min="0" max="100" value="100">
+    <label for="cw-texto">Código hexadecimal o nombre HTML</label>
+    <input type="text" id="cw-texto" list="cw-lista-nombres" placeholder="#2F8F82 o teal" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <datalist id="cw-lista-nombres"></datalist>
+    <p class="sub-hint" id="cw-error" style="display:none; color:var(--red); margin:4px 0 0;">No reconozco ese color. Probá con un código como #2F8F82 o un nombre como teal.</p>
+    <div class="cw-fila">
+      <span class="color-preview-name" id="cw-muestra">Nombre</span>
+      <span class="sub-hint" id="cw-contraste" style="margin:0;"></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-accent btn-full" id="cw-aceptar" type="button">Aceptar</button>
+      <button class="btn btn-ghost" id="cw-cancelar" type="button">Cancelar</button>
+    </div>
+    <button class="btn btn-ghost btn-sm btn-full" id="cw-auto" type="button" style="margin-top:8px; display:none;">Texto automático (según el fondo)</button>
+  </div>
+</dialog>
 
 <dialog id="dialog-dia">
   <div class="dialog-body">
@@ -782,15 +830,201 @@ function nivelPreferenciaDia(persona, weekday, iso, exclusiones){
   return nivel;
 }
 
+// ---------- Selector de color (círculo cromático + hex + nombre HTML) ----------
+const NOMBRES_COLORES_HTML = ['aliceblue','antiquewhite','aqua','aquamarine','azure','beige','bisque','black','blanchedalmond','blue','blueviolet','brown','burlywood','cadetblue','chartreuse','chocolate','coral','cornflowerblue','cornsilk','crimson','cyan','darkblue','darkcyan','darkgoldenrod','darkgray','darkgreen','darkgrey','darkkhaki','darkmagenta','darkolivegreen','darkorange','darkorchid','darkred','darksalmon','darkseagreen','darkslateblue','darkslategray','darkslategrey','darkturquoise','darkviolet','deeppink','deepskyblue','dimgray','dimgrey','dodgerblue','firebrick','floralwhite','forestgreen','fuchsia','gainsboro','ghostwhite','gold','goldenrod','gray','green','greenyellow','grey','honeydew','hotpink','indianred','indigo','ivory','khaki','lavender','lavenderblush','lawngreen','lemonchiffon','lightblue','lightcoral','lightcyan','lightgoldenrodyellow','lightgray','lightgreen','lightgrey','lightpink','lightsalmon','lightseagreen','lightskyblue','lightslategray','lightslategrey','lightsteelblue','lightyellow','lime','limegreen','linen','magenta','maroon','mediumaquamarine','mediumblue','mediumorchid','mediumpurple','mediumseagreen','mediumslateblue','mediumspringgreen','mediumturquoise','mediumvioletred','midnightblue','mintcream','mistyrose','moccasin','navajowhite','navy','oldlace','olive','olivedrab','orange','orangered','orchid','palegoldenrod','palegreen','paleturquoise','palevioletred','papayawhip','peachpuff','peru','pink','plum','powderblue','purple','rebeccapurple','red','rosybrown','royalblue','saddlebrown','salmon','sandybrown','seagreen','seashell','sienna','silver','skyblue','slateblue','slategray','slategrey','snow','springgreen','steelblue','tan','teal','thistle','tomato','turquoise','violet','wheat','white','whitesmoke','yellow','yellowgreen'];
+document.getElementById('cw-lista-nombres').innerHTML = NOMBRES_COLORES_HTML.map(n=>`<option value="${n}"></option>`).join('');
+
+const _ctxParseColor = document.createElement('canvas').getContext('2d');
+// Convierte lo que escribió la persona (#RRGGBB, #RGB, RRGGBB, RGB o un nombre
+// de color HTML como "teal") a "#RRGGBB" en mayúsculas. Devuelve null si no
+// se entiende. Para los nombres usa el propio navegador: si el texto no es un
+// color válido, asignarlo a fillStyle no cambia nada, así que se prueba con
+// dos valores de partida distintos para detectar el caso inválido.
+function parsearColorAHex(txt){
+  if(txt === null || txt === undefined) return null;
+  let t = String(txt).trim().toLowerCase();
+  if(!t) return null;
+  if(/^[0-9a-f]{3}$|^[0-9a-f]{6}$/.test(t)) t = '#' + t;
+  let m = t.match(/^#([0-9a-f]{3})$/);
+  if(m){ const c = m[1]; return ('#' + c[0]+c[0] + c[1]+c[1] + c[2]+c[2]).toUpperCase(); }
+  if(/^#[0-9a-f]{6}$/.test(t)) return t.toUpperCase();
+  if(t === 'currentcolor' || t === 'transparent') return null;
+  _ctxParseColor.fillStyle = '#000000'; _ctxParseColor.fillStyle = t; const a = _ctxParseColor.fillStyle;
+  _ctxParseColor.fillStyle = '#ffffff'; _ctxParseColor.fillStyle = t; const b = _ctxParseColor.fillStyle;
+  if(a !== b) return null;
+  if(/^#[0-9a-f]{6}$/i.test(a)) return a.toUpperCase();
+  m = a.match(/^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\s*\)$/);
+  if(m){
+    if(m[4] !== undefined && parseFloat(m[4]) < 1) return null;
+    return rgbToHex(+m[1], +m[2], +m[3]).toUpperCase();
+  }
+  return null;
+}
+function hsvARgb(h, s, v){
+  const c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c;
+  let r=0, g=0, b=0;
+  if(h < 60){ r=c; g=x; } else if(h < 120){ r=x; g=c; } else if(h < 180){ g=c; b=x; }
+  else if(h < 240){ g=x; b=c; } else if(h < 300){ r=x; b=c; } else { r=c; b=x; }
+  return [Math.round((r+m)*255), Math.round((g+m)*255), Math.round((b+m)*255)];
+}
+function rgbAHsv(r, g, b){
+  r/=255; g/=255; b/=255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b), d = max - min;
+  let h = 0;
+  if(d){
+    if(max === r) h = ((g - b) / d) % 6; else if(max === g) h = (b - r) / d + 2; else h = (r - g) / d + 4;
+    h *= 60; if(h < 0) h += 360;
+  }
+  return { h, s: max ? d / max : 0, v: max };
+}
+function luminanciaRelativa(hex){
+  const {r,g,b} = hexToRgb(hex);
+  const f = c => { c/=255; return c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); };
+  return 0.2126*f(r) + 0.7152*f(g) + 0.0722*f(b);
+}
+function ratioContraste(hexA, hexB){
+  const a = luminanciaRelativa(hexA), b = luminanciaRelativa(hexB);
+  return (Math.max(a,b) + 0.05) / (Math.min(a,b) + 0.05);
+}
+// Color de texto que se usa de verdad para una persona: el elegido a mano o,
+// si no eligió ninguno, el automático (versión oscurecida del fondo).
+function colorTextoDePersona(p){
+  const bg = (p && p.color) || COLOR_DEFAULT;
+  return (p && p.colorTexto) || oscurecerColor(bg);
+}
+
+const cw = { modo:'fondo', h:0, s:0, v:1, otro:'#FFFFFF', onAceptar:null, arrastrando:false };
+function cwHexActual(){ const [r,g,b] = hsvARgb(cw.h, cw.s, cw.v); return rgbToHex(r,g,b).toUpperCase(); }
+function cwDibujarRueda(){
+  const c = document.getElementById('cw-wheel');
+  const ctx = c.getContext('2d');
+  const W = c.width, R = W / 2;
+  const img = ctx.createImageData(W, W), d = img.data;
+  for(let y=0; y<W; y++){
+    for(let x=0; x<W; x++){
+      const dx = x + 0.5 - R, dy = y + 0.5 - R, dist = Math.hypot(dx, dy), i = (y*W + x) * 4;
+      if(dist > R){ d[i+3] = 0; continue; }
+      const h = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+      const [r,g,b] = hsvARgb(h, dist / R, cw.v);
+      d[i] = r; d[i+1] = g; d[i+2] = b;
+      d[i+3] = dist > R - 1 ? Math.round(255 * (R - dist)) : 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  const ang = cw.h * Math.PI / 180;
+  const mx = R + Math.cos(ang) * cw.s * (R - 1), my = R + Math.sin(ang) * cw.s * (R - 1);
+  ctx.beginPath(); ctx.arc(mx, my, 11, 0, Math.PI*2); ctx.lineWidth = 4; ctx.strokeStyle = '#000'; ctx.stroke();
+  ctx.beginPath(); ctx.arc(mx, my, 11, 0, Math.PI*2); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
+}
+function cwActualizar(desdeTexto){
+  const hex = cwHexActual();
+  const inputTxt = document.getElementById('cw-texto');
+  if(!desdeTexto) inputTxt.value = hex;
+  document.getElementById('cw-error').style.display = 'none';
+  document.getElementById('cw-val').value = Math.round(cw.v * 100);
+  const [r,g,b] = hsvARgb(cw.h, cw.s, 1);
+  document.getElementById('cw-val').style.background = `linear-gradient(to right, #000, ${rgbToHex(r,g,b)})`;
+  const bg = cw.modo === 'fondo' ? hex : cw.otro;
+  const fg = cw.modo === 'fondo' ? cw.otro : hex;
+  const muestra = document.getElementById('cw-muestra');
+  muestra.style.background = bg; muestra.style.color = fg;
+  muestra.textContent = (document.getElementById('p-nombre').value.trim()) || 'Nombre';
+  const ratio = ratioContraste(bg, fg);
+  document.getElementById('cw-contraste').textContent = (ratio < 3 ? '⚠ Poco contraste ' : 'Contraste ') + ratio.toFixed(1) + ':1';
+  cwDibujarRueda();
+}
+function cwDesdePuntero(e){
+  const rect = document.getElementById('cw-wheel').getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width * 2 - 1;
+  const y = (e.clientY - rect.top) / rect.height * 2 - 1;
+  cw.h = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+  cw.s = Math.min(1, Math.hypot(x, y));
+  cwActualizar(false);
+}
+(function(){
+  const c = document.getElementById('cw-wheel');
+  c.addEventListener('pointerdown', e=>{ e.preventDefault(); cw.arrastrando = true; c.setPointerCapture(e.pointerId); cwDesdePuntero(e); });
+  c.addEventListener('pointermove', e=>{ if(cw.arrastrando) cwDesdePuntero(e); });
+  const fin = ()=>{ cw.arrastrando = false; };
+  c.addEventListener('pointerup', fin);
+  c.addEventListener('pointercancel', fin);
+  document.getElementById('cw-val').addEventListener('input', e=>{ cw.v = (parseInt(e.target.value,10) || 0) / 100; cwActualizar(false); });
+  document.getElementById('cw-texto').addEventListener('input', e=>{
+    const hex = parsearColorAHex(e.target.value);
+    if(!hex){
+      document.getElementById('cw-error').style.display = e.target.value.trim() ? 'block' : 'none';
+      return;
+    }
+    const {r,g,b} = hexToRgb(hex);
+    const hsv = rgbAHsv(r,g,b);
+    cw.v = hsv.v; cw.s = hsv.s;
+    if(hsv.s > 0.0001 && hsv.v > 0.0001) cw.h = hsv.h;
+    cwActualizar(true);
+  });
+  document.getElementById('cw-texto').addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('cw-aceptar').click(); }
+  });
+  document.getElementById('cw-aceptar').addEventListener('click', ()=>{
+    const hex = parsearColorAHex(document.getElementById('cw-texto').value);
+    if(!hex){ document.getElementById('cw-error').style.display = 'block'; return; }
+    const cb = cw.onAceptar;
+    document.getElementById('dialog-color').close();
+    if(cb) cb(hex);
+  });
+  document.getElementById('cw-auto').addEventListener('click', ()=>{
+    const cb = cw.onAceptar;
+    document.getElementById('dialog-color').close();
+    if(cb) cb(null);
+  });
+  document.getElementById('cw-cancelar').addEventListener('click', ()=> document.getElementById('dialog-color').close());
+})();
+// opciones: { titulo, modo:'fondo'|'texto', inicial:'#RRGGBB', otroColor:'#RRGGBB', permitirAuto, onAceptar(hex|null) }
+function abrirSelectorColor(op){
+  cw.modo = op.modo || 'fondo';
+  cw.otro = op.otroColor || '#FFFFFF';
+  cw.onAceptar = op.onAceptar;
+  const {r,g,b} = hexToRgb(parsearColorAHex(op.inicial) || COLOR_DEFAULT);
+  const hsv = rgbAHsv(r,g,b);
+  cw.h = hsv.h; cw.s = hsv.s; cw.v = hsv.v;
+  document.getElementById('cw-titulo').textContent = op.titulo || 'Elegir color';
+  document.getElementById('cw-auto').style.display = op.permitirAuto ? 'block' : 'none';
+  document.getElementById('dialog-color').showModal();
+  cwActualizar(false);
+}
+
 function actualizarPreviaColor(){
-  const color = document.getElementById('p-color').value;
+  const color = document.getElementById('p-color').value || COLOR_DEFAULT;
+  const textoElegido = document.getElementById('p-color-texto').value;
+  const textoEfectivo = textoElegido || oscurecerColor(color);
   const nombre = document.getElementById('p-nombre').value.trim() || 'Nombre';
   const preview = document.getElementById('p-color-preview-name');
   preview.textContent = nombre;
   preview.style.background = color;
-  preview.style.color = oscurecerColor(color);
+  preview.style.color = textoEfectivo;
+  document.getElementById('sw-p-fondo').style.background = color;
+  document.getElementById('lbl-p-fondo').textContent = color.toUpperCase();
+  document.getElementById('sw-p-texto').style.background = textoEfectivo;
+  document.getElementById('lbl-p-texto').textContent = textoElegido ? textoElegido.toUpperCase() : 'Auto';
 }
-document.getElementById('p-color').addEventListener('input', actualizarPreviaColor);
+document.getElementById('btn-p-color-fondo').addEventListener('click', ()=>{
+  const inpBg = document.getElementById('p-color'), inpTx = document.getElementById('p-color-texto');
+  abrirSelectorColor({
+    titulo: 'Color de fondo', modo: 'fondo',
+    inicial: inpBg.value || COLOR_DEFAULT,
+    otroColor: inpTx.value || oscurecerColor(inpBg.value || COLOR_DEFAULT),
+    onAceptar: hex=>{ inpBg.value = hex; actualizarPreviaColor(); }
+  });
+});
+document.getElementById('btn-p-color-texto').addEventListener('click', ()=>{
+  const inpBg = document.getElementById('p-color'), inpTx = document.getElementById('p-color-texto');
+  const bg = inpBg.value || COLOR_DEFAULT;
+  abrirSelectorColor({
+    titulo: 'Color del texto', modo: 'texto',
+    inicial: inpTx.value || oscurecerColor(bg),
+    otroColor: bg, permitirAuto: true,
+    onAceptar: hex=>{ inpTx.value = hex || ''; actualizarPreviaColor(); }
+  });
+});
 document.getElementById('p-nombre').addEventListener('input', actualizarPreviaColor);
 actualizarPreviaColor();
 
@@ -988,7 +1222,9 @@ document.getElementById('btn-guardar-persona').addEventListener('click', ()=>{
   const id = document.getElementById('persona-id').value || uid();
   const color = document.getElementById('p-color').value || COLOR_DEFAULT;
 
+  const colorTexto = parsearColorAHex(document.getElementById('p-color-texto').value);
   const nueva = { id, nombre, maxDias:max, diasFijos, maxSeguidos, minDescanso, color };
+  if(colorTexto) nueva.colorTexto = colorTexto;
   const idx = personas.findIndex(p=>p.id===id);
   if(idx>=0) personas[idx]=nueva; else personas.push(nueva);
   saveAll();
@@ -1009,6 +1245,7 @@ function resetForm(){
   document.getElementById('p-max-seguidos').value='';
   document.getElementById('p-min-descanso').value='';
   document.getElementById('p-color').value=COLOR_DEFAULT;
+  document.getElementById('p-color-texto').value='';
   document.querySelectorAll('#dias-fijos .chip-toggle').forEach(el=> aplicarEstiloNivel(el, 0));
   document.getElementById('form-title').textContent='Agregar persona';
   document.getElementById('btn-cancelar-edit').style.display='none';
@@ -1025,6 +1262,7 @@ function editarPersona(id){
   document.getElementById('p-max-seguidos').value = p.maxSeguidos ?? '';
   document.getElementById('p-min-descanso').value = p.minDescanso ?? '';
   document.getElementById('p-color').value = p.color || COLOR_DEFAULT;
+  document.getElementById('p-color-texto').value = p.colorTexto || '';
   document.querySelectorAll('#dias-fijos .chip-toggle').forEach(el=>{
     aplicarEstiloNivel(el, nivelDiaFijo(p, parseInt(el.dataset.day,10)));
   });
@@ -2149,7 +2387,7 @@ function renderPersonaCalCompleto(){
     let etiquetaTurno = '';
     if(asignado){
       const bg = persona.color || COLOR_DEFAULT;
-      etiquetaTurno = `<div class="name" style="background:${bg}; color:${oscurecerColor(bg)};">Turno</div>`;
+      etiquetaTurno = `<div class="name" style="background:${bg}; color:${colorTextoDePersona(persona)};">Turno</div>`;
     }
     cell.innerHTML = `<div class="num">${d}</div>` + (dots ? `<div class="otros-dots">${dots}</div>` : '') + etiquetaTurno;
     cell.addEventListener('click', ()=> abrirDialogoDiaPcc(iso, d, weekday));
@@ -2576,7 +2814,7 @@ function renderCalendar(){
       const p = personas.find(pp=>pp.id===id);
       const nombre = p?.nombre || '?';
       const bg = p?.color || COLOR_DEFAULT;
-      const fg = oscurecerColor(bg);
+      const fg = p ? colorTextoDePersona(p) : oscurecerColor(bg);
       return `<div class="name" style="background:${bg};color:${fg};">${nombre}</div>`;
     });
     cell.innerHTML = `<div class="num">${d}</div>` + dotsHtmlParaDia(iso) + etiquetas.join('');
@@ -2933,7 +3171,7 @@ async function exportarAShifter(){
       const shifterId = i+1;
       idMap[p.id] = shifterId;
       const color = colorHexAAndroidInt(p.color);
-      const colorTexto = colorHexAAndroidInt(oscurecerColor(p.color || COLOR_DEFAULT));
+      const colorTexto = colorHexAAndroidInt(p.colorTexto || oscurecerColor(p.color || COLOR_DEFAULT));
       stmtTurno.run([
         shifterId, p.nombre, '08:00', 0, 0, color, colorTexto, shifterId, 16.0,
         '17:00', 0, 0, '', '', (p.nombre||'').toUpperCase().slice(0,10),
@@ -3062,9 +3300,9 @@ async function exportarPersonaComoTurnosAShifter(){
        horaInicio1, horaFinal1, horaInicio2, horaFinal2, turnoPartido, realizarAccion,
        ingresosHora, ingresoHoraExtra, tiempoDescanso, tiempoTurno, calcularTiempoTurnoManual)
       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`);
-    function insertarTurno(shifterId, nombre, colorHex){
+    function insertarTurno(shifterId, nombre, colorHex, colorTextoHex){
       const color = colorHexAAndroidInt(colorHex);
-      const colorTexto = colorHexAAndroidInt(oscurecerColor(colorHex || COLOR_DEFAULT));
+      const colorTexto = colorHexAAndroidInt(colorTextoHex || oscurecerColor(colorHex || COLOR_DEFAULT));
       stmtTurno.run([
         shifterId, nombre, '08:00', 0, 0, color, colorTexto, shifterId, 16.0,
         '17:00', 0, 0, '', '', (nombre||'').toUpperCase().slice(0,10),
@@ -3076,7 +3314,7 @@ async function exportarPersonaComoTurnosAShifter(){
     // El turno de trabajo se etiqueta con el nombre de calendario (el mismo
     // que se ve en el calendario global de Shifter), no con el nombre de la
     // persona.
-    insertarTurno(TURNO_TRABAJO_ID, nombreCal, persona.color);
+    insertarTurno(TURNO_TRABAJO_ID, nombreCal, persona.color, persona.colorTexto);
     const idCalendario = {}; // calId -> shifterId
     calendariosDePersona.forEach((c, i)=>{
       const shifterId = i+2;
@@ -3184,9 +3422,9 @@ function crearEsquemaGroups(db, maxTurnos){
   db.run(`INSERT INTO android_metadata (locale) VALUES ('es_ES')`);
 }
 
-function insertarTurnoGroups(db, id, nombre, colorHex){
+function insertarTurnoGroups(db, id, nombre, colorHex, colorTextoHex){
   const color = colorHexAAndroidInt(colorHex);
-  const colorTexto = colorHexAAndroidInt(oscurecerColor(colorHex || COLOR_DEFAULT));
+  const colorTexto = colorHexAAndroidInt(colorTextoHex || oscurecerColor(colorHex || COLOR_DEFAULT));
   db.run(`INSERT INTO tablaTurnos
     (_id, texto, horaAlarma, alarma, alarmaDiaAntes, color, colorTexto, codigoSecuencial, textSize,
      horaAlarma2, alarma2, alarma2DiaAntes, sonido1, sonido2, abreviatura,
@@ -3347,7 +3585,7 @@ async function exportarPersonaComoTurnosAGroups(){
     crearEsquemaGroups(db, maxTurnos);
     db.run(`INSERT INTO nombreCalendario (_id, nombre, posicion, moneda) VALUES (1, ?, NULL, NULL)`, [nombreCal]);
 
-    insertarTurnoGroups(db, TURNO_TRABAJO_ID, nombreCal, persona.color);
+    insertarTurnoGroups(db, TURNO_TRABAJO_ID, nombreCal, persona.color, persona.colorTexto);
     calendariosDePersona.forEach(c=>{ insertarTurnoGroups(db, idCalendario[c.id], c.nombre, c.color); });
 
     const colsNombres = []; for(let i=1;i<=maxTurnos;i++) colsNombres.push(`turno${i}`);
