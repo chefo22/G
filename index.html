@@ -436,10 +436,6 @@
         <button class="btn btn-primary btn-sm" id="btn-generar-este-mes" style="margin-top:8px; display:block;">Generar turnos para este mes</button>
       </p>
     </div>
-    <div class="card" id="cal-otros-legend-card" style="display:none;">
-      <h3 style="font-size:.9rem; margin-bottom:8px;">Otros calendarios</h3>
-      <div class="chips" id="cal-otros-legend"></div>
-    </div>
     <div class="card" id="resumen-card" style="display:none;">
       <h3>Resumen por persona</h3>
       <div id="resumen-lista"></div>
@@ -1146,12 +1142,18 @@ function renderExclusiones(){
   }
 }
 
-document.getElementById('g-mes').addEventListener('change', ()=>{ cargarExclusionesDelMesSeleccionado(); renderExclusiones(); });
+document.getElementById('g-mes').addEventListener('change', sincronizarMesDesdeGenerar);
 document.getElementById('excl-modo-simple').addEventListener('change', (e)=>{
   modoSimpleExclusiones = e.target.checked;
   localStorage.setItem('turnos_excl_modo_simple', modoSimpleExclusiones ? 'true' : 'false');
 });
-document.getElementById('g-anio').addEventListener('change', ()=>{ cargarExclusionesDelMesSeleccionado(); renderExclusiones(); });
+document.getElementById('g-anio').addEventListener('change', sincronizarMesDesdeGenerar);
+function sincronizarMesDesdeGenerar(){
+  const mes = parseInt(document.getElementById('g-mes').value, 10);
+  const anio = parseInt(document.getElementById('g-anio').value, 10);
+  if(isNaN(mes) || isNaN(anio)){ cargarExclusionesDelMesSeleccionado(); renderExclusiones(); return; }
+  irAMesCalendario(anio, mes);
+}
 
 function formatFechaCorta(iso){
   const [y,m,d] = iso.split('-');
@@ -1367,7 +1369,16 @@ function irAMesCalendario(anio, mes){
   if(mes > 11){ mes = 0; anio++; }
   calViewAnio = anio;
   calViewMes = mes;
+  // Todos los calendarios comparten el mismo mes
+  pccAnio = anio;
+  pccMes = mes;
+  // ...y la "Configuración del mes" de la pestaña Generar
+  document.getElementById('g-mes').value = mes;
+  document.getElementById('g-anio').value = anio;
+  cargarExclusionesDelMesSeleccionado();
+  renderExclusiones();
   renderCalendar();
+  renderPersonaCalCompleto();
 }
 document.getElementById('btn-mes-anterior').addEventListener('click', ()=>{
   irAMesCalendario(calViewAnio ?? new Date().getFullYear(), (calViewMes ?? new Date().getMonth()) - 1);
@@ -2324,21 +2335,6 @@ function poblarSelectPersonas(selectEl, selectedId){
   if(selectedId && personas.some(p=>p.id===selectedId)) selectEl.value = selectedId;
 }
 
-function renderOtrosLegend(){
-  const legend = document.getElementById('cal-otros-legend');
-  const legendCard = document.getElementById('cal-otros-legend-card');
-  if(!legend || !legendCard) return;
-  if(calendariosExtra.length===0){
-    legend.innerHTML='';
-    legendCard.style.display='none';
-    return;
-  }
-  legendCard.style.display='block';
-  legend.innerHTML = calendariosExtra.map(c=>
-    `<div class="chip"><span class="persona-color-dot" style="background:${c.color};"></span>${etiquetaCalendarioExtra(c)}</div>`
-  ).join('');
-}
-
 document.getElementById('btn-toggle-crear-calendario').addEventListener('click', ()=>{
   const card = document.getElementById('crear-calendario-card');
   card.style.display = (card.style.display==='none') ? 'block' : 'none';
@@ -2369,20 +2365,18 @@ function renderOtrosCalendarios(){
   calendariosExtra.forEach(c=>{
     const div = document.createElement('div');
     div.className='card';
+    div.style.cssText = 'padding:8px 10px; margin-bottom:8px;';
     div.innerHTML = `
-      <div class="top" style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
-          <input type="color" data-color-cal="${c.id}" value="${c.color}"
-            style="width:38px; height:34px; padding:0; border:1px solid var(--line); border-radius:8px; background:var(--paper); cursor:pointer; flex-shrink:0;">
-          <input type="text" data-nombre-cal="${c.id}" value="${c.nombre}"
-            style="flex:1; min-width:0; padding:8px 10px; border:1px solid var(--line); border-radius:9px; font-family:'Inter'; font-size:.95rem; background:var(--paper); color:var(--ink);">
-        </div>
-        <button class="btn btn-danger btn-sm" data-eliminar-cal="${c.id}">Eliminar</button>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <input type="color" data-color-cal="${c.id}" value="${c.color}"
+          style="width:30px; height:30px; padding:0; border:1px solid var(--line); border-radius:7px; background:var(--paper); cursor:pointer; flex-shrink:0; margin:0;">
+        <input type="text" data-nombre-cal="${c.id}" value="${c.nombre}"
+          style="flex:1; min-width:0; margin:0; padding:5px 8px; border:1px solid var(--line); border-radius:7px; font-family:'Inter'; font-size:.9rem; background:var(--paper); color:var(--ink);">
+        <button class="btn btn-danger btn-sm" data-eliminar-cal="${c.id}" type="button" aria-label="Eliminar calendario" title="Eliminar calendario" style="padding:4px 8px; margin:0;">✕</button>
       </div>
-      <label style="margin-top:10px;">Persona</label>
-      <select data-persona-cal="${c.id}"></select>
-      <div class="btn-row" style="margin-top:12px;">
-        <button class="btn btn-accent btn-full" data-abrir-selector="${c.id}" type="button">+ Elegir fechas en el calendario</button>
+      <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+        <select data-persona-cal="${c.id}" aria-label="Persona" style="flex:1; min-width:0; margin:0; padding:5px 8px; font-size:.85rem;"></select>
+        <button class="btn btn-accent btn-sm" data-abrir-selector="${c.id}" type="button" style="margin:0; white-space:nowrap;">+ Fechas</button>
       </div>`;
     box.appendChild(div);
     poblarSelectPersonas(div.querySelector(`[data-persona-cal="${c.id}"]`), c.personaId);
@@ -2396,7 +2390,6 @@ function renderOtrosCalendarios(){
       if(!val){ inp.value = cal.nombre; return; }
       cal.nombre = val;
       guardarCalendariosExtra();
-      renderOtrosLegend();
       renderCalendar();
       renderPersonaCalCompleto();
     });
@@ -2407,7 +2400,6 @@ function renderOtrosCalendarios(){
       if(!cal) return;
       cal.color = inp.value;
       guardarCalendariosExtra();
-      renderOtrosLegend();
       renderCalendar();
       renderPersonaCalCompleto();
     });
@@ -2441,17 +2433,14 @@ function renderOtrosCalendarios(){
 
 // ---------- Calendario completo de una persona (turnos + sus calendarios extra) ----------
 function irAMesPcc(anio, mes){
-  if(mes < 0){ mes = 11; anio--; }
-  if(mes > 11){ mes = 0; anio++; }
-  pccAnio = anio;
-  pccMes = mes;
-  renderPersonaCalCompleto();
+  // Mes compartido con la pestaña Calendario
+  irAMesCalendario(anio, mes);
 }
 document.getElementById('btn-pcc-mes-anterior').addEventListener('click', ()=>{
-  irAMesPcc(pccAnio ?? new Date().getFullYear(), (pccMes ?? new Date().getMonth()) - 1);
+  irAMesPcc(calViewAnio ?? pccAnio ?? new Date().getFullYear(), (calViewMes ?? pccMes ?? new Date().getMonth()) - 1);
 });
 document.getElementById('btn-pcc-mes-siguiente').addEventListener('click', ()=>{
-  irAMesPcc(pccAnio ?? new Date().getFullYear(), (pccMes ?? new Date().getMonth()) + 1);
+  irAMesPcc(calViewAnio ?? pccAnio ?? new Date().getFullYear(), (calViewMes ?? pccMes ?? new Date().getMonth()) + 1);
 });
 document.getElementById('btn-pcc-mes-hoy').addEventListener('click', ()=>{
   const now = new Date();
@@ -2475,7 +2464,10 @@ function renderPersonaCalCompleto(){
   poblarSelectPersonas(document.getElementById('pcc-persona'), pccPersonaId);
   const persona = personas.find(p=>p.id===pccPersonaId);
 
-  if(pccAnio===null || pccMes===null){
+  if(calViewAnio!==null && calViewMes!==null){
+    pccAnio = calViewAnio;
+    pccMes = calViewMes;
+  } else if(pccAnio===null || pccMes===null){
     const now = new Date();
     pccAnio = now.getFullYear();
     pccMes = now.getMonth();
@@ -2876,7 +2868,6 @@ function renderCalendar(){
     calViewMes = now.getMonth();
   }
   currentSchedule = JSON.parse(localStorage.getItem(LS_SCHEDULE_PREFIX+calViewAnio+'_'+calViewMes) || 'null');
-  renderOtrosLegend();
 
   const sinTurnosHint = document.getElementById('cal-sin-turnos-hint');
   if(!currentSchedule){
