@@ -1751,6 +1751,56 @@ function repararCronologicamente(anio, mes, personasList, personasPorDia, exclus
   return { anio, mes, days, warnings, assignedCount };
 }
 
+// ---------- Fines de semana libres ----------
+// Un "fin de semana completo" es un sábado y el domingo siguiente que caen
+// los dos dentro del mes. Se busca que cada persona tenga, si es posible,
+// al menos uno de esos fines de semana totalmente libre (ni sábado ni
+// domingo).
+// PRIORIDAD: llegar al máximo de días de cada persona es MÁS importante
+// que darle un finde libre. Por eso esto NO entra en el puntaje general:
+// solo se aplica en un pulido final (mejorarFindesLibres) que únicamente
+// acepta intercambios que dejan a cada persona con la misma cantidad de
+// días (nadie pierde días) y sin empeorar huecos ni preferencias.
+const PESO_SIN_FINDE_LIBRE = 60;   // persona sin ningún finde completo libre
+const PESO_DIA_FINDE_SIN_LIBRE = 3; // extra por cada sábado/domingo trabajado en ese caso
+const _cacheFindes = {};
+function findesCompletosDelMes(anio, mes){
+  const key = anio+'-'+mes;
+  if(_cacheFindes[key]) return _cacheFindes[key];
+  const diasEnMes = new Date(anio, mes+1, 0).getDate();
+  const lista = [];
+  for(let d=1; d<diasEnMes; d++){
+    if(new Date(anio, mes, d).getDay() === 6){
+      lista.push([isoDate(anio, mes, d), isoDate(anio, mes, d+1)]);
+    }
+  }
+  _cacheFindes[key] = lista;
+  return lista;
+}
+// Devuelve { libres, diasTrabajados } de una persona en los findes completos.
+function estadoFindesPersona(sched, personaId){
+  const findes = findesCompletosDelMes(sched.anio, sched.mes);
+  let libres = 0, diasTrabajados = 0;
+  findes.forEach(([sab, dom])=>{
+    const t = ((sched.days[sab]||[]).includes(personaId) ? 1 : 0)
+            + ((sched.days[dom]||[]).includes(personaId) ? 1 : 0);
+    if(t === 0) libres++;
+    diasTrabajados += t;
+  });
+  return { libres, diasTrabajados, total: findes.length };
+}
+
+// Puntaje de findes de un calendario (más bajo es mejor). Solo se usa en
+// mejorarFindesLibres, nunca para decidir entre calendarios en general.
+function puntajeFindes(sched, personasList){
+  let total = 0;
+  personasList.forEach(p=>{
+    const e = estadoFindesPersona(sched, p.id);
+    if(e.total > 0 && e.libres === 0) total += PESO_SIN_FINDE_LIBRE + e.diasTrabajados * PESO_DIA_FINDE_SIN_LIBRE;
+  });
+  return total;
+}
+
 // Puntaje de un calendario candidato: más bajo es mejor. Penaliza fuerte
 // los días sin cubrir, y penaliza el desbalance en el uso de los "cupos"
 // de cada persona (que no sea siempre la misma gente la que se queda
@@ -1997,6 +2047,83 @@ function rescatarHuecos(anio, mes, personasList, personasPorDia, exclusiones, sc
   return actual;
 }
 
+// Pulido dirigido de fines de semana: por cada persona que quedó sin
+// ningún finde completo libre, prueba intercambiar uno de sus sábados o
+// domingos con un día de otra persona (que no trabaje ese día) y pasa todo
+// por repararCronologicamente, así ninguna regla dura se rompe. Solo acepta
+// el cambio si: no aparecen huecos nuevos, NADIE pierde ni un día asignado
+// (llegar al máximo de días pesa más que el finde libre), las preferencias
+// no empeoran, y el puntaje de findes mejora.
+function mejorarFindesLibres(anio, mes, personasList, personasPorDia, exclusiones, schedInicial){
+  let actual = schedInicial;
+  let actualScore = puntuarCalendario(actual, personasList, personasPorDia, exclusiones);
+  let actualFindes = puntajeFindes(actual, personasList);
+  const limite = Date.now() + 2500; // tope de tiempo para no colgar el botón
+
+  const sinFinde = () => personasList.filter(p=>{
+    const e = estadoFindesPersona(actual, p.id);
+    return e.total > 0 && e.libres === 0;
+  });
+  const mezclar = arr => { for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; };
+
+  for(let pasada=0; pasada<60 && Date.now()<limite; pasada++){
+    const pendientes = sinFinde();
+    if(!pendientes.length) break;
+    let mejoro = false;
+
+    for(const p of mezclar(pendientes.slice())){
+      const findes = findesCompletosDelMes(anio, mes);
+      const diasFinde = [];
+      findes.forEach(([sab,dom])=>{
+        [sab,dom].forEach(iso=>{ if((actual.days[iso]||[]).includes(p.id)) diasFinde.push(iso); });
+      });
+      mezclar(diasFinde);
+
+      for(const isoFinde of diasFinde){
+        const [y1,m1,d1] = isoFinde.split('-').map(Number);
+        const wd1 = new Date(y1,m1-1,d1).getDay();
+        const otros = mezclar(Object.keys(actual.days).filter(iso => iso !== isoFinde));
+        let hecho = false;
+        for(const iso2 of otros){
+          if(Date.now() > limite) break;
+          const [y2,m2,d2] = iso2.split('-').map(Number);
+          const wd2 = new Date(y2,m2-1,d2).getDay();
+          if(esBloqueante(nivelPreferenciaDia(p, wd2, iso2, exclusiones))) continue;
+          if((actual.days[iso2]||[]).includes(p.id)) continue;
+          for(const qid of actual.days[iso2]){
+            const q = personasList.find(x=>x.id===qid);
+            if(!q || qid === p.id) continue;
+            if((actual.days[isoFinde]||[]).includes(qid)) continue;
+            if(esBloqueante(nivelPreferenciaDia(q, wd1, isoFinde, exclusiones))) continue;
+
+            const propuesta = {};
+            Object.keys(actual.days).forEach(i => { propuesta[i] = actual.days[i].slice(); });
+            propuesta[isoFinde] = propuesta[isoFinde].map(id => id===p.id ? qid : id);
+            propuesta[iso2]     = propuesta[iso2].map(id => id===qid ? p.id : id);
+
+            const cand = repararCronologicamente(anio, mes, personasList, personasPorDia, exclusiones, propuesta);
+            const sc = puntuarCalendario(cand, personasList, personasPorDia, exclusiones);
+            if(sc.huecos > actualScore.huecos || sc.resto > actualScore.resto) continue;
+            // Nadie puede quedar con menos días que antes.
+            const pierdeDias = personasList.some(x => (cand.assignedCount[x.id]||0) < (actual.assignedCount[x.id]||0));
+            if(pierdeDias) continue;
+            const fnd = puntajeFindes(cand, personasList);
+            if(fnd < actualFindes){
+              actual = cand; actualScore = sc; actualFindes = fnd;
+              hecho = true; mejoro = true;
+              break;
+            }
+          }
+          if(hecho) break;
+        }
+        if(hecho) break;
+      }
+    }
+    if(!mejoro) break;
+  }
+  return actual;
+}
+
 // Cuántas rondas completas probar como máximo. Cada ronda ya de por sí
 // prueba ~29 propuestas + 200 pasos de recocido. Se subió de 6 a 10
 // rondas porque ahora, mientras queden turnos sin cubrir, el generador no
@@ -2111,6 +2238,21 @@ function generarTurnosRobusto(anio, mes, personasList, personasPorDia, exclusion
     // gastando más tandas, esto ya es lo mejor que se puede pedir.
     if(mejorScore.total <= 0) break;
   }
+
+  // Último pulido: intentar que cada persona tenga al menos un fin de
+  // semana completo (sábado + domingo) libre, si es posible.
+  const metodoAntesFindes = mejor._metodoElegido || mejor._metodo || '';
+  const mejorConFindes = mejorarFindesLibres(anio, mes, personasList, personasPorDia, exclusiones, mejor);
+  if(mejorConFindes !== mejor){
+    mejorConFindes._metodoElegido = metodoAntesFindes + ' + findes_libres';
+    mejorConFindes._intentos = mejor._intentos;
+    mejor = mejorConFindes;
+  }
+  const scoreFinal = puntuarCalendario(mejor, personasList, personasPorDia, exclusiones);
+  mejor._huecos = scoreFinal.huecos; mejor._resto = scoreFinal.resto; mejor._score = scoreFinal.total;
+  mejor._sinFindeLibre = personasList
+    .filter(p => { const e = estadoFindesPersona(mejor, p.id); return e.total > 0 && e.libres === 0; })
+    .map(p => p.nombre);
 
   mejor._tandasProbadas = tandasProbadas;
   if(tandasProbadas > 1){
