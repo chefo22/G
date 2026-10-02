@@ -169,6 +169,36 @@
   .btn-full{width:100%;}
   .btn-row{display:flex; gap:8px; margin-top:14px;}
 
+  /* Iconos Material */
+  .mi{width:1.2em; height:1.2em; fill:currentColor; vertical-align:-.22em; flex-shrink:0; display:inline-block;}
+  .btn .mi{margin-right:.35em;}
+  .btn .mi:only-child, .cal-nav .mi, .chip button .mi, .orden-btns .mi{margin-right:0;}
+  .chip button .mi{width:14px; height:14px; vertical-align:-.15em;}
+  .orden-btns .mi{width:14px; height:14px; vertical-align:0;}
+  .sub-hint .mi{width:1em; height:1em; vertical-align:-.15em;}
+  nav.tabs button{display:flex; align-items:center; justify-content:center; gap:6px;}
+  nav.tabs button .mi{width:18px; height:18px; margin:0;}
+
+  /* Acciones bajo el calendario (compactas) */
+  .acc-card{padding:10px 12px;}
+  .acc-titulo{font-size:.68rem; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.07em; margin:0 0 6px 2px;}
+  .acc-card #cal-actions{margin-bottom:10px;}
+  .acc-grid{display:flex; flex-wrap:wrap; gap:6px;}
+  .acc-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    flex:1 1 0; min-width:96px; padding:7px 10px;
+    border:1px solid var(--line); border-radius:9px;
+    background:var(--paper-dim); color:var(--ink);
+    font-family:'Inter'; font-size:.8rem; font-weight:600; cursor:pointer;
+    transition:transform .1s;
+  }
+  .acc-btn .mi{width:18px; height:18px; margin:0;}
+  .acc-btn:active{transform:scale(.97);}
+  .acc-btn:disabled{opacity:.6; cursor:default;}
+  .acc-btn-main{background:var(--teal-dim); border-color:var(--teal); color:var(--teal);}
+  .acc-check{display:flex; align-items:center; gap:8px; margin:8px 2px 0; font-size:.78rem; font-weight:500; text-transform:none; letter-spacing:0; color:var(--ink-soft); cursor:pointer;}
+  .acc-check input{width:15px; height:15px; margin:0; accent-color:var(--teal);}
+
   .cal-nav{display:flex; align-items:center; gap:8px; margin-bottom:2px;}
   .cal-nav h3{flex:1; text-align:center;}
   .cal-nav .btn-nav-mes{
@@ -305,12 +335,12 @@
 <header>
   <div class="brand">
     <span class="dot"></span><h1>GS</h1>
-    <button id="btn-theme-toggle" class="btn btn-ghost btn-sm" style="margin-left:auto;" aria-label="Cambiar tema" title="Cambiar tema">🌙</button>
+    <button id="btn-theme-toggle" class="btn btn-ghost btn-sm" style="margin-left:auto;" aria-label="Cambiar tema" title="Cambiar tema"><i data-mi="dark_mode"></i></button>
   </div>
   <nav class="tabs">
-    <button data-tab="generar" class="active">Generar</button>
-    <button data-tab="calendario">Calendario</button>
-    <button data-tab="otros">Otros</button>
+    <button data-tab="generar" class="active"><i data-mi="tune"></i>Generar</button>
+    <button data-tab="calendario"><i data-mi="event"></i>Calendario</button>
+    <button data-tab="otros"><i data-mi="layers"></i>Otros</button>
   </nav>
 </header>
 
@@ -352,7 +382,7 @@
     <h3 style="margin:18px 0 10px 4px; font-size:.95rem;">Personas cargadas</h3>
     <div id="lista-personas"></div>
 
-    <button class="btn btn-accent btn-full" id="btn-toggle-form-persona" type="button" style="margin-top:14px;">+ Agregar persona</button>
+    <button class="btn btn-accent btn-full" id="btn-toggle-form-persona" type="button" style="margin-top:14px;"><i data-mi="add"></i>Agregar persona</button>
 
     <div class="card" id="form-persona-card" style="display:none; margin-top:14px;">
       <h3 id="form-title">Agregar persona</h3>
@@ -411,7 +441,7 @@
     <div class="card" id="feriados-card" style="margin-top:18px;">
       <h3>Feriados</h3>
       <div class="btn-row" style="margin-top:0;">
-        <button class="btn btn-accent btn-full" id="btn-abrir-selector-feriados" type="button">+ Elegir fechas en el calendario</button>
+        <button class="btn btn-accent btn-full" id="btn-abrir-selector-feriados" type="button"><i data-mi="event"></i>Elegir fechas en el calendario</button>
       </div>
       <div class="chips" id="feriados-chips" style="margin-top:10px;"></div>
     </div>
@@ -421,13 +451,13 @@
   <section id="view-calendario" class="view">
     <div class="card print-cal">
       <div class="cal-nav">
-        <button class="btn btn-ghost btn-nav-mes" id="btn-mes-anterior" aria-label="Mes anterior" title="Mes anterior">‹</button>
+        <button class="btn btn-ghost btn-nav-mes" id="btn-mes-anterior" aria-label="Mes anterior" title="Mes anterior"><i data-mi="chevron_left"></i></button>
         <h3 id="cal-titulo">Sin turnos generados</h3>
-        <button class="btn btn-ghost btn-nav-mes" id="btn-mes-siguiente" aria-label="Mes siguiente" title="Mes siguiente">›</button>
+        <button class="btn btn-ghost btn-nav-mes" id="btn-mes-siguiente" aria-label="Mes siguiente" title="Mes siguiente"><i data-mi="chevron_right"></i></button>
         <button class="btn btn-ghost btn-sm btn-hoy" id="btn-mes-hoy" title="Ir al mes actual">Hoy</button>
-        <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes" type="button" style="display:none;" aria-pressed="false" title="Bloquear este mes">🔓</button>
+        <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes" type="button" style="display:none;" aria-pressed="false" title="Bloquear este mes"><i data-mi="lock_open"></i></button>
       </div>
-      <p class="sub-hint" id="cal-bloqueado-aviso" style="display:none;">🔒 Mes bloqueado: no se puede editar ni volver a generar. Tocá el candado para desbloquearlo.</p>
+      <p class="sub-hint" id="cal-bloqueado-aviso" style="display:none;"><i data-mi="lock"></i> Mes bloqueado: no se puede editar ni volver a generar. Tocá el candado para desbloquearlo.</p>
       <div class="cal-grid" id="cal-dow-row"></div>
       <div class="cal-grid" id="cal-grid"></div>
       <div class="warnings" id="cal-warnings"></div>
@@ -439,20 +469,25 @@
     <div class="card" id="resumen-card" style="display:none;">
       <h3>Resumen por persona</h3>
       <div id="resumen-lista"></div>
-      <button class="btn btn-ghost btn-full" id="btn-exportar-resumen-imagen" style="margin-top:10px;">Exportar resumen como imagen</button>
+      <button class="btn btn-ghost btn-full" id="btn-exportar-resumen-imagen" style="margin-top:10px;"><i data-mi="image"></i>Exportar resumen como imagen</button>
     </div>
-    <div class="btn-row" id="cal-import-actions">
-      <button class="btn btn-ghost btn-full" id="btn-importar-shifter">Importar desde Shifter (.Shifter)</button>
-      <input type="file" id="input-importar-shifter" accept=".Shifter,.db,.sqlite,application/octet-stream" style="display:none;">
-    </div>
-    <div class="btn-row" id="cal-actions" style="display:none;">
-      <label class="sub-hint" style="display:flex; align-items:center; gap:6px; margin:2px 0 4px;">
-        <input type="checkbox" id="chk-exportar-avisos" checked>
-        Incluir avisos de días incompletos en la imagen
-      </label>
-      <button class="btn btn-ghost btn-full" id="btn-exportar-imagen">Exportar como imagen</button>
-      <button class="btn btn-ghost btn-full" id="btn-copiar">Copiar como texto</button>
-      <button class="btn btn-accent btn-full" id="btn-exportar-shifter">Exportar a Shifter (.Shifter)</button>
+    <div class="card acc-card" id="cal-acciones-card">
+      <div id="cal-actions" style="display:none;">
+        <div class="acc-titulo">Compartir</div>
+        <div class="acc-grid">
+          <button class="acc-btn" id="btn-exportar-imagen" type="button"><i data-mi="image"></i>Imagen</button>
+        </div>
+        <label class="acc-check">
+          <input type="checkbox" id="chk-exportar-avisos" checked>
+          <span>Incluir avisos en la imagen</span>
+        </label>
+      </div>
+      <div class="acc-titulo">Shifter</div>
+      <div class="acc-grid" id="cal-import-actions">
+        <button class="acc-btn acc-btn-main" id="btn-exportar-shifter" type="button" style="display:none;"><i data-mi="file_upload"></i>Exportar</button>
+        <button class="acc-btn" id="btn-importar-shifter" type="button"><i data-mi="file_download"></i>Importar</button>
+        <input type="file" id="input-importar-shifter" accept=".Shifter,.db,.sqlite,application/octet-stream" style="display:none;">
+      </div>
     </div>
   </section>
 
@@ -463,22 +498,22 @@
       <label for="pcc-persona">Persona</label>
       <select id="pcc-persona"></select>
       <div class="cal-nav">
-        <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-anterior" type="button" aria-label="Mes anterior" title="Mes anterior">‹</button>
+        <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-anterior" type="button" aria-label="Mes anterior" title="Mes anterior"><i data-mi="chevron_left"></i></button>
         <h3 id="pcc-titulo" style="flex:1; text-align:center; font-size:.95rem;"></h3>
-        <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-siguiente" type="button" aria-label="Mes siguiente" title="Mes siguiente">›</button>
+        <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-siguiente" type="button" aria-label="Mes siguiente" title="Mes siguiente"><i data-mi="chevron_right"></i></button>
         <button class="btn btn-ghost btn-sm btn-hoy" id="btn-pcc-mes-hoy" type="button" title="Ir al mes actual">Hoy</button>
       </div>
       <div class="cal-grid" id="pcc-dow-row"></div>
       <div class="cal-grid" id="pcc-grid"></div>
       <div class="chips" id="pcc-legend" style="margin-top:10px;"></div>
       <div class="btn-row">
-        <button class="btn btn-accent btn-full" id="btn-exportar-pcc-shifter">Exportar esta persona a Shifter (todo como turnos)</button>
+        <button class="btn btn-accent btn-full" id="btn-exportar-pcc-shifter"><i data-mi="file_upload"></i>Exportar esta persona a Shifter (todo como turnos)</button>
       </div>
     </div>
 
     <div style="display:flex; align-items:center; justify-content:space-between; margin:18px 0 10px 4px;">
       <h3 style="font-size:.95rem; margin:0;">Tus calendarios</h3>
-      <button class="btn btn-ghost btn-sm" id="btn-toggle-crear-calendario" type="button" aria-label="Crear calendario" title="Crear calendario">+</button>
+      <button class="btn btn-ghost btn-sm" id="btn-toggle-crear-calendario" type="button" aria-label="Crear calendario" title="Crear calendario"><i data-mi="add"></i></button>
     </div>
     <div id="lista-otros-calendarios"></div>
 
@@ -539,9 +574,9 @@
   <div class="dialog-body">
     <h3 id="selector-fechas-titulo">Elegí las fechas</h3>
     <div class="cal-nav">
-      <button class="btn btn-ghost btn-nav-mes" id="btn-selector-fechas-mes-anterior" type="button" aria-label="Mes anterior">‹</button>
+      <button class="btn btn-ghost btn-nav-mes" id="btn-selector-fechas-mes-anterior" type="button" aria-label="Mes anterior"><i data-mi="chevron_left"></i></button>
       <h3 id="selector-fechas-mes-titulo" style="flex:1; text-align:center; font-size:.95rem;"></h3>
-      <button class="btn btn-ghost btn-nav-mes" id="btn-selector-fechas-mes-siguiente" type="button" aria-label="Mes siguiente">›</button>
+      <button class="btn btn-ghost btn-nav-mes" id="btn-selector-fechas-mes-siguiente" type="button" aria-label="Mes siguiente"><i data-mi="chevron_right"></i></button>
     </div>
     <div class="cal-grid" id="selector-fechas-dow-row"></div>
     <div class="cal-grid" id="selector-fechas-grid"></div>
@@ -560,7 +595,7 @@
       <input type="checkbox" id="pcc-dialog-turno" style="width:auto;">
       Turno de trabajo asignado
     </label>
-    <p class="sub-hint" id="pcc-dialog-bloqueo" style="display:none; margin:4px 0 0;">🔒 Mes bloqueado: el turno de trabajo no se puede cambiar (los otros calendarios sí).</p>
+    <p class="sub-hint" id="pcc-dialog-bloqueo" style="display:none; margin:4px 0 0;"><i data-mi="lock"></i> Mes bloqueado: el turno de trabajo no se puede cambiar (los otros calendarios sí).</p>
     <div id="pcc-dialog-calendarios" style="margin-top:12px;"></div>
     <div id="pcc-dialog-leyenda"></div>
     <div class="btn-row">
@@ -571,6 +606,41 @@
 </dialog>
 
 <script>
+// ---------- Iconos Material Design ----------
+const ICONOS_MATERIAL = {
+  chevron_left: 'M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z',
+  chevron_right: 'M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z',
+  lock: 'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z',
+  lock_open: 'M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z',
+  dark_mode: 'M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z',
+  light_mode: 'M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 0 0-1.41 0 .996.996 0 0 0 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 0 0-1.41 0 .996.996 0 0 0 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 0 0 0-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 0 0 0-1.41.996.996 0 0 0-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 0 0 0-1.41.996.996 0 0 0-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z',
+  warning: 'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z',
+  close: 'M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
+  delete: 'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z',
+  add: 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z',
+  edit: 'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z',
+  arrow_upward: 'M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z',
+  arrow_downward: 'M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z',
+  image: 'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z',
+  file_upload: 'M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z',
+  file_download: 'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z',
+  tune: 'M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z',
+  event: 'M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z',
+  layers: 'M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z'
+};
+// Devuelve un icono Material Design (SVG en línea, sin depender de internet).
+function mi(nombre, clase){
+  const d = ICONOS_MATERIAL[nombre];
+  if(!d) return '';
+  return `<svg class="mi${clase ? ' '+clase : ''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${d}"/></svg>`;
+}
+// Reemplaza los <i data-mi="nombre"></i> del HTML por el icono real.
+function hidratarIconos(raiz){
+  (raiz || document).querySelectorAll('[data-mi]').forEach(el=>{ el.outerHTML = mi(el.dataset.mi); });
+}
+
+hidratarIconos();
+
 // ---------- Estado ----------
 const LS_PERSONAS = 'turnos_personas';
 const LS_CONFIG = 'turnos_config';
@@ -601,7 +671,7 @@ let _toastBloqueoTimer = null;
 function avisoBreveBloqueo(texto){
   const t = document.getElementById('toast-bloqueo');
   if(!t) return;
-  t.textContent = texto;
+  t.innerHTML = mi('lock') + ' ' + texto;
   t.classList.add('visible');
   clearTimeout(_toastBloqueoTimer);
   _toastBloqueoTimer = setTimeout(()=> t.classList.remove('visible'), 2400);
@@ -618,7 +688,7 @@ function actualizarUiBloqueo(){
   const hayMes = !!currentSchedule;
   const bloqueado = hayMes && mesBloqueado(calViewAnio, calViewMes);
   btn.style.display = hayMes ? 'flex' : 'none';
-  btn.textContent = bloqueado ? '🔒' : '🔓';
+  btn.innerHTML = mi(bloqueado ? 'lock' : 'lock_open');
   btn.classList.toggle('activo', bloqueado);
   btn.title = bloqueado ? 'Mes bloqueado: tocá para desbloquear' : 'Bloquear este mes';
   btn.setAttribute('aria-label', btn.title);
@@ -917,7 +987,7 @@ function cwActualizar(desdeTexto){
   muestra.style.background = bg; muestra.style.color = fg;
   muestra.textContent = (document.getElementById('p-nombre').value.trim()) || 'Nombre';
   const ratio = ratioContraste(bg, fg);
-  document.getElementById('cw-contraste').textContent = (ratio < 3 ? '⚠ Poco contraste ' : 'Contraste ') + ratio.toFixed(1) + ':1';
+  document.getElementById('cw-contraste').innerHTML = (ratio < 3 ? mi('warning') + ' Poco contraste ' : 'Contraste ') + ratio.toFixed(1) + ':1';
   cwDibujarRueda();
 }
 function cwDesdePuntero(e){
@@ -1292,8 +1362,8 @@ function renderPersonas(){
       <div class="top">
         <div class="top-main">
           <div class="orden-btns">
-            <button type="button" onclick="moverPersona('${p.id}', -1)" ${i===0?'disabled':''} aria-label="Subir" title="Subir">▲</button>
-            <button type="button" onclick="moverPersona('${p.id}', 1)" ${i===personas.length-1?'disabled':''} aria-label="Bajar" title="Bajar">▼</button>
+            <button type="button" onclick="moverPersona('${p.id}', -1)" ${i===0?'disabled':''} aria-label="Subir" title="Subir">${mi('arrow_upward')}</button>
+            <button type="button" onclick="moverPersona('${p.id}', 1)" ${i===personas.length-1?'disabled':''} aria-label="Bajar" title="Bajar">${mi('arrow_downward')}</button>
           </div>
           <div>
             <h4><span class="persona-color-dot" style="background:${p.color || COLOR_DEFAULT};"></span> ${p.nombre}</h4>
@@ -1301,8 +1371,8 @@ function renderPersonas(){
           </div>
         </div>
         <div class="acciones">
-          <button class="btn btn-ghost btn-sm" onclick="editarPersona('${p.id}')">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="eliminarPersona('${p.id}')">Eliminar</button>
+          <button class="btn btn-ghost btn-sm" onclick="editarPersona('${p.id}')">${mi('edit')}Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminarPersona('${p.id}')">${mi('delete')}Eliminar</button>
         </div>
       </div>
       <div class="detalle">
@@ -2280,7 +2350,7 @@ function renderFeriados(){
   feriados.slice().sort().forEach(iso=>{
     const chip = document.createElement('div');
     chip.className = 'chip';
-    chip.innerHTML = `<span>${formatFechaCorta(iso)}</span> <button type="button">×</button>`;
+    chip.innerHTML = `<span>${formatFechaCorta(iso)}</span> <button type="button" aria-label="Quitar fecha">${mi('close')}</button>`;
     chip.querySelector('button').addEventListener('click', ()=>{
       feriados = feriados.filter(f=>f!==iso);
       guardarFeriados();
@@ -2372,11 +2442,11 @@ function renderOtrosCalendarios(){
           style="width:30px; height:30px; padding:0; border:1px solid var(--line); border-radius:7px; background:var(--paper); cursor:pointer; flex-shrink:0; margin:0;">
         <input type="text" data-nombre-cal="${c.id}" value="${c.nombre}"
           style="flex:1; min-width:0; margin:0; padding:5px 8px; border:1px solid var(--line); border-radius:7px; font-family:'Inter'; font-size:.9rem; background:var(--paper); color:var(--ink);">
-        <button class="btn btn-danger btn-sm" data-eliminar-cal="${c.id}" type="button" aria-label="Eliminar calendario" title="Eliminar calendario" style="padding:4px 8px; margin:0;">✕</button>
+        <button class="btn btn-danger btn-sm" data-eliminar-cal="${c.id}" type="button" aria-label="Eliminar calendario" title="Eliminar calendario" style="padding:4px 8px; margin:0;">${mi('delete')}</button>
       </div>
       <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
         <select data-persona-cal="${c.id}" aria-label="Persona" style="flex:1; min-width:0; margin:0; padding:5px 8px; font-size:.85rem;"></select>
-        <button class="btn btn-accent btn-sm" data-abrir-selector="${c.id}" type="button" style="margin:0; white-space:nowrap;">+ Fechas</button>
+        <button class="btn btn-accent btn-sm" data-abrir-selector="${c.id}" type="button" style="margin:0; white-space:nowrap;">${mi('add')}Fechas</button>
       </div>`;
     box.appendChild(div);
     poblarSelectPersonas(div.querySelector(`[data-persona-cal="${c.id}"]`), c.personaId);
@@ -2851,6 +2921,11 @@ window.addEventListener('resize', ()=>{
   _resizeTimeoutEtiquetas = setTimeout(()=>{ if(currentSchedule) ajustarEtiquetasCalendario(); }, 150);
 });
 
+function mostrarAccionesCalendario(hay){
+  document.getElementById('cal-actions').style.display = hay ? 'block' : 'none';
+  document.getElementById('btn-exportar-shifter').style.display = hay ? '' : 'none';
+}
+
 function renderCalendar(){
   const dowRow = document.getElementById('cal-dow-row');
   const grid = document.getElementById('cal-grid');
@@ -2894,7 +2969,7 @@ function renderCalendar(){
     }
     warningsBox.innerHTML='';
     resumenCard.style.display='none';
-    actions.style.display='none';
+    mostrarAccionesCalendario(false);
     if(sinTurnosHint) sinTurnosHint.style.display='block';
     actualizarUiBloqueo();
     return;
@@ -2904,7 +2979,7 @@ function renderCalendar(){
 
   const {anio, mes, days, warnings, assignedCount} = currentSchedule;
   titulo.textContent = `${MESES[mes]} ${anio}`;
-  actions.style.display='flex';
+  mostrarAccionesCalendario(true);
 
   dowRow.innerHTML = DOW_LABELS.map(l=>`<div class="cal-dow">${l}</div>`).join('');
 
@@ -2949,7 +3024,7 @@ function renderCalendar(){
   ajustarEtiquetasCalendario();
 
   warningsBox.innerHTML = warnings.length
-    ? warnings.map(w=>`<div class="warning-item">⚠ ${w}</div>`).join('')
+    ? warnings.map(w=>`<div class="warning-item">${mi('warning')} ${w}</div>`).join('')
     : '';
 
   resumenCard.style.display = personas.length ? 'block':'none';
@@ -2982,7 +3057,7 @@ function renderCalendar(){
 let dialogFecha = null;
 function openDialog(iso, dia, weekday){
   if(mesBloqueado(calViewAnio, calViewMes)){
-    avisoBreveBloqueo('🔒 Mes bloqueado: desbloquealo con el candado para editar.');
+    avisoBreveBloqueo('Mes bloqueado: desbloquealo con el candado para editar.');
     return;
   }
   dialogFecha = iso;
@@ -3025,7 +3100,7 @@ document.getElementById('btn-cerrar-dialog').addEventListener('click', ()=> docu
 document.getElementById('btn-guardar-dia').addEventListener('click', ()=>{
   if(mesBloqueado(currentSchedule.anio, currentSchedule.mes)){
     document.getElementById('dialog-dia').close();
-    avisoBreveBloqueo('🔒 Mes bloqueado: no se guardó ningún cambio.');
+    avisoBreveBloqueo('Mes bloqueado: no se guardó ningún cambio.');
     return;
   }
   const checked = [...new Set([...document.querySelectorAll('#dialog-personas-list input:checked')].map(el=>el.value))];
@@ -3064,7 +3139,7 @@ function cargarHtml2Canvas(){
 document.getElementById('btn-exportar-imagen').addEventListener('click', async ()=>{
   const btn = document.getElementById('btn-exportar-imagen');
   if(btn.disabled) return;
-  const textoOriginal = btn.textContent;
+  const textoOriginal = btn.innerHTML;
   btn.disabled = true;
   btn.textContent = 'Generando imagen...';
   try{
@@ -3088,7 +3163,10 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
       canvas = await html2canvas(nodo, {
         backgroundColor: getCssVarHex('--paper'),
         scale: 2,
-        useCORS: true
+        useCORS: true,
+        onclone: (doc)=>{
+          doc.querySelectorAll('svg.mi').forEach(svg=>{ svg.style.fill = doc.defaultView.getComputedStyle(svg).color; });
+        }
       });
     } finally {
       aOcultar.forEach((el,i)=>{ el.style.display = displayPrevio[i]; });
@@ -3104,7 +3182,7 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
     alert('No se pudo generar la imagen. ' + (err && err.message ? err.message : 'Probá de nuevo.'));
   } finally {
     btn.disabled = false;
-    btn.textContent = textoOriginal;
+    btn.innerHTML = textoOriginal;
   }
 });
 // ---------- Exportar el resumen por persona como imagen (PNG) ----------
@@ -3119,7 +3197,7 @@ document.getElementById('btn-exportar-resumen-imagen').addEventListener('click',
     alert('Todavía no hay un resumen generado para exportar.');
     return;
   }
-  const textoOriginal = btn.textContent;
+  const textoOriginal = btn.innerHTML;
   btn.disabled = true;
   btn.textContent = 'Generando imagen...';
   let nodo;
@@ -3170,28 +3248,15 @@ document.getElementById('btn-exportar-resumen-imagen').addEventListener('click',
   } finally {
     if(nodo && nodo.parentNode) nodo.parentNode.removeChild(nodo);
     btn.disabled = false;
-    btn.textContent = textoOriginal;
+    btn.innerHTML = textoOriginal;
   }
-});
-
-document.getElementById('btn-copiar').addEventListener('click', ()=>{
-  if(!currentSchedule) return;
-  const {anio, mes, days} = currentSchedule;
-  const diasEnMes = new Date(anio, mes+1, 0).getDate();
-  let txt = `Turnos - ${MESES[mes]} ${anio}\n\n`;
-  for(let d=1; d<=diasEnMes; d++){
-    const iso = isoDate(anio, mes, d);
-    const nombres = (days[iso]||[]).map(id=>personas.find(p=>p.id===id)?.nombre || '?');
-    txt += `${String(d).padStart(2,'0')}/${String(mes+1).padStart(2,'0')}: ${nombres.length ? nombres.join(', ') : '(sin asignar)'}\n`;
-  }
-  navigator.clipboard.writeText(txt).then(()=> alert('Copiado al portapapeles.'));
 });
 
 // ---------- Tema oscuro / claro ----------
 const btnTheme = document.getElementById('btn-theme-toggle');
 function actualizarIconoTheme(){
   const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
-  btnTheme.textContent = esClaro ? '☀️' : '🌙';
+  btnTheme.innerHTML = mi(esClaro ? 'light_mode' : 'dark_mode');
 }
 btnTheme.addEventListener('click', ()=>{
   const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
@@ -3240,7 +3305,7 @@ async function exportarAShifter(){
     return;
   }
   const btn = document.getElementById('btn-exportar-shifter');
-  const textoOriginal = btn.textContent;
+  const textoOriginal = btn.innerHTML;
 
   const nombreCalPrevio = (config.nombreCalendarioShifter || 'Turnos');
   const nombreCalEntrada = prompt('Nombre del calendario en Shifter:', nombreCalPrevio);
@@ -3351,7 +3416,7 @@ async function exportarAShifter(){
     alert('No se pudo generar el archivo para Shifter.\n' + (err && err.message ? err.message : err));
   }finally{
     btn.disabled = false;
-    btn.textContent = textoOriginal;
+    btn.innerHTML = textoOriginal;
   }
 }
 document.getElementById('btn-exportar-shifter').addEventListener('click', exportarAShifter);
@@ -3374,7 +3439,7 @@ async function exportarPersonaComoTurnosAShifter(){
   }
   const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
   const btn = document.getElementById('btn-exportar-pcc-shifter');
-  const textoOriginal = btn.textContent;
+  const textoOriginal = btn.innerHTML;
 
   // Se sugiere el mismo nombre de calendario que el usuario ya venía usando
   // desde la primera vez que exportó a Shifter (guardado en
@@ -3507,7 +3572,7 @@ async function exportarPersonaComoTurnosAShifter(){
     alert('No se pudo generar el archivo para Shifter.\n' + (err && err.message ? err.message : err));
   }finally{
     btn.disabled = false;
-    btn.textContent = textoOriginal;
+    btn.innerHTML = textoOriginal;
   }
 }
 document.getElementById('btn-exportar-pcc-shifter').addEventListener('click', exportarPersonaComoTurnosAShifter);
@@ -3559,7 +3624,7 @@ async function importarDesdeShifter(file){
     return;
   }
   const btn = document.getElementById('btn-importar-shifter');
-  const textoOriginal = btn.textContent;
+  const textoOriginal = btn.innerHTML;
   btn.disabled = true;
   btn.textContent = 'Importando...';
   try{
@@ -3683,7 +3748,7 @@ async function importarDesdeShifter(file){
     alert('No se pudo importar el archivo. ¿Seguro que es un backup de Shifter (.Shifter)?\n' + (err && err.message ? err.message : err));
   }finally{
     btn.disabled = false;
-    btn.textContent = textoOriginal;
+    btn.innerHTML = textoOriginal;
   }
 }
 
