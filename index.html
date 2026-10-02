@@ -343,9 +343,11 @@
       <div class="excl-tabs" id="excl-tabs" style="margin-top:12px;"></div>
       <div class="cal-grid" id="excl-dow-row"></div>
       <div class="cal-grid" id="excl-cal-grid"></div>
-      <div id="excl-leyenda"></div>
-      <p class="sub-hint" id="excl-resumen" style="margin-top:10px;"></p>
     </div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" id="btn-generar">Generar turnos del mes</button>
+    </div>
+    <p class="empty" id="generar-empty-hint">Cargá al menos una persona antes de generar.</p>
 
     <h3 style="margin:18px 0 10px 4px; font-size:.95rem;">Personas cargadas</h3>
     <div id="lista-personas"></div>
@@ -413,11 +415,6 @@
       </div>
       <div class="chips" id="feriados-chips" style="margin-top:10px;"></div>
     </div>
-
-    <div class="btn-row">
-      <button class="btn btn-primary btn-full" id="btn-generar">Generar turnos del mes</button>
-    </div>
-    <p class="empty" id="generar-empty-hint">Cargá al menos una persona arriba antes de generar.</p>
   </section>
 
   <!-- CALENDARIO -->
@@ -1084,11 +1081,9 @@ function renderExclusiones(){
   const tabsBox = document.getElementById('excl-tabs');
   const dowRow = document.getElementById('excl-dow-row');
   const grid = document.getElementById('excl-cal-grid');
-  const resumen = document.getElementById('excl-resumen');
 
   if(personas.length===0){
     tabsBox.innerHTML=''; dowRow.innerHTML=''; grid.innerHTML='';
-    resumen.textContent='';
     document.getElementById('excl-card').style.display='none';
     return;
   }
@@ -1149,14 +1144,6 @@ function renderExclusiones(){
     }
     grid.appendChild(cell);
   }
-
-  const marcados = Object.keys(exclusionesActuales[persona.id])
-    .filter(iso => exclusionesActuales[persona.id][iso] > 0)
-    .sort();
-  resumen.innerHTML = marcados.length
-    ? `${persona.nombre}: ${marcados.map(iso=>`${formatFechaCorta(iso)} (${nombreNivel(exclusionesActuales[persona.id][iso])})`).join(', ')}`
-    : `${persona.nombre}: no marcaste ningún día puntual todavía.`;
-  document.getElementById('excl-leyenda') && (document.getElementById('excl-leyenda').innerHTML = leyendaNivelesHtml());
 }
 
 document.getElementById('g-mes').addEventListener('change', ()=>{ cargarExclusionesDelMesSeleccionado(); renderExclusiones(); });
