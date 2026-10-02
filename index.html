@@ -326,6 +326,13 @@
   .var-ctrl select{width:auto; padding:6px 8px;}
   .var-leyenda{display:flex; flex-wrap:wrap; gap:4px; margin-bottom:10px;}
   .var-leyenda span, .var-stats span{font-size:.66rem; padding:1px 6px; border-radius:5px; font-weight:600;}
+  .var-leyenda button{font:inherit; font-size:.72rem; padding:3px 9px; border-radius:6px; font-weight:700; border:2px solid transparent; cursor:pointer; opacity:1; transition:opacity .15s, box-shadow .15s;}
+  .var-leyenda.filtrando button:not(.activa){opacity:.4;}
+  .var-leyenda button.activa{border-color:var(--ink); box-shadow:0 0 0 2px var(--paper);}
+  .var-filtro-info{font-size:.72rem; color:var(--ink-soft); margin:-4px 0 8px;}
+  .var-dia.solo{background:var(--paper-dim);}
+  .var-dia.solo.vacio{opacity:.45;}
+  .var-dia.solo i{height:11px; line-height:11px;}
   .var-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px;}
   .var-card{border:2px solid var(--line); border-radius:12px; padding:8px; background:var(--card); min-width:0;}
   .var-card.ref{border-color:var(--teal);}
@@ -593,6 +600,7 @@
     </div>
     <p class="sub-hint" id="var-estado" style="margin:4px 0 8px;"></p>
     <div class="var-leyenda" id="var-leyenda"></div>
+    <p class="var-filtro-info" id="var-filtro-info"></p>
     <div class="var-grid" id="var-grid"></div>
     <p class="sub-hint" style="margin-top:10px;">Los días con borde naranja son los que cambian respecto de la variante de referencia. Tocá "Comparar con esta" para cambiar la referencia.</p>
   </div>
@@ -1477,7 +1485,7 @@ document.getElementById('btn-generar').addEventListener('click', ()=>{
 // al apretar Generar varias veces se repiten las mismas pocas opciones. Acá
 // se llama varias veces, se descartan las repetidas (misma asignación día por
 // día) y se muestran juntas, con las diferencias marcadas.
-let variantes = [], variantesRef = 0, variantesCtx = null, variantesToken = 0;
+let variantes = [], variantesRef = 0, variantesCtx = null, variantesToken = 0, variantesFiltro = null; // variantesFiltro = id de persona o null
 const escV = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function firmaDia(sched, iso){ return [...new Set(sched.days[iso] || [])].sort().join(','); }
 function firmaSchedule(sched){ return Object.keys(sched.days).sort().map(k => k+':'+firmaDia(sched,k)).join('|'); }
@@ -1486,28 +1494,41 @@ function renderVariantes(final){
   const dlg = document.getElementById('dialog-variantes');
   const {anio, mes, personasPorDia} = variantesCtx;
   document.getElementById('var-titulo').textContent = `Variantes de ${MESES[mes]} ${anio}`;
-  document.getElementById('var-leyenda').innerHTML = personas.map(p =>
-    `<span style="background:${p.color||COLOR_DEFAULT};color:${colorTextoDePersona(p)};">${escV(p.nombre)}</span>`).join('');
+  if(variantesFiltro && !personas.some(p => p.id === variantesFiltro)) variantesFiltro = null;
+  const filtroP = variantesFiltro ? personas.find(p => p.id === variantesFiltro) : null;
+  const leyendaEl = document.getElementById('var-leyenda');
+  leyendaEl.classList.toggle('filtrando', !!filtroP);
+  leyendaEl.innerHTML = personas.map(p =>
+    `<button type="button" data-persona="${escV(p.id)}" class="${p.id===variantesFiltro?'activa':''}" aria-pressed="${p.id===variantesFiltro}" style="background:${p.color||COLOR_DEFAULT};color:${colorTextoDePersona(p)};">${escV(p.nombre)}</button>`).join('');
+  document.getElementById('var-filtro-info').textContent = filtroP
+    ? `Mostrando solo los turnos de ${filtroP.nombre}. Tocá su nombre otra vez para ver a todos.`
+    : 'Tocá un nombre para ver solo sus turnos en cada variante.';
   const diasEnMes = new Date(anio, mes+1, 0).getDate();
   const offset = primerOffsetLunes(anio, mes);
   const ref = variantes[variantesRef];
   const grid = document.getElementById('var-grid');
   grid.innerHTML = '';
   variantes.forEach((v, idx) => {
-    let diasDist = 0, celdas = '';
+    let diasDist = 0, trabaja = 0, celdas = '';
     for(let i=0;i<offset;i++) celdas += '<div></div>';
     for(let d=1; d<=diasEnMes; d++){
       const iso = isoDate(anio, mes, d);
-      const ids = [...new Set(v.days[iso] || [])];
-      const diff = v !== ref && firmaDia(v, iso) !== firmaDia(ref, iso);
+      const idsTodos = [...new Set(v.days[iso] || [])];
+      const ids = filtroP ? idsTodos.filter(id => id === filtroP.id) : idsTodos;
+      const diff = v !== ref && (filtroP
+        ? (idsTodos.includes(filtroP.id) !== (ref.days[iso] || []).includes(filtroP.id))
+        : firmaDia(v, iso) !== firmaDia(ref, iso));
       if(diff) diasDist++;
+      if(filtroP) trabaja += ids.length;
       const chips = ids.map(id => {
         const p = personas.find(pp => pp.id === id);
         return `<i style="background:${p?.color||COLOR_DEFAULT};color:${p?colorTextoDePersona(p):'#fff'};">${escV((p?.nombre||'?').charAt(0).toUpperCase())}</i>`;
       }).join('');
-      celdas += `<div class="var-dia${diff?' diff':''}${ids.length<personasPorDia?' under':''}"><b>${d}</b>${chips}</div>`;
+      celdas += filtroP
+        ? `<div class="var-dia solo${diff?' diff':''}${ids.length?'':' vacio'}"><b>${d}</b>${chips}</div>`
+        : `<div class="var-dia${diff?' diff':''}${ids.length<personasPorDia?' under':''}"><b>${d}</b>${chips}</div>`;
     }
-    const stats = personas.map(p => {
+    const stats = (filtroP ? [filtroP] : personas).map(p => {
       const n = v.assignedCount?.[p.id] ?? 0;
       return `<span style="background:${p.color||COLOR_DEFAULT};color:${colorTextoDePersona(p)};" title="${escV(p.nombre)}">${escV(p.nombre.slice(0,6))} ${n}/${p.maxDias}</span>`;
     }).join('');
@@ -1519,8 +1540,8 @@ function renderVariantes(final){
         <span class="var-tag">${idx===0 && final ? '★ Mejor puntaje<br>' : ''}${idx===variantesRef ? 'Referencia' : diasDist+' días distintos'}</span></div>
       <div class="var-mini">${celdas}</div>
       <div class="var-stats">${stats}</div>
-      ${v._huecos>0 ? `<div class="var-warn">${v._huecos} turno(s) sin cubrir</div>` : ''}
-      ${sinFinde.length ? `<div class="var-warn">Sin finde libre: ${escV(sinFinde.join(', '))}</div>` : ''}
+      ${!filtroP && v._huecos>0 ? `<div class="var-warn">${v._huecos} turno(s) sin cubrir</div>` : ''}
+      ${(filtroP ? sinFinde.filter(n => n === filtroP.nombre) : sinFinde).length ? `<div class="var-warn">Sin finde libre: ${escV((filtroP ? sinFinde.filter(n => n === filtroP.nombre) : sinFinde).join(', '))}</div>` : ''}
       <div class="var-btns">
         <button class="btn btn-accent btn-sm" type="button" data-usar="${idx}">Usar esta</button>
         ${idx===variantesRef ? '' : `<button class="btn btn-ghost btn-sm" type="button" data-ref="${idx}">Comparar con esta</button>`}
@@ -1583,6 +1604,12 @@ document.getElementById('btn-var-otras').addEventListener('click', buscarVariant
 document.getElementById('btn-var-cerrar').addEventListener('click', ()=> document.getElementById('dialog-variantes').close());
 document.getElementById('dialog-variantes').addEventListener('close', ()=>{ variantesToken++; });
 document.getElementById('var-cantidad').addEventListener('change', buscarVariantes);
+document.getElementById('var-leyenda').addEventListener('click', e=>{
+  const b = e.target.closest('[data-persona]');
+  if(!b) return;
+  variantesFiltro = (variantesFiltro === b.dataset.persona) ? null : b.dataset.persona;
+  renderVariantes(true);
+});
 document.getElementById('var-grid').addEventListener('click', e=>{
   const btnRef = e.target.closest('[data-ref]');
   if(btnRef){ variantesRef = parseInt(btnRef.dataset.ref,10); renderVariantes(true); return; }
