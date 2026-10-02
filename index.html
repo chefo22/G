@@ -1688,17 +1688,65 @@ function contarDisponiblesPorDia(anio, mes, personasList, exclusiones){
   return disponibles;
 }
 
+// ---------- Arrastre del mes anterior ----------
+// Los límites de días seguidos y de descanso mínimo no se "reinician" el día
+// 1 de cada mes: si alguien terminó el mes anterior trabajando varios días
+// seguidos, esa racha sigue contando; y si terminó descansando, esos días de
+// descanso también cuentan. Esta función lee el calendario ya guardado del
+// mes anterior (si existe) y devuelve, por persona:
+//   racha:    días seguidos trabajados hasta el último día del mes anterior
+//   descanso: días libres que lleva desde su último turno (0 si trabajó
+//             justo el último día del mes anterior)
+// Si no hay calendario guardado del mes anterior, devuelve {} y todo
+// funciona como antes (cada persona arranca "limpia").
+let _cacheMesAnterior = null; // { key, data }
+function estadoMesAnterior(anio, mes){
+  const key = anio + '_' + mes;
+  if(_cacheMesAnterior && _cacheMesAnterior.key === key) return _cacheMesAnterior.data;
+  const data = {};
+  try{
+    let pa = anio, pm = mes - 1;
+    if(pm < 0){ pm = 11; pa--; }
+    const sched = JSON.parse(localStorage.getItem(LS_SCHEDULE_PREFIX + pa + '_' + pm) || 'null');
+    if(sched && sched.days){
+      const n = new Date(pa, pm + 1, 0).getDate();
+      const trabajo = (id, dd) => (sched.days[isoDate(pa, pm, dd)] || []).includes(id);
+      const ids = new Set();
+      Object.values(sched.days).forEach(lista => (lista || []).forEach(id => ids.add(id)));
+      ids.forEach(id => {
+        let ultimo = 0;
+        for(let dd = n; dd >= 1; dd--){ if(trabajo(id, dd)){ ultimo = dd; break; } }
+        if(!ultimo) return;
+        let racha = 0;
+        if(ultimo === n){
+          for(let dd = n; dd >= 1 && trabajo(id, dd); dd--) racha++;
+        }
+        data[id] = { racha, descanso: n - ultimo };
+      });
+    }
+  }catch(e){ /* sin datos del mes anterior: no es grave */ }
+  _cacheMesAnterior = { key, data };
+  return data;
+}
+
 // Si se asignara a esta persona el día d, ¿cuántos días SEGUIDOS quedaría
 // trabajando? Mira los días vecinos ya decididos (hacia atrás y hacia
 // adelante) en el calendario parcial, que no necesariamente se llenó en
-// orden cronológico. Es una estimación para el relleno inicial: la
-// corrección definitiva pasa por repararCronologicamente.
+// orden cronológico. Si hacia atrás llega hasta el día 1 sin cortarse, se
+// suma además la racha con la que terminó el mes anterior. Es una
+// estimación para el relleno inicial: la corrección definitiva pasa por
+// repararCronologicamente.
 function rachaSiAsigna(personaId, d, days, anio, mes){
   const diasEnMes = new Date(anio, mes+1, 0).getDate();
   let racha = 1;
+  let llegaAlInicio = true;
   for(let dd = d-1; dd >= 1; dd--){
     const iso = isoDate(anio, mes, dd);
-    if(days[iso] && days[iso].includes(personaId)){ racha++; } else break;
+    if(days[iso] && days[iso].includes(personaId)){ racha++; } else { llegaAlInicio = false; break; }
+  }
+  if(llegaAlInicio){
+    const previo = estadoMesAnterior(anio, mes)[personaId];
+    if(previo) racha += previo.racha;
   }
   for(let dd = d+1; dd <= diasEnMes; dd++){
     const iso = isoDate(anio, mes, dd);
@@ -1877,10 +1925,23 @@ function repararCronologicamente(anio, mes, personasList, personasPorDia, exclus
   const lastDayIdx = {};
   const rachaActual = {};
   const descansoActual = {};
+  // Estado con el que arranca cada persona el día 1: si el mes anterior
+  // ya está guardado, se hereda su racha / descanso (ver estadoMesAnterior).
+  const previo = estadoMesAnterior(anio, mes);
   personasList.forEach(p=>{
     assignedCount[p.id] = 0;
     rachaActual[p.id] = 0;
     descansoActual[p.id] = Infinity;
+    const pv = previo[p.id];
+    if(pv){
+      rachaActual[p.id] = pv.racha;
+      descansoActual[p.id] = pv.descanso;
+      // lastDayIdx === d-1 es lo que hace continuar la racha: 0 equivale a
+      // "trabajó el último día del mes anterior". Si venía descansando, un
+      // valor negativo (nunca igual a d-1) alcanza para que el descanso
+      // siga sumando día a día.
+      lastDayIdx[p.id] = pv.racha > 0 ? 0 : -pv.descanso;
+    }
   });
   const days = {};
   const warnings = [];
@@ -2452,6 +2513,7 @@ function generarTurnos(anio, mes, personasList, personasPorDia, exclusiones){
 // probadas, nunca una peor que la que ya tenía).
 const MEGA_TANDAS_MAX = 6;
 function generarTurnosRobusto(anio, mes, personasList, personasPorDia, exclusiones){
+  _cacheMesAnterior = null; // releer el mes anterior por si cambió desde la última vez
   let mejor = null;
   let mejorScore = null;
   let tandasProbadas = 0;
