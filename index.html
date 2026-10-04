@@ -392,7 +392,7 @@
 <main>
 
   <!-- GENERAR -->
-  <section id="view-generar" class="view active">
+  <section id="view-generar" class="view">
     <div class="card">
       <div class="cal-nav">
         <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes-g" type="button" style="visibility:hidden;" aria-pressed="false" title="Bloquear este mes"><i data-mi="lock_open"></i></button>
@@ -501,7 +501,7 @@
   </section>
 
   <!-- CALENDARIO -->
-  <section id="view-calendario" class="view">
+  <section id="view-calendario" class="view active">
     <button id="cal-avisos-fab" type="button" aria-expanded="false" title="Ver avisos"></button>
     <div id="cal-avisos-panel" role="status"></div>
     <div class="card print-cal">
@@ -600,8 +600,8 @@
 </main>
 
 <nav class="tabs" aria-label="Navegación principal">
-  <button data-tab="generar" class="active" aria-label="Generar" title="Generar"><i data-mi="tune"></i></button>
-  <button data-tab="calendario" aria-label="Calendario" title="Calendario"><i data-mi="event"></i></button>
+  <button data-tab="generar" aria-label="Generar" title="Generar"><i data-mi="tune"></i></button>
+  <button data-tab="calendario" class="active" aria-label="Calendario" title="Calendario"><i data-mi="event"></i></button>
   <button data-tab="otros" aria-label="Otros" title="Otros"><i data-mi="layers"></i></button>
 </nav>
 
