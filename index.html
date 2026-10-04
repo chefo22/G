@@ -59,7 +59,7 @@
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
     padding-top:env(safe-area-inset-top, 0px);
-    padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px));
+    padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px));
   }
   h1,h2,h3{font-family:'Space Grotesk',sans-serif; margin:0;}
   .mono{font-family:'JetBrains Mono',monospace;}
@@ -86,9 +86,9 @@
   }
   nav.tabs button.active{background:var(--ink); color:var(--paper);}
 
-  main{padding:16px 18px 60px; max-width:640px; margin:0 auto;}
+  main{padding:16px 18px 0; max-width:640px; margin:0 auto;}
   @media (max-width:480px){
-    main{padding:16px 8px 60px;}
+    main{padding:16px 8px 0;}
     .card.print-cal{padding:12px 4px;}
   }
   section.view{display:none;}
@@ -251,6 +251,11 @@
   .empty{color:var(--ink-soft); font-size:.88rem; text-align:center; padding:30px 10px;}
 
   .config-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .personas-stepper{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; padding-top:12px; border-top:1px solid var(--line);}
+  .personas-stepper .ps-label{font-size:.78rem; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+  .personas-stepper .ps-ctrl{display:flex; align-items:center; gap:8px;}
+  .personas-stepper .ps-valor{min-width:28px; text-align:center; font-size:1.15rem; font-weight:700; color:var(--ink);}
+  .personas-stepper .btn-nav-mes{width:36px; height:36px; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.2rem; line-height:1;}
 
   .sub-hint{font-size:.8rem; color:var(--ink-soft); margin:0 0 12px;}
   .excl-tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
@@ -389,19 +394,24 @@
   <!-- GENERAR -->
   <section id="view-generar" class="view active">
     <div class="card">
-      <h3>Configuración del mes</h3>
-      <div class="config-grid">
-        <div>
-          <label for="g-mes">Mes</label>
-          <select id="g-mes"></select>
-        </div>
-        <div>
-          <label for="g-anio">Año</label>
-          <input type="number" id="g-anio">
+      <div class="cal-nav">
+        <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes-g" type="button" style="visibility:hidden;" aria-pressed="false" title="Bloquear este mes"><i data-mi="lock_open"></i></button>
+        <button class="btn btn-ghost btn-nav-mes" id="btn-g-mes-anterior" type="button" aria-label="Mes anterior" title="Mes anterior"><i data-mi="chevron_left"></i></button>
+        <h3 id="g-titulo">Mes</h3>
+        <button class="btn btn-ghost btn-nav-mes" id="btn-g-mes-siguiente" type="button" aria-label="Mes siguiente" title="Mes siguiente"><i data-mi="chevron_right"></i></button>
+        <button class="btn btn-ghost btn-sm btn-hoy" id="btn-g-mes-hoy" type="button" title="Ir al mes actual">Hoy</button>
+      </div>
+      <select id="g-mes" style="display:none;" aria-hidden="true" tabindex="-1"></select>
+      <input type="hidden" id="g-anio">
+      <input type="hidden" id="g-personas-dia" value="2">
+      <div class="personas-stepper">
+        <span class="ps-label">Personas por día</span>
+        <div class="ps-ctrl">
+          <button class="btn btn-ghost btn-nav-mes" id="btn-g-personas-menos" type="button" aria-label="Menos personas" title="Menos personas">&minus;</button>
+          <span class="ps-valor" id="g-personas-valor">2</span>
+          <button class="btn btn-ghost btn-nav-mes" id="btn-g-personas-mas" type="button" aria-label="Más personas" title="Más personas">+</button>
         </div>
       </div>
-      <label for="g-personas-dia">Personas necesarias por día</label>
-      <input type="number" id="g-personas-dia" min="1" value="2">
     </div>
 
     <div class="card" id="excl-card" style="margin-top:18px;">
@@ -758,16 +768,19 @@ function nombresMesesBloqueadosConTurnos(){
     .map(k=>{ const [a,m] = k.split('_'); return `${MESES[parseInt(m,10)]} ${a}`; });
 }
 function actualizarUiBloqueo(){
-  const btn = document.getElementById('btn-bloquear-mes');
   const grid = document.getElementById('cal-grid');
   const hayMes = !!currentSchedule;
   const bloqueado = hayMes && mesBloqueado(calViewAnio, calViewMes);
-  btn.style.visibility = hayMes ? 'visible' : 'hidden';
-  btn.innerHTML = mi(bloqueado ? 'lock' : 'lock_open');
-  btn.classList.toggle('activo', bloqueado);
-  btn.title = bloqueado ? 'Mes bloqueado: tocá para desbloquear' : 'Bloquear este mes';
-  btn.setAttribute('aria-label', btn.title);
-  btn.setAttribute('aria-pressed', bloqueado ? 'true' : 'false');
+  ['btn-bloquear-mes','btn-bloquear-mes-g'].forEach(id=>{
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    btn.style.visibility = hayMes ? 'visible' : 'hidden';
+    btn.innerHTML = mi(bloqueado ? 'lock' : 'lock_open');
+    btn.classList.toggle('activo', bloqueado);
+    btn.title = bloqueado ? 'Mes bloqueado: tocá para desbloquear' : 'Bloquear este mes';
+    btn.setAttribute('aria-label', btn.title);
+    btn.setAttribute('aria-pressed', bloqueado ? 'true' : 'false');
+  });
   grid.classList.toggle('bloqueado', bloqueado);
 }
 
@@ -1177,6 +1190,7 @@ document.querySelectorAll('nav.tabs button[data-tab]').forEach(btn=>{
         document.getElementById('g-mes').value = calViewMes;
         document.getElementById('g-anio').value = calViewAnio;
       }
+      actualizarConfigMesUI();
       refreshGenerarHint(); cargarExclusionesDelMesSeleccionado(); renderExclusiones();
     }
     if(btn.dataset.tab==='calendario') renderCalendar();
@@ -1285,6 +1299,43 @@ function renderExclusiones(){
     grid.appendChild(cell);
   }
 }
+
+// ---------- Configuración del mes (cabecera tipo calendario + stepper) ----------
+function actualizarConfigMesUI(){
+  const mes = parseInt(document.getElementById('g-mes').value, 10);
+  const anio = parseInt(document.getElementById('g-anio').value, 10);
+  const t = document.getElementById('g-titulo');
+  if(t) t.textContent = (isNaN(mes) || isNaN(anio)) ? 'Mes' : `${MESES[mes]} ${anio}`;
+  const n = parseInt(document.getElementById('g-personas-dia').value, 10) || 1;
+  document.getElementById('g-personas-valor').textContent = n;
+  document.getElementById('btn-g-personas-menos').disabled = n <= 1;
+}
+function mesActualGenerar(){
+  return {
+    mes: parseInt(document.getElementById('g-mes').value, 10),
+    anio: parseInt(document.getElementById('g-anio').value, 10)
+  };
+}
+document.getElementById('btn-g-mes-anterior').addEventListener('click', ()=>{
+  const {mes, anio} = mesActualGenerar();
+  irAMesCalendario(anio, mes - 1);
+});
+document.getElementById('btn-g-mes-siguiente').addEventListener('click', ()=>{
+  const {mes, anio} = mesActualGenerar();
+  irAMesCalendario(anio, mes + 1);
+});
+document.getElementById('btn-g-mes-hoy').addEventListener('click', ()=>{
+  const now = new Date();
+  irAMesCalendario(now.getFullYear(), now.getMonth());
+});
+function cambiarPersonasDia(delta){
+  const inp = document.getElementById('g-personas-dia');
+  const n = Math.min(20, Math.max(1, (parseInt(inp.value, 10) || 1) + delta));
+  inp.value = n;
+  actualizarConfigMesUI();
+}
+document.getElementById('btn-g-personas-menos').addEventListener('click', ()=>cambiarPersonasDia(-1));
+document.getElementById('btn-g-personas-mas').addEventListener('click', ()=>cambiarPersonasDia(1));
 
 document.getElementById('g-mes').addEventListener('change', sincronizarMesDesdeGenerar);
 document.getElementById('excl-modo-simple').addEventListener('change', (e)=>{
@@ -1465,6 +1516,7 @@ function initGenerarForm(){
   selMes.value = config.mes ?? now.getMonth();
   document.getElementById('g-anio').value = config.anio ?? now.getFullYear();
   document.getElementById('g-personas-dia').value = config.personasPorDia ?? 2;
+  actualizarConfigMesUI();
   cargarExclusionesDelMesSeleccionado();
   renderExclusiones();
 }
@@ -1478,7 +1530,7 @@ document.getElementById('btn-generar').addEventListener('click', ()=>{
   const anio = parseInt(document.getElementById('g-anio').value,10);
   const personasPorDia = parseInt(document.getElementById('g-personas-dia').value,10) || 1;
   if(mesBloqueado(anio, mes) && localStorage.getItem(LS_SCHEDULE_PREFIX+anio+'_'+mes) !== null){
-    alert(`${MESES[mes]} ${anio} está bloqueado, así que no se puede volver a generar.\n\nSi querés regenerarlo, primero desbloquealo con el candado de la pestaña Calendario.`);
+    alert(`${MESES[mes]} ${anio} está bloqueado, así que no se puede volver a generar.\n\nSi querés regenerarlo, primero desbloquealo con el candado del mes.`);
     return;
   }
   config = { mes, anio, personasPorDia };
@@ -1617,7 +1669,7 @@ document.getElementById('btn-variantes').addEventListener('click', ()=>{
   const anio = parseInt(document.getElementById('g-anio').value,10);
   const personasPorDia = parseInt(document.getElementById('g-personas-dia').value,10) || 1;
   if(mesBloqueado(anio, mes) && localStorage.getItem(LS_SCHEDULE_PREFIX+anio+'_'+mes) !== null){
-    alert(`${MESES[mes]} ${anio} está bloqueado, así que no se puede volver a generar.\n\nSi querés regenerarlo, primero desbloquealo con el candado de la pestaña Calendario.`);
+    alert(`${MESES[mes]} ${anio} está bloqueado, así que no se puede volver a generar.\n\nSi querés regenerarlo, primero desbloquealo con el candado del mes.`);
     return;
   }
   config = { mes, anio, personasPorDia };
@@ -1668,6 +1720,7 @@ function irAMesCalendario(anio, mes){
   // ...y la "Configuración del mes" de la pestaña Generar
   document.getElementById('g-mes').value = mes;
   document.getElementById('g-anio').value = anio;
+  actualizarConfigMesUI();
   cargarExclusionesDelMesSeleccionado();
   renderExclusiones();
   renderCalendar();
@@ -1683,10 +1736,12 @@ document.getElementById('btn-mes-hoy').addEventListener('click', ()=>{
   const now = new Date();
   irAMesCalendario(now.getFullYear(), now.getMonth());
 });
-document.getElementById('btn-bloquear-mes').addEventListener('click', ()=>{
-  if(!currentSchedule || calViewAnio===null || calViewMes===null) return;
-  setMesBloqueado(calViewAnio, calViewMes, !mesBloqueado(calViewAnio, calViewMes));
-  actualizarUiBloqueo();
+['btn-bloquear-mes','btn-bloquear-mes-g'].forEach(id=>{
+  document.getElementById(id).addEventListener('click', ()=>{
+    if(!currentSchedule || calViewAnio===null || calViewMes===null) return;
+    setMesBloqueado(calViewAnio, calViewMes, !mesBloqueado(calViewAnio, calViewMes));
+    actualizarUiBloqueo();
+  });
 });
 document.getElementById('btn-generar-este-mes').addEventListener('click', ()=>{
   document.querySelectorAll('nav.tabs button[data-tab]').forEach(b=>b.classList.remove('active'));
@@ -1695,6 +1750,7 @@ document.getElementById('btn-generar-este-mes').addEventListener('click', ()=>{
   document.getElementById('view-generar').classList.add('active');
   document.getElementById('g-mes').value = calViewMes ?? new Date().getMonth();
   document.getElementById('g-anio').value = calViewAnio ?? new Date().getFullYear();
+  actualizarConfigMesUI();
   cargarExclusionesDelMesSeleccionado();
   renderExclusiones();
   refreshGenerarHint();
@@ -2074,28 +2130,20 @@ function repararCronologicamente(anio, mes, personasList, personasPorDia, exclus
     });
 
     if(elegidos.length < personasPorDia){
-      // Se agrupan los motivos iguales: si varias personas comparten el mismo
-      // motivo, se dicen los nombres juntos y el motivo una sola vez.
-      const grupos = new Map(); // clave -> { nombres:[], texto:(lista, plural)=>string }
-      const agregarMotivo = (clave, nombre, texto)=>{
-        if(!grupos.has(clave)) grupos.set(clave, { nombres:[], texto });
-        grupos.get(clave).nombres.push(nombre);
-      };
+      const detalles = [];
       personasList.forEach(p=>{
         if(elegiblesIds.has(p.id)) return; // ya está entre los elegibles de este día, no es motivo del faltante
         const nivel = nivelPreferenciaDia(p, weekday, iso, exclusiones);
         if(esBloqueante(nivel)){
-          agregarMotivo('bloqueo', p.nombre, (l,pl)=>`${l} no ${pl?'pueden':'puede'} ese día`);
+          detalles.push(`${p.nombre} no puede ese día`);
         } else if(assignedCount[p.id] >= p.maxDias){
-          agregarMotivo('max:'+p.maxDias, p.nombre, (l,pl)=>`${l} ya ${pl?'llegaron':'llegó'} a su máximo de ${p.maxDias} día(s) en el mes`);
+          detalles.push(`${p.nombre} ya llegó a su máximo de ${p.maxDias} día(s) en el mes`);
         } else if(rachaAntes[p.id] > 0 && p.maxSeguidos && rachaAntes[p.id] >= p.maxSeguidos){
-          agregarMotivo(`racha:${rachaAntes[p.id]}:${p.maxSeguidos}`, p.nombre, (l,pl)=>`${l} ${pl?'llevan':'lleva'} ${rachaAntes[p.id]} día(s) seguidos, ${pl?'llegaron':'llegó'} al límite de días seguidos (${p.maxSeguidos})`);
+          detalles.push(`${p.nombre} lleva ${rachaAntes[p.id]} día(s) seguidos, llegó al límite de días seguidos (${p.maxSeguidos})`);
         } else if(rachaAntes[p.id] === 0 && p.minDescanso && descansoAntes[p.id] < p.minDescanso){
-          agregarMotivo(`descanso:${p.minDescanso}:${descansoAntes[p.id]}`, p.nombre, (l,pl)=>`${l} ${pl?'descansan':'descansa'} (necesita ${p.minDescanso} día(s) de descanso, lleva ${descansoAntes[p.id]})`);
+          detalles.push(`${p.nombre} descansa (necesita ${p.minDescanso} día(s) de descanso, lleva ${descansoAntes[p.id]})`);
         }
       });
-      const unirNombres = n => n.length <= 1 ? (n[0] || '') : n.slice(0,-1).join(', ') + ' y ' + n[n.length-1];
-      const detalles = [...grupos.values()].map(g => g.texto(unirNombres(g.nombres), g.nombres.length > 1));
       let msg = `${d} de ${MESES[mes]}: faltan ${personasPorDia - elegidos.length} persona(s) disponible(s).`;
       if(detalles.length) msg += ' Motivos: ' + detalles.join('; ') + '.';
       warnings.push(msg);
@@ -4102,6 +4150,8 @@ function habilitarSwipeMes(el, btnAnterior, btnSiguiente){
 }
 habilitarSwipeMes(document.getElementById('cal-grid').closest('.card'), 'btn-mes-anterior', 'btn-mes-siguiente');
 habilitarSwipeMes(document.getElementById('pcc-card'), 'btn-pcc-mes-anterior', 'btn-pcc-mes-siguiente');
+habilitarSwipeMes(document.getElementById('btn-g-mes-anterior').closest('.card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
+habilitarSwipeMes(document.getElementById('excl-card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
 
 // ---------- Init ----------
 renderPersonas();
