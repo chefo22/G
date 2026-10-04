@@ -184,7 +184,6 @@
   /* Acciones bajo el calendario (compactas) */
   .acc-card{padding:10px 12px;}
   .acc-titulo{font-size:.68rem; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.07em; margin:0 0 6px 2px;}
-  .acc-card #cal-actions{margin-bottom:10px;}
   .acc-grid{display:flex; flex-wrap:wrap; gap:6px;}
   .acc-btn{
     display:inline-flex; align-items:center; justify-content:center; gap:6px;
@@ -201,6 +200,7 @@
   .acc-check{display:flex; align-items:center; gap:8px; margin:8px 2px 0; font-size:.78rem; font-weight:500; text-transform:none; letter-spacing:0; color:var(--ink-soft); cursor:pointer;}
   .acc-check input{width:15px; height:15px; margin:0; accent-color:var(--teal);}
 
+  .print-cal, #pcc-card{touch-action:pan-y;}
   .cal-nav{display:flex; align-items:center; gap:8px; margin-bottom:2px;}
   .cal-nav h3{flex:1; text-align:center;}
   .cal-nav .btn-nav-mes{
@@ -272,15 +272,32 @@
   .excl-day.marcado{background:var(--red); border-color:var(--red); color:#fff;}
 
   .resumen-total{
-    display:flex; flex-direction:column; gap:3px;
-    background:var(--teal-dim); border-radius:10px; padding:10px 14px; margin-top:12px; font-size:.85rem;
+    display:flex; align-items:center; gap:10px;
+    background:var(--teal-dim); border-radius:8px; padding:6px 10px; margin-top:6px; font-size:.82rem;
   }
-  .resumen-total .resumen-fila{display:flex; justify-content:space-between; align-items:center;}
-  .resumen-total .resumen-detalle{font-size:.74rem; color:var(--ink-soft); font-weight:500;}
+  .resumen-total .resumen-nombre{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .resumen-total .resumen-detalle{font-size:.7rem; color:var(--ink-soft); font-weight:500; white-space:nowrap;}
   .resumen-total.warn{background:var(--amber-dim);}
   .resumen-total b{font-family:'JetBrains Mono';}
 
+  /* Los avisos ya no empujan el contenido: en pantalla van en un globito flotante.
+     #cal-warnings se mantiene oculto y solo se muestra al exportar la imagen. */
   .warnings{margin-top:12px;}
+  #cal-warnings{display:none;}
+  #cal-avisos-fab{
+    position:fixed; right:12px; bottom:calc(76px + env(safe-area-inset-bottom, 0px)); z-index:25;
+    display:none; align-items:center; gap:6px;
+    background:var(--amber-dim); color:var(--amber); border:1px solid var(--amber);
+    border-radius:100px; padding:7px 12px; font-family:'Inter',sans-serif; font-weight:600; font-size:.8rem;
+    box-shadow:var(--shadow); cursor:pointer;
+  }
+  #cal-avisos-fab .mi{width:16px; height:16px; margin:0;}
+  #cal-avisos-panel{
+    position:fixed; left:12px; right:12px; bottom:calc(122px + env(safe-area-inset-bottom, 0px)); z-index:25;
+    max-height:45vh; overflow-y:auto; display:none;
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 10px 4px;
+    box-shadow:var(--shadow); max-width:616px; margin:0 auto;
+  }
   .warning-item{
     background:var(--amber-dim); border-left:3px solid var(--amber); border-radius:6px;
     padding:8px 12px; font-size:.8rem; margin-bottom:6px; color:var(--amber);
@@ -357,6 +374,8 @@
   @media print{
     header, nav.tabs, .btn-row, .card:not(.print-cal){display:none !important;}
     .cal-nav .btn-nav-mes, .cal-nav .btn-hoy, .cal-nav .btn-lock, #cal-sin-turnos-hint{display:none !important;}
+    #cal-avisos-fab, #cal-avisos-panel{display:none !important;}
+    #cal-warnings{display:block;}
     body{padding:0;}
   }
 </style>
@@ -473,6 +492,8 @@
 
   <!-- CALENDARIO -->
   <section id="view-calendario" class="view">
+    <button id="cal-avisos-fab" type="button" aria-expanded="false" title="Ver avisos"></button>
+    <div id="cal-avisos-panel" role="status"></div>
     <div class="card print-cal">
       <div class="cal-nav">
         <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes" type="button" style="visibility:hidden;" aria-pressed="false" title="Bloquear este mes"><i data-mi="lock_open"></i></button>
@@ -489,22 +510,22 @@
         <button class="btn btn-primary btn-sm" id="btn-generar-este-mes" style="margin-top:8px; display:block;">Generar turnos para este mes</button>
       </p>
     </div>
+    <div class="card acc-card" id="cal-actions" style="display:none;">
+      <div class="acc-titulo">Compartir</div>
+      <div class="acc-grid">
+        <button class="acc-btn" id="btn-exportar-imagen" type="button"><i data-mi="image"></i>Imagen</button>
+      </div>
+      <label class="acc-check">
+        <input type="checkbox" id="chk-exportar-avisos" checked>
+        <span>Incluir avisos en la imagen</span>
+      </label>
+    </div>
     <div class="card" id="resumen-card" style="display:none;">
       <h3>Resumen por persona</h3>
       <div id="resumen-lista"></div>
-      <button class="btn btn-ghost btn-full" id="btn-exportar-resumen-imagen" style="margin-top:10px;"><i data-mi="image"></i>Exportar resumen como imagen</button>
+      <button class="btn btn-ghost btn-sm btn-full" id="btn-exportar-resumen-imagen" style="margin-top:8px;"><i data-mi="image"></i>Exportar resumen como imagen</button>
     </div>
-    <div class="card acc-card" id="cal-acciones-card">
-      <div id="cal-actions" style="display:none;">
-        <div class="acc-titulo">Compartir</div>
-        <div class="acc-grid">
-          <button class="acc-btn" id="btn-exportar-imagen" type="button"><i data-mi="image"></i>Imagen</button>
-        </div>
-        <label class="acc-check">
-          <input type="checkbox" id="chk-exportar-avisos" checked>
-          <span>Incluir avisos en la imagen</span>
-        </label>
-      </div>
+    <div class="card acc-card" id="cal-shifter-card">
       <div class="acc-titulo">Shifter</div>
       <div class="acc-grid" id="cal-import-actions">
         <button class="acc-btn acc-btn-main" id="btn-exportar-shifter" type="button" style="display:none;"><i data-mi="file_upload"></i>Exportar</button>
@@ -2053,20 +2074,28 @@ function repararCronologicamente(anio, mes, personasList, personasPorDia, exclus
     });
 
     if(elegidos.length < personasPorDia){
-      const detalles = [];
+      // Se agrupan los motivos iguales: si varias personas comparten el mismo
+      // motivo, se dicen los nombres juntos y el motivo una sola vez.
+      const grupos = new Map(); // clave -> { nombres:[], texto:(lista, plural)=>string }
+      const agregarMotivo = (clave, nombre, texto)=>{
+        if(!grupos.has(clave)) grupos.set(clave, { nombres:[], texto });
+        grupos.get(clave).nombres.push(nombre);
+      };
       personasList.forEach(p=>{
         if(elegiblesIds.has(p.id)) return; // ya está entre los elegibles de este día, no es motivo del faltante
         const nivel = nivelPreferenciaDia(p, weekday, iso, exclusiones);
         if(esBloqueante(nivel)){
-          detalles.push(`${p.nombre} no puede ese día`);
+          agregarMotivo('bloqueo', p.nombre, (l,pl)=>`${l} no ${pl?'pueden':'puede'} ese día`);
         } else if(assignedCount[p.id] >= p.maxDias){
-          detalles.push(`${p.nombre} ya llegó a su máximo de ${p.maxDias} día(s) en el mes`);
+          agregarMotivo('max:'+p.maxDias, p.nombre, (l,pl)=>`${l} ya ${pl?'llegaron':'llegó'} a su máximo de ${p.maxDias} día(s) en el mes`);
         } else if(rachaAntes[p.id] > 0 && p.maxSeguidos && rachaAntes[p.id] >= p.maxSeguidos){
-          detalles.push(`${p.nombre} lleva ${rachaAntes[p.id]} día(s) seguidos, llegó al límite de días seguidos (${p.maxSeguidos})`);
+          agregarMotivo(`racha:${rachaAntes[p.id]}:${p.maxSeguidos}`, p.nombre, (l,pl)=>`${l} ${pl?'llevan':'lleva'} ${rachaAntes[p.id]} día(s) seguidos, ${pl?'llegaron':'llegó'} al límite de días seguidos (${p.maxSeguidos})`);
         } else if(rachaAntes[p.id] === 0 && p.minDescanso && descansoAntes[p.id] < p.minDescanso){
-          detalles.push(`${p.nombre} descansa (necesita ${p.minDescanso} día(s) de descanso, lleva ${descansoAntes[p.id]})`);
+          agregarMotivo(`descanso:${p.minDescanso}:${descansoAntes[p.id]}`, p.nombre, (l,pl)=>`${l} ${pl?'descansan':'descansa'} (necesita ${p.minDescanso} día(s) de descanso, lleva ${descansoAntes[p.id]})`);
         }
       });
+      const unirNombres = n => n.length <= 1 ? (n[0] || '') : n.slice(0,-1).join(', ') + ' y ' + n[n.length-1];
+      const detalles = [...grupos.values()].map(g => g.texto(unirNombres(g.nombres), g.nombres.length > 1));
       let msg = `${d} de ${MESES[mes]}: faltan ${personasPorDia - elegidos.length} persona(s) disponible(s).`;
       if(detalles.length) msg += ' Motivos: ' + detalles.join('; ') + '.';
       warnings.push(msg);
@@ -3186,6 +3215,33 @@ window.addEventListener('resize', ()=>{
   _resizeTimeoutEtiquetas = setTimeout(()=>{ if(currentSchedule) ajustarEtiquetasCalendario(); }, 150);
 });
 
+function actualizarAvisosFlotantes(warnings){
+  const fab = document.getElementById('cal-avisos-fab');
+  const panel = document.getElementById('cal-avisos-panel');
+  if(!warnings || !warnings.length){
+    fab.style.display = 'none'; panel.style.display = 'none';
+    fab.setAttribute('aria-expanded','false');
+    return;
+  }
+  fab.innerHTML = mi('warning') + warnings.length + (warnings.length === 1 ? ' aviso' : ' avisos');
+  fab.style.display = 'flex';
+  panel.innerHTML = warnings.map(w=>`<div class="warning-item">${mi('warning')} ${w}</div>`).join('');
+}
+document.getElementById('cal-avisos-fab').addEventListener('click', e=>{
+  e.stopPropagation();
+  const panel = document.getElementById('cal-avisos-panel');
+  const abrir = panel.style.display !== 'block';
+  panel.style.display = abrir ? 'block' : 'none';
+  e.currentTarget.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+});
+document.addEventListener('click', e=>{
+  const panel = document.getElementById('cal-avisos-panel');
+  if(panel.style.display === 'block' && !panel.contains(e.target)){
+    panel.style.display = 'none';
+    document.getElementById('cal-avisos-fab').setAttribute('aria-expanded','false');
+  }
+});
+
 function mostrarAccionesCalendario(hay){
   document.getElementById('cal-actions').style.display = hay ? 'block' : 'none';
   document.getElementById('btn-exportar-shifter').style.display = hay ? '' : 'none';
@@ -3233,6 +3289,7 @@ function renderCalendar(){
       grid.appendChild(cell);
     }
     warningsBox.innerHTML='';
+    actualizarAvisosFlotantes([]);
     resumenCard.style.display='none';
     mostrarAccionesCalendario(false);
     if(sinTurnosHint) sinTurnosHint.style.display='block';
@@ -3291,6 +3348,7 @@ function renderCalendar(){
   warningsBox.innerHTML = warnings.length
     ? warnings.map(w=>`<div class="warning-item">${mi('warning')} ${w}</div>`).join('')
     : '';
+  actualizarAvisosFlotantes(warnings);
 
   resumenCard.style.display = personas.length ? 'block':'none';
   const resumenBox = document.getElementById('resumen-lista');
@@ -3311,9 +3369,11 @@ function renderCalendar(){
     const over = usados > p.maxDias;
     const row = document.createElement('div');
     row.className = 'resumen-total' + (over?' warn':'');
+    row.title = `${normales} normales · ${festivos} festivos (domingos, feriados y días en solitario)`;
     row.innerHTML = `
-      <div class="resumen-fila"><span>${p.nombre}</span><b>${usados} / ${p.maxDias} días</b></div>
-      <div class="resumen-detalle">${normales} normales · ${festivos} festivos (domingos, feriados y días en solitario)</div>`;
+      <span class="resumen-nombre">${p.nombre}</span>
+      <span class="resumen-detalle">${normales} norm · ${festivos} fest</span>
+      <b>${usados}/${p.maxDias}</b>`;
     resumenBox.appendChild(row);
   });
 }
@@ -3418,10 +3478,14 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
     // Si el usuario destildó la opción, los avisos de días incompletos
     // (faltan personas disponibles) tampoco salen en la imagen.
     const incluirAvisos = document.getElementById('chk-exportar-avisos').checked;
-    if(!incluirAvisos) selectoresAOcultar.push('#cal-warnings');
     const aOcultar = nodo.querySelectorAll(selectoresAOcultar.join(', '));
     const displayPrevio = [];
     aOcultar.forEach(el=>{ displayPrevio.push(el.style.display); el.style.display='none'; });
+    // En pantalla los avisos van en un globito flotante; para la imagen se
+    // muestra temporalmente el bloque que está dentro de la tarjeta.
+    const cajaAvisos = document.getElementById('cal-warnings');
+    const avisosPrevio = cajaAvisos.style.display;
+    if(incluirAvisos) cajaAvisos.style.display = 'block';
 
     let canvas;
     try{
@@ -3435,6 +3499,7 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
       });
     } finally {
       aOcultar.forEach((el,i)=>{ el.style.display = displayPrevio[i]; });
+      cajaAvisos.style.display = avisosPrevio;
     }
 
     const anio = calViewAnio ?? new Date().getFullYear();
@@ -4016,6 +4081,27 @@ async function importarDesdeShifter(file){
     btn.innerHTML = textoOriginal;
   }
 }
+
+// ---------- Deslizar para cambiar de mes ----------
+function habilitarSwipeMes(el, btnAnterior, btnSiguiente){
+  if(!el) return;
+  let x0 = 0, y0 = 0, activo = false;
+  el.addEventListener('touchstart', e=>{
+    if(e.touches.length !== 1){ activo = false; return; }
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; activo = true;
+  }, {passive:true});
+  el.addEventListener('touchend', e=>{
+    if(!activo) return;
+    activo = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - x0, dy = t.clientY - y0;
+    if(Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    document.getElementById(dx < 0 ? btnSiguiente : btnAnterior).click();
+  }, {passive:true});
+  el.addEventListener('touchcancel', ()=>{ activo = false; }, {passive:true});
+}
+habilitarSwipeMes(document.getElementById('cal-grid').closest('.card'), 'btn-mes-anterior', 'btn-mes-siguiente');
+habilitarSwipeMes(document.getElementById('pcc-card'), 'btn-pcc-mes-anterior', 'btn-pcc-mes-siguiente');
 
 // ---------- Init ----------
 renderPersonas();
