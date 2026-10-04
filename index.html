@@ -58,7 +58,8 @@
     color:var(--ink);
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
-    padding-bottom:40px;
+    padding-top:env(safe-area-inset-top, 0px);
+    padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px));
   }
   h1,h2,h3{font-family:'Space Grotesk',sans-serif; margin:0;}
   .mono{font-family:'JetBrains Mono',monospace;}
@@ -73,13 +74,14 @@
   header p{margin:4px 0 0; color:var(--ink-soft); font-size:.85rem;}
 
   nav.tabs{
-    display:flex; gap:6px; margin-top:16px;
-    background:var(--paper-dim); border-radius:12px; padding:4px;
+    position:fixed; left:0; right:0; bottom:0; z-index:30;
+    display:flex; gap:6px; margin:0;
+    background:var(--paper); border-top:1px solid var(--line);
+    padding:8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
   }
   nav.tabs button{
     flex:1; border:none; background:transparent; color:var(--ink-soft);
-    font-family:'Inter'; font-weight:600; font-size:.85rem;
-    padding:9px 6px; border-radius:9px; cursor:pointer;
+    padding:10px 6px; border-radius:12px; cursor:pointer;
     transition:background .15s, color .15s;
   }
   nav.tabs button.active{background:var(--ink); color:var(--paper);}
@@ -177,7 +179,7 @@
   .orden-btns .mi{width:14px; height:14px; vertical-align:0;}
   .sub-hint .mi{width:1em; height:1em; vertical-align:-.15em;}
   nav.tabs button{display:flex; align-items:center; justify-content:center; gap:6px;}
-  nav.tabs button .mi{width:18px; height:18px; margin:0;}
+  nav.tabs button .mi{width:24px; height:24px; margin:0;}
 
   /* Acciones bajo el calendario (compactas) */
   .acc-card{padding:10px 12px;}
@@ -206,15 +208,16 @@
     display:flex; align-items:center; justify-content:center;
   }
   .cal-nav .btn-hoy{flex-shrink:0;}
+  .cal-nav .btn-hoy, .cal-nav .btn-lock, .cal-nav-spacer{width:48px; min-width:48px; flex-shrink:0;}
+  .cal-nav .btn-hoy{padding-left:0; padding-right:0; justify-content:center;}
   .cal-nav .btn-lock{
-    width:36px; height:36px; padding:0; flex-shrink:0; font-size:1rem; line-height:1;
+    width:48px; height:36px; padding:0; flex-shrink:0; font-size:1rem; line-height:1;
     display:flex; align-items:center; justify-content:center;
   }
   .cal-nav .btn-lock.activo{background:var(--teal); color:#fff;}
-  #cal-bloqueado-aviso{margin:6px 0 8px; font-size:.78rem;}
   .cal-grid.bloqueado .cal-cell:not(.empty-cell){cursor:not-allowed;}
   #toast-bloqueo{
-    position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
+    position:fixed; left:50%; bottom:calc(88px + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%);
     background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:100px;
     font-size:.82rem; z-index:9999; max-width:90vw; text-align:center;
     opacity:0; pointer-events:none; transition:opacity .2s;
@@ -295,8 +298,9 @@
   .otros-dot{width:6px; height:6px; border-radius:50%; flex-shrink:0;}
   .cal-cell.empty-cell{background:transparent; border:none; cursor:default;}
   .cal-cell.weekend{background:var(--paper-dim);}
-  .cal-cell.feriado{background:var(--red-dim);}
   .cal-cell.feriado .num{color:var(--red);}
+  .cal-cell.hoy{border-color:var(--teal);}
+  .cal-cell.hoy .num{color:var(--teal);}
   .cal-cell.understaffed{border-color:var(--amber); background:var(--amber-dim);}
   .cal-cell .num{font-family:'JetBrains Mono'; font-weight:700; font-size:clamp(.8rem,3.2vw,.95rem);}
   .cal-cell .name{
@@ -352,24 +356,14 @@
 
   @media print{
     header, nav.tabs, .btn-row, .card:not(.print-cal){display:none !important;}
-    .cal-nav .btn-nav-mes, .cal-nav .btn-hoy, .cal-nav .btn-lock, #cal-bloqueado-aviso, #cal-sin-turnos-hint{display:none !important;}
+    .cal-nav .btn-nav-mes, .cal-nav .btn-hoy, .cal-nav .btn-lock, #cal-sin-turnos-hint{display:none !important;}
     body{padding:0;}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand">
-    <span class="dot"></span><h1>GS</h1>
-    <button id="btn-theme-toggle" class="btn btn-ghost btn-sm" style="margin-left:auto;" aria-label="Cambiar tema" title="Cambiar tema"><i data-mi="dark_mode"></i></button>
-  </div>
-  <nav class="tabs">
-    <button data-tab="generar" class="active"><i data-mi="tune"></i>Generar</button>
-    <button data-tab="calendario"><i data-mi="event"></i>Calendario</button>
-    <button data-tab="otros"><i data-mi="layers"></i>Otros</button>
-  </nav>
-</header>
+
 
 <main>
 
@@ -481,13 +475,12 @@
   <section id="view-calendario" class="view">
     <div class="card print-cal">
       <div class="cal-nav">
+        <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes" type="button" style="visibility:hidden;" aria-pressed="false" title="Bloquear este mes"><i data-mi="lock_open"></i></button>
         <button class="btn btn-ghost btn-nav-mes" id="btn-mes-anterior" aria-label="Mes anterior" title="Mes anterior"><i data-mi="chevron_left"></i></button>
         <h3 id="cal-titulo">Sin turnos generados</h3>
         <button class="btn btn-ghost btn-nav-mes" id="btn-mes-siguiente" aria-label="Mes siguiente" title="Mes siguiente"><i data-mi="chevron_right"></i></button>
         <button class="btn btn-ghost btn-sm btn-hoy" id="btn-mes-hoy" title="Ir al mes actual">Hoy</button>
-        <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes" type="button" style="display:none;" aria-pressed="false" title="Bloquear este mes"><i data-mi="lock_open"></i></button>
       </div>
-      <p class="sub-hint" id="cal-bloqueado-aviso" style="display:none;"><i data-mi="lock"></i> Mes bloqueado: no se puede editar ni volver a generar. Tocá el candado para desbloquearlo.</p>
       <div class="cal-grid" id="cal-dow-row"></div>
       <div class="cal-grid" id="cal-grid"></div>
       <div class="warnings" id="cal-warnings"></div>
@@ -528,6 +521,7 @@
       <label for="pcc-persona">Persona</label>
       <select id="pcc-persona"></select>
       <div class="cal-nav">
+        <span class="cal-nav-spacer"></span>
         <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-anterior" type="button" aria-label="Mes anterior" title="Mes anterior"><i data-mi="chevron_left"></i></button>
         <h3 id="pcc-titulo" style="flex:1; text-align:center; font-size:.95rem;"></h3>
         <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-siguiente" type="button" aria-label="Mes siguiente" title="Mes siguiente"><i data-mi="chevron_right"></i></button>
@@ -561,9 +555,23 @@
         <button class="btn btn-accent btn-full" id="btn-crear-calendario-extra">Crear calendario</button>
       </div>
     </div>
+
+    <div class="card" style="margin-top:18px;">
+      <h3>Apariencia</h3>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-full" id="btn-theme-toggle" type="button"></button>
+      </div>
+    </div>
   </section>
 
 </main>
+
+<nav class="tabs" aria-label="Navegación principal">
+  <button data-tab="generar" class="active" aria-label="Generar" title="Generar"><i data-mi="tune"></i></button>
+  <button data-tab="calendario" aria-label="Calendario" title="Calendario"><i data-mi="event"></i></button>
+  <button data-tab="otros" aria-label="Otros" title="Otros"><i data-mi="layers"></i></button>
+</nav>
+
 
 <div id="toast-bloqueo" role="status" aria-live="polite"></div>
 
@@ -730,17 +738,15 @@ function nombresMesesBloqueadosConTurnos(){
 }
 function actualizarUiBloqueo(){
   const btn = document.getElementById('btn-bloquear-mes');
-  const aviso = document.getElementById('cal-bloqueado-aviso');
   const grid = document.getElementById('cal-grid');
   const hayMes = !!currentSchedule;
   const bloqueado = hayMes && mesBloqueado(calViewAnio, calViewMes);
-  btn.style.display = hayMes ? 'flex' : 'none';
+  btn.style.visibility = hayMes ? 'visible' : 'hidden';
   btn.innerHTML = mi(bloqueado ? 'lock' : 'lock_open');
   btn.classList.toggle('activo', bloqueado);
   btn.title = bloqueado ? 'Mes bloqueado: tocá para desbloquear' : 'Bloquear este mes';
   btn.setAttribute('aria-label', btn.title);
   btn.setAttribute('aria-pressed', bloqueado ? 'true' : 'false');
-  aviso.style.display = bloqueado ? 'block' : 'none';
   grid.classList.toggle('bloqueado', bloqueado);
 }
 
@@ -1139,9 +1145,9 @@ personas.forEach((p,i)=>{ if(!p.color) p.color = PALETA_INICIAL[i % PALETA_INICI
 personas.forEach(migrarDiasFijos);
 
 // ---------- Tabs ----------
-document.querySelectorAll('nav.tabs button').forEach(btn=>{
+document.querySelectorAll('nav.tabs button[data-tab]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('nav.tabs button[data-tab]').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('section.view').forEach(v=>v.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('view-'+btn.dataset.tab).classList.add('active');
@@ -1470,7 +1476,7 @@ document.getElementById('btn-generar').addEventListener('click', ()=>{
   localStorage.setItem(LS_SCHEDULE_PREFIX+anio+'_'+mes, JSON.stringify(currentSchedule));
   calViewAnio = anio;
   calViewMes = mes;
-  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('nav.tabs button[data-tab]').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('section.view').forEach(v=>v.classList.remove('active'));
   document.querySelector('[data-tab="calendario"]').classList.add('active');
   document.getElementById('view-calendario').classList.add('active');
@@ -1622,7 +1628,7 @@ document.getElementById('var-grid').addEventListener('click', e=>{
   calViewAnio = anio; calViewMes = mes;
   variantesToken++;
   document.getElementById('dialog-variantes').close();
-  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('nav.tabs button[data-tab]').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('section.view').forEach(v=>v.classList.remove('active'));
   document.querySelector('[data-tab="calendario"]').classList.add('active');
   document.getElementById('view-calendario').classList.add('active');
@@ -1662,7 +1668,7 @@ document.getElementById('btn-bloquear-mes').addEventListener('click', ()=>{
   actualizarUiBloqueo();
 });
 document.getElementById('btn-generar-este-mes').addEventListener('click', ()=>{
-  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('nav.tabs button[data-tab]').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('section.view').forEach(v=>v.classList.remove('active'));
   document.querySelector('[data-tab="generar"]').classList.add('active');
   document.getElementById('view-generar').classList.add('active');
@@ -2584,6 +2590,7 @@ function generarTurnosRobusto(anio, mes, personasList, personasPorDia, exclusion
 function isoDate(anio, mesIdx, dia){
   return `${anio}-${String(mesIdx+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
 }
+function isoHoy(){ const t = new Date(); return isoDate(t.getFullYear(), t.getMonth(), t.getDate()); }
 // Domingo (getDay()===0) cuenta como festivo, y también cualquier fecha
 // que se haya cargado a mano en la lista de feriados (Año Nuevo, feriados
 // nacionales, etc.), aunque no sea domingo.
@@ -2825,7 +2832,7 @@ function renderPersonaCalCompleto(){
     const dots = calsHoy.map(c=>`<span class="otros-dot" style="background:${c.color};" title="${c.nombre} · ${nombreNivel(c.fechas[iso])}"></span>`).join('');
 
     const cell = document.createElement('div');
-    cell.className = 'cal-cell' + ((weekday===0||weekday===6)?' weekend':'') + (esFest?' feriado':'');
+    cell.className = 'cal-cell' + ((weekday===0||weekday===6)?' weekend':'') + (esFest?' feriado':'') + (iso===isoHoy() ? ' hoy' : '');
     cell.title = esFest ? 'Feriado' : '';
     let etiquetaTurno = '';
     if(asignado){
@@ -3219,7 +3226,7 @@ function renderCalendar(){
       const iso = isoDate(calViewAnio, calViewMes, d);
       const esFest = esFechaFestiva(iso) && weekday!==0;
       const cell = document.createElement('div');
-      cell.className='cal-cell' + ((weekday===0||weekday===6) ? ' weekend':'') + (esFest ? ' feriado':'');
+      cell.className='cal-cell' + ((weekday===0||weekday===6) ? ' weekend':'') + (esFest ? ' feriado':'') + (iso===isoHoy() ? ' hoy' : '');
       cell.title = esFest ? 'Feriado' : '';
       cell.innerHTML = `<div class="num">${d}</div>` + dotsHtmlParaDia(iso);
       cell.addEventListener('click', ()=> openDialog(iso, d, weekday));
@@ -3255,7 +3262,7 @@ function renderCalendar(){
     const ids = [...new Set(days[iso] || [])];
     const esFest = esFechaFestiva(iso) && weekday!==0;
     const cell = document.createElement('div');
-    cell.className='cal-cell' + ((weekday===0||weekday===6) ? ' weekend':'') + (esFest ? ' feriado':'');
+    cell.className='cal-cell' + ((weekday===0||weekday===6) ? ' weekend':'') + (esFest ? ' feriado':'') + (iso===isoHoy() ? ' hoy' : '');
     cell.title = esFest ? 'Feriado' : '';
     const etiquetas = ids.map(id=>{
       const p = personas.find(pp=>pp.id===id);
@@ -3407,7 +3414,7 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
     // Oculta los botones de navegación de mes, el aviso de "sin turnos" y
     // los puntitos de otros calendarios: la imagen exportada solo debe
     // mostrar los turnos de trabajo de este calendario.
-    const selectoresAOcultar = ['.btn-nav-mes', '.btn-hoy', '.btn-lock', '#cal-bloqueado-aviso', '#cal-sin-turnos-hint', '.otros-dots'];
+    const selectoresAOcultar = ['.btn-nav-mes', '.btn-hoy', '.btn-lock', '#cal-sin-turnos-hint', '.otros-dots'];
     // Si el usuario destildó la opción, los avisos de días incompletos
     // (faltan personas disponibles) tampoco salen en la imagen.
     const incluirAvisos = document.getElementById('chk-exportar-avisos').checked;
@@ -3514,7 +3521,7 @@ document.getElementById('btn-exportar-resumen-imagen').addEventListener('click',
 const btnTheme = document.getElementById('btn-theme-toggle');
 function actualizarIconoTheme(){
   const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
-  btnTheme.innerHTML = mi(esClaro ? 'light_mode' : 'dark_mode');
+  btnTheme.innerHTML = mi(esClaro ? 'dark_mode' : 'light_mode') + (esClaro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro');
 }
 btnTheme.addEventListener('click', ()=>{
   const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
@@ -4017,6 +4024,9 @@ refreshGenerarHint();
 renderFeriados();
 renderOtrosCalendarios();
 renderCalendar();
+
+// Al iniciar la web, abrir directamente la pestaña Calendario
+document.querySelector('nav.tabs button[data-tab="calendario"]').click();
 </script>
 </body>
 </html>
