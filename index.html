@@ -271,7 +271,7 @@
     display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono'; font-weight:700; font-size:.82rem;
     cursor:pointer; color:var(--ink); user-select:none;
   }
-  .excl-day.empty-cell{background:transparent; border:none; cursor:default;}
+  .excl-day.empty-cell{background:transparent; border-color:transparent; cursor:default;}
   .excl-day.weekend{background:var(--paper-dim);}
   .excl-day.feriado{background:var(--red-dim); color:var(--red);}
   .excl-day.fijo{background:var(--paper-dim); color:var(--ink-soft); opacity:.55; cursor:not-allowed;}
@@ -319,13 +319,15 @@
   }
   .otros-dots{position:absolute; top:4px; right:4px; display:flex; gap:2px;}
   .otros-dot{width:6px; height:6px; border-radius:50%; flex-shrink:0;}
-  .cal-cell.empty-cell{background:transparent; border:none; cursor:default;}
+  .cal-cell.empty-cell{background:transparent; border-color:transparent; cursor:default; pointer-events:none;}
   .cal-cell.weekend{background:var(--paper-dim);}
   .cal-cell.feriado .num{color:var(--red);}
   .cal-cell.hoy{border-color:var(--teal);}
   .cal-cell.hoy .num{color:var(--teal);}
   .cal-cell.understaffed{border-color:var(--amber); background:var(--amber-dim);}
   .cal-cell .num{font-family:'JetBrains Mono'; font-weight:700; font-size:clamp(.8rem,3.2vw,.95rem);}
+  .cal-cell .name, .cal-cell .name-ph{min-height:calc(.74rem * 1.25 + 4px);}
+  .cal-cell .name-ph{visibility:hidden; padding:2px 3px; font-size:.74rem; line-height:1.25; display:block;}
   .cal-cell .name{
     font-size:.74rem; background:var(--teal-dim); color:var(--teal); border-radius:5px;
     padding:2px 3px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
@@ -1228,6 +1230,7 @@ function renderExclusiones(){
     }
     grid.appendChild(cell);
   }
+  completarSeisSemanas(grid, 'excl-day');
 }
 
 // ---------- Configuración del mes (cabecera tipo calendario + stepper) ----------
@@ -2858,6 +2861,7 @@ function renderSelectorFechas(){
     }
     grid.appendChild(cell);
   }
+  completarSeisSemanas(grid, 'excl-day');
   const leyendaBox = document.getElementById('selector-fechas-leyenda');
   if(leyendaBox) leyendaBox.innerHTML = esOtro ? leyendaNivelesHtml() : '';
 }
@@ -2899,6 +2903,24 @@ function contarNormalesYFestivosPorPersona(anio, mes, days, personasList){
     }
   });
   return { normales, festivos };
+}
+// Rellena la cuadrícula con celdas vacías hasta completar 6 semanas (42 celdas),
+// así el mes ocupa siempre el mismo alto y no desplaza el resto de la página.
+// HTML invisible que ocupa lo mismo que una celda con "n" nombres: se usa en las
+// celdas vacías y en las que tienen menos nombres para que todas midan igual.
+function rellenoAltoCelda(n){
+  return '<div class="num">0</div>' + '<div class="name-ph">&nbsp;</div>'.repeat(Math.max(0,n));
+}
+function completarSeisSemanas(grid, clase, relleno){
+  const extra = relleno ? e=>{ e.innerHTML = relleno; e.style.visibility = 'hidden'; } : ()=>{};
+  grid.querySelectorAll(':scope > .empty-cell').forEach(extra);
+
+  while(grid.children.length < 42){
+    const e = document.createElement('div');
+    e.className = clase + ' empty-cell';
+    extra(e);
+    grid.appendChild(e);
+  }
 }
 function primerOffsetLunes(anio, mesIdx){
   // getDay(): 0=domingo..6=sábado. Convertimos a offset con lunes=0..domingo=6.
@@ -2953,20 +2975,47 @@ function ajustarEtiquetasCalendario(){
     }
   });
 }
+// Centra verticalmente el mes dentro del alto reservado de 6 semanas: si el mes
+// necesita 4 o 5 filas, el espacio sobrante se reparte mitad arriba y mitad
+// abajo en vez de quedar todo debajo. El alto total no cambia (el margen extra
+// de arriba se compensa con un margen negativo abajo). La fila L M X J V S D
+// se queda fija en su lugar; solo se mueven las fechas.
+function centrarCalendario(){
+  const dowRow = document.getElementById('cal-dow-row');
+  const grid = document.getElementById('cal-grid');
+  if(!dowRow || !grid) return;
+  grid.style.marginTop = '';
+  grid.style.marginBottom = '';
+  const celdas = grid.children;
+  if(celdas.length < 42 || grid.offsetHeight === 0) return; // pestaña oculta
+  let ultimaConDia = -1;
+  for(let i=0;i<celdas.length;i++){
+    if(!celdas[i].classList.contains('empty-cell')) ultimaConDia = i;
+  }
+  const filas = Math.floor(ultimaConDia / 7) + 1;
+  if(filas >= 6) return;
+  const primeraOculta = celdas[filas*7];
+  if(!primeraOculta) return;
+  const libre = grid.getBoundingClientRect().bottom - primeraOculta.getBoundingClientRect().top;
+  if(libre <= 0) return;
+  const mitad = Math.round(libre / 2);
+  grid.style.marginTop = `calc(12px + ${mitad}px)`;
+  grid.style.marginBottom = `-${mitad}px`;
+}
 // Si la tipografía "Inter" todavía no había terminado de descargarse cuando
 // se armó el calendario por primera vez, en cuanto esté lista se vuelve a
 // ajustar el tamaño de las etiquetas con la métrica real (no la de
 // reemplazo), para que nunca quede nada cortado por haber medido con la
 // fuente equivocada.
 if(document.fonts && document.fonts.ready){
-  document.fonts.ready.then(()=>{ if(currentSchedule) ajustarEtiquetasCalendario(); });
+  document.fonts.ready.then(()=>{ if(currentSchedule) ajustarEtiquetasCalendario(); centrarCalendario(); });
 }
 // Si cambia el ancho de pantalla (rotar el celular, mostrar/ocultar la
 // barra del navegador, etc.) también conviene recalcular.
 let _resizeTimeoutEtiquetas = null;
 window.addEventListener('resize', ()=>{
   clearTimeout(_resizeTimeoutEtiquetas);
-  _resizeTimeoutEtiquetas = setTimeout(()=>{ if(currentSchedule) ajustarEtiquetasCalendario(); }, 150);
+  _resizeTimeoutEtiquetas = setTimeout(()=>{ if(currentSchedule) ajustarEtiquetasCalendario(); centrarCalendario(); }, 150);
 });
 
 function actualizarAvisosFlotantes(warnings){
@@ -3025,6 +3074,7 @@ function renderCalendar(){
     titulo.textContent = `${MESES[calViewMes]} ${calViewAnio}`;
     dowRow.innerHTML = DOW_LABELS.map(l=>`<div class="cal-dow">${l}</div>`).join('');
     grid.innerHTML='';
+    const nSlotsVacio = Math.max(0, parseInt(config && config.personasPorDia, 10) || parseInt(document.getElementById('g-personas-dia').value, 10) || 0);
     const diasEnMesVacio = new Date(calViewAnio, calViewMes+1, 0).getDate();
     const primerDowVacio = primerOffsetLunes(calViewAnio, calViewMes);
     for(let i=0;i<primerDowVacio;i++){
@@ -3039,10 +3089,12 @@ function renderCalendar(){
       const cell = document.createElement('div');
       cell.className='cal-cell' + ((weekday===0||weekday===6) ? ' weekend':'') + (esFest ? ' feriado':'') + (iso===isoHoy() ? ' hoy' : '');
       cell.title = esFest ? 'Feriado' : '';
-      cell.innerHTML = `<div class="num">${d}</div>` + dotsHtmlParaDia(iso);
+      cell.innerHTML = `<div class="num">${d}</div>` + dotsHtmlParaDia(iso) + '<div class="name-ph">&nbsp;</div>'.repeat(nSlotsVacio);
       cell.addEventListener('click', ()=> openDialog(iso, d, weekday));
       grid.appendChild(cell);
     }
+    completarSeisSemanas(grid, 'cal-cell', rellenoAltoCelda(nSlotsVacio));
+    centrarCalendario();
     warningsBox.innerHTML='';
     actualizarAvisosFlotantes([]);
     resumenCard.style.display='none';
@@ -3062,6 +3114,10 @@ function renderCalendar(){
 
   const diasEnMes = new Date(anio, mes+1, 0).getDate();
   const primerDow = primerOffsetLunes(anio, mes);
+  // Cantidad de "lugares" de nombre por celda: todas las celdas (y las vacías de
+  // relleno) reservan el mismo alto, así el mes no cambia de tamaño.
+  let nSlots = Math.max(0, parseInt(config && config.personasPorDia, 10) || parseInt(document.getElementById('g-personas-dia').value, 10) || 0);
+  for(const k in days){ nSlots = Math.max(nSlots, new Set(days[k] || []).size); }
   grid.innerHTML='';
   for(let i=0;i<primerDow;i++){
     const e = document.createElement('div');
@@ -3084,10 +3140,11 @@ function renderCalendar(){
       const fg = p ? colorTextoDePersona(p) : oscurecerColor(bg);
       return `<div class="name" style="background:${bg};color:${fg};">${nombre}</div>`;
     });
-    cell.innerHTML = `<div class="num">${d}</div>` + dotsHtmlParaDia(iso) + etiquetas.join('');
+    cell.innerHTML = `<div class="num">${d}</div>` + dotsHtmlParaDia(iso) + etiquetas.join('') + '<div class="name-ph">&nbsp;</div>'.repeat(Math.max(0, nSlots - ids.length));
     cell.addEventListener('click', ()=> openDialog(iso, d, weekday));
     grid.appendChild(cell);
   }
+  completarSeisSemanas(grid, 'cal-cell', rellenoAltoCelda(nSlots));
 
   // Ajuste fino de tamaño de letra: para cada etiqueta de nombre, se va
   // bajando el tamaño de a poco hasta que el nombre completo entre en una
@@ -3100,6 +3157,7 @@ function renderCalendar(){
   // (nombre y apellido muy largos en una celda muy chica), en vez de
   // cortarlo con "..." se lo deja pasar a una segunda línea.
   ajustarEtiquetasCalendario();
+  centrarCalendario();
 
   warningsBox.innerHTML = warnings.length
     ? warnings.map(w=>`<div class="warning-item">${mi('warning')} ${w}</div>`).join('')
