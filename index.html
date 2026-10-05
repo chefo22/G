@@ -234,17 +234,17 @@
 
   .persona-item{
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    padding:14px; margin-bottom:10px;
+    padding:8px 10px; margin-bottom:6px;
   }
-  .persona-item .top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
-  .persona-item .top-main{display:flex; align-items:flex-start; gap:8px; min-width:0;}
-  .persona-item .top h4{font-size:1rem; margin:0; display:flex; align-items:center; gap:7px;}
+  .persona-item .top{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+  .persona-item .top-main{display:flex; align-items:center; gap:8px; min-width:0; flex:1;}
+  .persona-item .top h4{font-size:.95rem; margin:0; display:flex; align-items:center; gap:7px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .persona-item .meta{font-size:.78rem; color:var(--ink-soft); margin-top:2px;}
-  .persona-item .acciones{display:flex; gap:6px; flex-shrink:0;}
+  .persona-item .acciones{display:flex; gap:4px; flex-shrink:0;}
   .persona-item .detalle{margin-top:10px; font-size:.8rem; color:var(--ink-soft); line-height:1.5;}
-  .orden-btns{display:flex; flex-direction:column; gap:3px; flex-shrink:0;}
+  .orden-btns{display:flex; flex-direction:row; gap:3px; flex-shrink:0;}
   .orden-btns button{
-    width:26px; height:22px; padding:0; border:1px solid var(--line); border-radius:6px;
+    width:26px; height:26px; padding:0; border:1px solid var(--line); border-radius:6px;
     background:var(--paper); color:var(--ink-soft); font-size:.7rem; line-height:1; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
   }
@@ -426,17 +426,15 @@
       <div class="cal-grid" id="excl-cal-grid"></div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-primary btn-full" id="btn-generar">Generar turnos del mes</button>
-    </div>
-    <div class="btn-row" style="margin-top:8px;">
-      <button class="btn btn-accent btn-full" id="btn-variantes" type="button">Comparar variantes lado a lado</button>
+      <button class="btn btn-primary btn-sm" id="btn-generar">Generar</button>
+      <button class="btn btn-accent btn-sm" id="btn-variantes" type="button">Comparar</button>
     </div>
     <p class="empty" id="generar-empty-hint">Cargá al menos una persona antes de generar.</p>
 
     <h3 style="margin:18px 0 10px 4px; font-size:.95rem;">Personas cargadas</h3>
     <div id="lista-personas"></div>
 
-    <button class="btn btn-accent btn-full" id="btn-toggle-form-persona" type="button" style="margin-top:14px;"><i data-mi="add"></i>Agregar persona</button>
+    <button class="btn btn-accent btn-sm" id="btn-toggle-form-persona" type="button" style="margin-top:14px;"><i data-mi="add"></i>Agregar</button>
 
     <div class="card" id="form-persona-card" style="display:none; margin-top:14px;">
       <h3 id="form-title">Agregar persona</h3>
@@ -503,17 +501,15 @@
       </div>
 
       <div class="btn-row">
-        <button class="btn btn-accent btn-full" id="btn-guardar-persona">Guardar persona</button>
-        <button class="btn btn-ghost" id="btn-cancelar-edit" style="display:none;">Cancelar</button>
+        <button class="btn btn-accent btn-sm" id="btn-guardar-persona">Guardar</button>
+        <button class="btn btn-ghost btn-sm" id="btn-cancelar-edit" style="display:none;">Cancelar</button>
       </div>
     </div>
 
-    <div class="card" id="feriados-card" style="margin-top:18px;">
-      <h3>Feriados</h3>
-      <div class="btn-row" style="margin-top:0;">
-        <button class="btn btn-accent btn-full" id="btn-abrir-selector-feriados" type="button"><i data-mi="event"></i>Elegir fechas en el calendario</button>
-      </div>
-      <div class="chips" id="feriados-chips" style="margin-top:10px;"></div>
+    <div class="card" id="feriados-card" style="margin-top:18px; padding:10px 14px; display:flex; align-items:center; gap:10px;">
+      <h3 style="margin:0;">Feriados</h3>
+      <div id="feriados-chips" style="flex:1; font-size:.8rem; color:var(--ink-soft, inherit); opacity:.7;"></div>
+      <button class="btn btn-accent btn-sm" id="btn-abrir-selector-feriados" type="button"><i data-mi="event"></i>Elegir fechas</button>
     </div>
 
     <div class="card acc-card" id="cal-shifter-card" style="margin-top:18px;">
@@ -1426,10 +1422,6 @@ function renderPersonas(){
   personas.forEach((p,i)=>{
     const div = document.createElement('div');
     div.className='persona-item';
-    const diasFijosKeys = Object.keys(p.diasFijos || {}).filter(d => p.diasFijos[d] > 0);
-    const diasFijosTxt = diasFijosKeys.length
-      ? diasFijosKeys.sort((a,b)=>a-b).map(d => `${DOW_FULL[d]} (${nombreNivel(p.diasFijos[d])})`).join(', ')
-      : 'ninguno';
     div.innerHTML = `
       <div class="top">
         <div class="top-main">
@@ -1437,19 +1429,12 @@ function renderPersonas(){
             <button type="button" onclick="moverPersona('${p.id}', -1)" ${i===0?'disabled':''} aria-label="Subir" title="Subir">${mi('arrow_upward')}</button>
             <button type="button" onclick="moverPersona('${p.id}', 1)" ${i===personas.length-1?'disabled':''} aria-label="Bajar" title="Bajar">${mi('arrow_downward')}</button>
           </div>
-          <div>
-            <h4><span class="persona-color-dot" style="background:${p.color || COLOR_DEFAULT};"></span> ${p.nombre}</h4>
-            <div class="meta">Máximo ${p.maxDias} días al mes</div>
-          </div>
+          <h4><span class="persona-color-dot" style="background:${p.color || COLOR_DEFAULT};"></span>${p.nombre}</h4>
         </div>
         <div class="acciones">
-          <button class="btn btn-ghost btn-sm" onclick="editarPersona('${p.id}')">${mi('edit')}Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="eliminarPersona('${p.id}')">${mi('delete')}Eliminar</button>
+          <button class="btn btn-ghost btn-sm" onclick="editarPersona('${p.id}')" aria-label="Editar" title="Editar">${mi('edit')}</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminarPersona('${p.id}')" aria-label="Eliminar" title="Eliminar">${mi('delete')}</button>
         </div>
-      </div>
-      <div class="detalle">
-        <div><b>Días fijos:</b> ${diasFijosTxt}</div>
-        <div><b>Máx. días seguidos:</b> ${p.maxSeguidos ? p.maxSeguidos : 'sin límite'} · <b>Mín. descanso:</b> ${p.minDescanso ? p.minDescanso + ' día(s)' : 'sin mínimo'}</div>
       </div>`;
     box.appendChild(div);
   });
@@ -2625,26 +2610,10 @@ function guardarFeriados(){
 }
 
 function renderFeriados(){
-  const chips = document.getElementById('feriados-chips');
-  if(!chips) return;
-  if(feriados.length === 0){
-    chips.innerHTML = '<p class="empty" style="padding:6px 0; text-align:left;">Todavía no agregaste ningún feriado.</p>';
-    return;
-  }
-  chips.innerHTML = '';
-  feriados.slice().sort().forEach(iso=>{
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.innerHTML = `<span>${formatFechaCorta(iso)}</span> <button type="button" aria-label="Quitar fecha">${mi('close')}</button>`;
-    chip.querySelector('button').addEventListener('click', ()=>{
-      feriados = feriados.filter(f=>f!==iso);
-      guardarFeriados();
-      renderFeriados();
-      renderExclusiones();
-      renderCalendar();
-    });
-    chips.appendChild(chip);
-  });
+  // Los feriados no se listan; solo se muestra cuántos hay cargados.
+  const info = document.getElementById('feriados-chips');
+  if(!info) return;
+  info.textContent = feriados.length === 0 ? '' : `${feriados.length} cargado${feriados.length===1?'':'s'}`;
 }
 
 document.getElementById('btn-abrir-selector-feriados').addEventListener('click', ()=>{
