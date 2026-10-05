@@ -169,6 +169,7 @@
   .btn-danger{background:var(--red-dim); color:var(--red);}
   .btn-sm{padding:6px 10px; font-size:.78rem; border-radius:7px;}
   .btn-full{width:100%;}
+  .resumen-total.filtro-activo{outline:2px solid var(--teal); outline-offset:-2px; background:var(--teal-dim);}
   .btn-row{display:flex; gap:8px; margin-top:14px;}
 
   /* Iconos Material */
@@ -200,7 +201,7 @@
   .acc-check{display:flex; align-items:center; gap:8px; margin:8px 2px 0; font-size:.78rem; font-weight:500; text-transform:none; letter-spacing:0; color:var(--ink-soft); cursor:pointer;}
   .acc-check input{width:15px; height:15px; margin:0; accent-color:var(--teal);}
 
-  .print-cal, #pcc-card{touch-action:pan-y;}
+  .print-cal{touch-action:pan-y;}
   .cal-nav{display:flex; align-items:center; gap:8px; margin-bottom:2px;}
   .cal-nav h3{flex:1; text-align:center;}
   .cal-nav .btn-nav-mes{
@@ -485,6 +486,22 @@
       </div>
       <div id="dias-fijos-leyenda"></div>
 
+      <div id="pe-calendarios-seccion" style="margin-top:14px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <label style="margin:0;">Tus calendarios</label>
+          <button class="btn btn-ghost btn-sm" id="btn-pe-toggle-crear-cal" type="button" aria-label="Crear calendario" title="Crear calendario" style="flex-shrink:0;"><i data-mi="add"></i></button>
+        </div>
+        <p class="sub-hint" id="pe-calendarios-hint" style="display:none; margin:6px 0 0;">Guardá la persona para poder crear sus calendarios.</p>
+        <div id="pe-crear-cal" style="display:none; align-items:center; gap:6px; margin-top:8px;">
+          <input type="color" id="pe-cal-color" value="#4B6FA8" aria-label="Color del calendario"
+            style="width:30px; height:30px; padding:0; border:1px solid var(--line); border-radius:7px; background:var(--paper); cursor:pointer; flex-shrink:0; margin:0;">
+          <input type="text" id="pe-cal-nombre" placeholder="Ej: Fórmula 1" aria-label="Nombre del calendario"
+            style="flex:1; min-width:0; margin:0; padding:5px 8px; border:1px solid var(--line); border-radius:7px; font-family:'Inter'; font-size:.9rem; background:var(--paper); color:var(--ink);">
+          <button class="btn btn-accent btn-sm" id="btn-pe-crear-cal" type="button" style="margin:0; white-space:nowrap;">Crear</button>
+        </div>
+        <div id="pe-calendarios-lista" style="margin-top:8px;"></div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-accent btn-full" id="btn-guardar-persona">Guardar persona</button>
         <button class="btn btn-ghost" id="btn-cancelar-edit" style="display:none;">Cancelar</button>
@@ -497,6 +514,15 @@
         <button class="btn btn-accent btn-full" id="btn-abrir-selector-feriados" type="button"><i data-mi="event"></i>Elegir fechas en el calendario</button>
       </div>
       <div class="chips" id="feriados-chips" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card acc-card" id="cal-shifter-card" style="margin-top:18px;">
+      <div class="acc-titulo">Shifter</div>
+      <div class="acc-grid" id="cal-import-actions">
+        <button class="acc-btn acc-btn-main" id="btn-exportar-shifter" type="button" style="display:none;"><i data-mi="file_upload"></i>Exportar</button>
+        <button class="acc-btn" id="btn-importar-shifter" type="button"><i data-mi="file_download"></i>Importar</button>
+        <input type="file" id="input-importar-shifter" accept=".Shifter,.db,.sqlite,application/octet-stream" style="display:none;">
+      </div>
     </div>
   </section>
 
@@ -511,6 +537,7 @@
         <h3 id="cal-titulo">Sin turnos generados</h3>
         <button class="btn btn-ghost btn-nav-mes" id="btn-mes-siguiente" aria-label="Mes siguiente" title="Mes siguiente"><i data-mi="chevron_right"></i></button>
         <button class="btn btn-ghost btn-sm btn-hoy" id="btn-mes-hoy" title="Ir al mes actual">Hoy</button>
+        <button class="btn btn-ghost btn-nav-mes btn-img" id="btn-exportar-imagen" type="button" style="visibility:hidden;" aria-label="Guardar como imagen" title="Guardar como imagen"><i data-mi="image"></i></button>
       </div>
       <div class="cal-grid" id="cal-dow-row"></div>
       <div class="cal-grid" id="cal-grid"></div>
@@ -520,80 +547,12 @@
         <button class="btn btn-primary btn-sm" id="btn-generar-este-mes" style="margin-top:8px; display:block;">Generar turnos para este mes</button>
       </p>
     </div>
-    <div class="card acc-card" id="cal-actions" style="display:none;">
-      <div class="acc-titulo">Compartir</div>
-      <div class="acc-grid" style="flex-wrap:nowrap; align-items:center; gap:12px;">
-        <button class="acc-btn" id="btn-exportar-imagen" type="button" style="flex:0 0 auto;"><i data-mi="image"></i>Imagen</button>
-        <label class="acc-check" style="margin:0; flex:1 1 auto; min-width:0;">
-          <input type="checkbox" id="chk-exportar-avisos" checked>
-          <span>Incluir avisos en la imagen</span>
-        </label>
-      </div>
-    </div>
     <div class="card" id="resumen-card" style="display:none;">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
         <h3>Resumen por persona</h3>
         <button class="btn btn-ghost btn-sm" id="btn-exportar-resumen-imagen" type="button" aria-label="Exportar resumen como imagen" title="Exportar resumen como imagen" style="flex-shrink:0;"><i data-mi="image"></i></button>
       </div>
       <div id="resumen-lista"></div>
-    </div>
-    <div class="card acc-card" id="cal-shifter-card">
-      <div class="acc-titulo">Shifter</div>
-      <div class="acc-grid" id="cal-import-actions">
-        <button class="acc-btn acc-btn-main" id="btn-exportar-shifter" type="button" style="display:none;"><i data-mi="file_upload"></i>Exportar</button>
-        <button class="acc-btn" id="btn-importar-shifter" type="button"><i data-mi="file_download"></i>Importar</button>
-        <input type="file" id="input-importar-shifter" accept=".Shifter,.db,.sqlite,application/octet-stream" style="display:none;">
-      </div>
-    </div>
-  </section>
-
-  <!-- OTROS CALENDARIOS -->
-  <section id="view-otros" class="view">
-    <div class="card" id="pcc-card" style="display:none;">
-      <h3>Calendario completo de la persona</h3>
-      <label for="pcc-persona">Persona</label>
-      <select id="pcc-persona"></select>
-      <div class="cal-nav">
-        <span class="cal-nav-spacer"></span>
-        <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-anterior" type="button" aria-label="Mes anterior" title="Mes anterior"><i data-mi="chevron_left"></i></button>
-        <h3 id="pcc-titulo" style="flex:1; text-align:center; font-size:.95rem;"></h3>
-        <button class="btn btn-ghost btn-nav-mes" id="btn-pcc-mes-siguiente" type="button" aria-label="Mes siguiente" title="Mes siguiente"><i data-mi="chevron_right"></i></button>
-        <button class="btn btn-ghost btn-sm btn-hoy" id="btn-pcc-mes-hoy" type="button" title="Ir al mes actual">Hoy</button>
-      </div>
-      <div class="cal-grid" id="pcc-dow-row"></div>
-      <div class="cal-grid" id="pcc-grid"></div>
-      <div class="chips" id="pcc-legend" style="margin-top:10px;"></div>
-      <div class="btn-row" style="justify-content:flex-end;">
-        <button class="btn btn-accent btn-sm" id="btn-exportar-pcc-shifter" type="button" title="Exportar esta persona a Shifter (todo como turnos)" aria-label="Exportar esta persona a Shifter (todo como turnos)"><i data-mi="file_upload"></i>Exportar a Shifter</button>
-      </div>
-    </div>
-
-    <div style="display:flex; align-items:center; justify-content:space-between; margin:18px 0 10px 4px;">
-      <h3 style="font-size:.95rem; margin:0;">Tus calendarios</h3>
-      <button class="btn btn-ghost btn-sm" id="btn-toggle-crear-calendario" type="button" aria-label="Crear calendario" title="Crear calendario"><i data-mi="add"></i></button>
-    </div>
-    <div id="lista-otros-calendarios"></div>
-
-    <div class="card" id="crear-calendario-card" style="margin-top:18px; display:none;">
-      <h3>Crear calendario</h3>
-      <label for="oc-nombre">Nombre</label>
-      <input type="text" id="oc-nombre" placeholder="Ej: Fórmula 1">
-      <label for="oc-persona">Persona</label>
-      <select id="oc-persona"></select>
-      <label for="oc-color">Color</label>
-      <div class="color-editor">
-        <input type="color" id="oc-color" value="#4B6FA8">
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-accent btn-full" id="btn-crear-calendario-extra">Crear calendario</button>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:18px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-        <h3>Apariencia</h3>
-        <button class="btn btn-ghost btn-sm" id="btn-theme-toggle" type="button" style="flex-shrink:0;"></button>
-      </div>
     </div>
   </section>
 
@@ -602,7 +561,6 @@
 <nav class="tabs" aria-label="Navegación principal">
   <button data-tab="generar" aria-label="Generar" title="Generar"><i data-mi="tune"></i></button>
   <button data-tab="calendario" class="active" aria-label="Calendario" title="Calendario"><i data-mi="event"></i></button>
-  <button data-tab="otros" aria-label="Otros" title="Otros"><i data-mi="layers"></i></button>
 </nav>
 
 
@@ -671,24 +629,6 @@
     <div id="selector-fechas-leyenda"></div>
     <div class="btn-row">
       <button class="btn btn-accent btn-full" id="btn-cerrar-selector-fechas">Listo</button>
-    </div>
-  </div>
-</dialog>
-
-<dialog id="dialog-dia-pcc">
-  <div class="dialog-body">
-    <h3 id="pcc-dialog-fecha-titulo">Día</h3>
-    <div id="pcc-dialog-disponibilidad" style="margin:-4px 0 10px;"></div>
-    <label style="display:flex; align-items:center; gap:8px; text-transform:none; letter-spacing:0; font-size:.9rem;">
-      <input type="checkbox" id="pcc-dialog-turno" style="width:auto;">
-      Turno de trabajo asignado
-    </label>
-    <p class="sub-hint" id="pcc-dialog-bloqueo" style="display:none; margin:4px 0 0;"><i data-mi="lock"></i> Mes bloqueado: el turno de trabajo no se puede cambiar (los otros calendarios sí).</p>
-    <div id="pcc-dialog-calendarios" style="margin-top:12px;"></div>
-    <div id="pcc-dialog-leyenda"></div>
-    <div class="btn-row">
-      <button class="btn btn-accent btn-full" id="btn-guardar-dia-pcc">Guardar</button>
-      <button class="btn btn-ghost" id="btn-cerrar-dialog-pcc">Cerrar</button>
     </div>
   </div>
 </dialog>
@@ -828,9 +768,6 @@ let calViewMes = null;  // mes (0-11) que se está mirando en la pestaña Calend
 let selectorFechasContext = null; // {tipo:'feriados'} o {tipo:'otro', calId} -- para qué está abierto el selector flotante
 let selectorFechasAnio = null;
 let selectorFechasMes = null;
-let pccPersonaId = null; // persona elegida en "Calendario completo de la persona"
-let pccAnio = null;
-let pccMes = null;
 
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DOW_LABELS = ['L','M','X','J','V','S','D'];
@@ -1196,7 +1133,6 @@ document.querySelectorAll('nav.tabs button[data-tab]').forEach(btn=>{
       refreshGenerarHint(); cargarExclusionesDelMesSeleccionado(); renderExclusiones();
     }
     if(btn.dataset.tab==='calendario') renderCalendar();
-    if(btn.dataset.tab==='otros') renderOtrosCalendarios();
   });
 });
 
@@ -1430,6 +1366,7 @@ function resetForm(){
   document.getElementById('form-title').textContent='Agregar persona';
   document.getElementById('btn-cancelar-edit').style.display='none';
   actualizarPreviaColor();
+  renderOtrosCalendarios();
 }
 
 function editarPersona(id){
@@ -1449,14 +1386,22 @@ function editarPersona(id){
   document.getElementById('form-title').textContent='Editar persona';
   document.getElementById('btn-cancelar-edit').style.display='inline-block';
   actualizarPreviaColor();
+  renderOtrosCalendarios();
   formPersonaCard.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function eliminarPersona(id){
-  if(!confirm('¿Eliminar esta persona?')) return;
+  const propios = calendariosExtra.filter(c=>c.personaId===id).length;
+  if(!confirm(propios ? `¿Eliminar esta persona y sus ${propios} calendario(s)?` : '¿Eliminar esta persona?')) return;
   personas = personas.filter(p=>p.id!==id);
+  if(propios){
+    calendariosExtra = calendariosExtra.filter(c=>c.personaId!==id);
+    guardarCalendariosExtra();
+  }
   saveAll();
   renderPersonas();
+  renderOtrosCalendarios();
+  renderCalendar();
 }
 
 function moverPersona(id, delta){
@@ -1716,9 +1661,6 @@ function irAMesCalendario(anio, mes){
   if(mes > 11){ mes = 0; anio++; }
   calViewAnio = anio;
   calViewMes = mes;
-  // Todos los calendarios comparten el mismo mes
-  pccAnio = anio;
-  pccMes = mes;
   // ...y la "Configuración del mes" de la pestaña Generar
   document.getElementById('g-mes').value = mes;
   document.getElementById('g-anio').value = anio;
@@ -1726,7 +1668,6 @@ function irAMesCalendario(anio, mes){
   cargarExclusionesDelMesSeleccionado();
   renderExclusiones();
   renderCalendar();
-  renderPersonaCalCompleto();
 }
 document.getElementById('btn-mes-anterior').addEventListener('click', ()=>{
   irAMesCalendario(calViewAnio ?? new Date().getFullYear(), (calViewMes ?? new Date().getMonth()) - 1);
@@ -2749,52 +2690,64 @@ function poblarSelectPersonas(selectEl, selectedId){
   if(selectedId && personas.some(p=>p.id===selectedId)) selectEl.value = selectedId;
 }
 
-document.getElementById('btn-toggle-crear-calendario').addEventListener('click', ()=>{
-  const card = document.getElementById('crear-calendario-card');
-  card.style.display = (card.style.display==='none') ? 'block' : 'none';
+// Los calendarios se crean y editan desde el editor de cada persona.
+function personaIdEnEdicion(){
+  return document.getElementById('persona-id').value || null;
+}
+document.getElementById('btn-pe-toggle-crear-cal').addEventListener('click', ()=>{
+  if(!personaIdEnEdicion()) return;
+  const box = document.getElementById('pe-crear-cal');
+  const abrir = box.style.display==='none';
+  box.style.display = abrir ? 'flex' : 'none';
+  if(abrir) document.getElementById('pe-cal-nombre').focus();
 });
-document.getElementById('btn-crear-calendario-extra').addEventListener('click', ()=>{
-  const nombre = document.getElementById('oc-nombre').value.trim();
-  const color = document.getElementById('oc-color').value || '#4B6FA8';
-  const personaId = document.getElementById('oc-persona').value || null;
+document.getElementById('btn-pe-crear-cal').addEventListener('click', ()=>{
+  const personaId = personaIdEnEdicion();
+  if(!personaId) return;
+  const nombre = document.getElementById('pe-cal-nombre').value.trim();
+  const color = document.getElementById('pe-cal-color').value || '#4B6FA8';
   if(!nombre){ alert('Poné un nombre para el calendario.'); return; }
-  if(personas.length && !personaId){ alert('Elegí a qué persona pertenece este calendario.'); return; }
   calendariosExtra.push({ id: uid(), nombre, color, personaId, fechas: {} });
   guardarCalendariosExtra();
-  document.getElementById('oc-nombre').value='';
-  document.getElementById('crear-calendario-card').style.display='none';
+  document.getElementById('pe-cal-nombre').value='';
+  document.getElementById('pe-crear-cal').style.display='none';
   renderOtrosCalendarios();
   renderCalendar();
 });
 
 function renderOtrosCalendarios(){
-  poblarSelectPersonas(document.getElementById('oc-persona'), null);
-  const box = document.getElementById('lista-otros-calendarios');
-  if(!box) return;
-  if(calendariosExtra.length===0){
-    box.innerHTML = '<p class="empty">Todavía no creaste ningún calendario aparte.</p>';
+  const personaId = personaIdEnEdicion();
+  const hint = document.getElementById('pe-calendarios-hint');
+  const btnMas = document.getElementById('btn-pe-toggle-crear-cal');
+  const crearBox = document.getElementById('pe-crear-cal');
+  const box = document.getElementById('pe-calendarios-lista');
+  if(!personaId){
+    hint.style.display = 'block';
+    btnMas.style.display = 'none';
+    crearBox.style.display = 'none';
+    box.innerHTML = '';
     return;
   }
-  box.innerHTML='';
-  calendariosExtra.forEach(c=>{
-    const div = document.createElement('div');
-    div.className='card';
-    div.style.cssText = 'padding:8px 10px; margin-bottom:8px;';
-    div.innerHTML = `
-      <div style="display:flex; align-items:center; gap:6px;">
+  hint.style.display = 'none';
+  btnMas.style.display = '';
+  const propios = calendariosExtra.filter(c=>c.personaId===personaId);
+  if(propios.length===0){
+    box.innerHTML = '<p class="sub-hint" style="margin:0;">Esta persona todavía no tiene calendarios.</p>';
+  } else {
+    box.innerHTML='';
+    propios.forEach(c=>{
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex; align-items:center; gap:6px; margin-bottom:6px;';
+      div.innerHTML = `
         <input type="color" data-color-cal="${c.id}" value="${c.color}"
           style="width:30px; height:30px; padding:0; border:1px solid var(--line); border-radius:7px; background:var(--paper); cursor:pointer; flex-shrink:0; margin:0;">
         <input type="text" data-nombre-cal="${c.id}" value="${c.nombre}"
           style="flex:1; min-width:0; margin:0; padding:5px 8px; border:1px solid var(--line); border-radius:7px; font-family:'Inter'; font-size:.9rem; background:var(--paper); color:var(--ink);">
-        <button class="btn btn-danger btn-sm" data-eliminar-cal="${c.id}" type="button" aria-label="Eliminar calendario" title="Eliminar calendario" style="padding:4px 8px; margin:0;">${mi('delete')}</button>
-      </div>
-      <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
-        <select data-persona-cal="${c.id}" aria-label="Persona" style="flex:1; min-width:0; margin:0; padding:5px 8px; font-size:.85rem;"></select>
         <button class="btn btn-accent btn-sm" data-abrir-selector="${c.id}" type="button" style="margin:0; white-space:nowrap;">${mi('add')}Fechas</button>
-      </div>`;
-    box.appendChild(div);
-    poblarSelectPersonas(div.querySelector(`[data-persona-cal="${c.id}"]`), c.personaId);
-  });
+        <button class="btn btn-danger btn-sm" data-eliminar-cal="${c.id}" type="button" aria-label="Eliminar calendario" title="Eliminar calendario" style="padding:4px 8px; margin:0;">${mi('delete')}</button>`;
+      box.appendChild(div);
+    });
+  }
 
   box.querySelectorAll('[data-nombre-cal]').forEach(inp=>{
     inp.addEventListener('change', ()=>{
@@ -2805,7 +2758,6 @@ function renderOtrosCalendarios(){
       cal.nombre = val;
       guardarCalendariosExtra();
       renderCalendar();
-      renderPersonaCalCompleto();
     });
   });
   box.querySelectorAll('[data-color-cal]').forEach(inp=>{
@@ -2813,17 +2765,6 @@ function renderOtrosCalendarios(){
       const cal = calendariosExtra.find(c=>c.id===inp.dataset.colorCal);
       if(!cal) return;
       cal.color = inp.value;
-      guardarCalendariosExtra();
-      renderCalendar();
-      renderPersonaCalCompleto();
-    });
-  });
-
-  box.querySelectorAll('[data-persona-cal]').forEach(sel=>{
-    sel.addEventListener('change', ()=>{
-      const cal = calendariosExtra.find(c=>c.id===sel.dataset.personaCal);
-      if(!cal) return;
-      cal.personaId = sel.value || null;
       guardarCalendariosExtra();
       renderCalendar();
     });
@@ -2842,226 +2783,7 @@ function renderOtrosCalendarios(){
       renderCalendar();
     });
   });
-  renderPersonaCalCompleto();
 }
-
-// ---------- Calendario completo de una persona (turnos + sus calendarios extra) ----------
-function irAMesPcc(anio, mes){
-  // Mes compartido con la pestaña Calendario
-  irAMesCalendario(anio, mes);
-}
-document.getElementById('btn-pcc-mes-anterior').addEventListener('click', ()=>{
-  irAMesPcc(calViewAnio ?? pccAnio ?? new Date().getFullYear(), (calViewMes ?? pccMes ?? new Date().getMonth()) - 1);
-});
-document.getElementById('btn-pcc-mes-siguiente').addEventListener('click', ()=>{
-  irAMesPcc(calViewAnio ?? pccAnio ?? new Date().getFullYear(), (calViewMes ?? pccMes ?? new Date().getMonth()) + 1);
-});
-document.getElementById('btn-pcc-mes-hoy').addEventListener('click', ()=>{
-  const now = new Date();
-  irAMesPcc(now.getFullYear(), now.getMonth());
-});
-document.getElementById('pcc-persona').addEventListener('change', (e)=>{
-  pccPersonaId = e.target.value || null;
-  renderPersonaCalCompleto();
-});
-
-function renderPersonaCalCompleto(){
-  const card = document.getElementById('pcc-card');
-  if(!card) return;
-  if(personas.length===0){
-    card.style.display='none';
-    return;
-  }
-  card.style.display='block';
-
-  if(!pccPersonaId || !personas.some(p=>p.id===pccPersonaId)) pccPersonaId = personas[0].id;
-  poblarSelectPersonas(document.getElementById('pcc-persona'), pccPersonaId);
-  const persona = personas.find(p=>p.id===pccPersonaId);
-
-  if(calViewAnio!==null && calViewMes!==null){
-    pccAnio = calViewAnio;
-    pccMes = calViewMes;
-  } else if(pccAnio===null || pccMes===null){
-    const now = new Date();
-    pccAnio = now.getFullYear();
-    pccMes = now.getMonth();
-  }
-
-  document.getElementById('pcc-titulo').textContent = `${MESES[pccMes]} ${pccAnio}`;
-  document.getElementById('pcc-dow-row').innerHTML = DOW_LABELS.map(l=>`<div class="cal-dow">${l}</div>`).join('');
-
-  const schedule = JSON.parse(localStorage.getItem(LS_SCHEDULE_PREFIX+pccAnio+'_'+pccMes) || 'null');
-  const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
-
-  const grid = document.getElementById('pcc-grid');
-  grid.innerHTML='';
-  const diasEnMes = new Date(pccAnio, pccMes+1, 0).getDate();
-  const primerDow = primerOffsetLunes(pccAnio, pccMes);
-  for(let i=0;i<primerDow;i++){
-    const e = document.createElement('div');
-    e.className='cal-cell empty-cell';
-    grid.appendChild(e);
-  }
-  for(let d=1; d<=diasEnMes; d++){
-    const iso = isoDate(pccAnio, pccMes, d);
-    const weekday = new Date(pccAnio, pccMes, d).getDay();
-    const esFest = esFechaFestiva(iso) && weekday!==0;
-    const asignado = !!(schedule && new Set(schedule.days[iso]||[]).has(persona.id));
-    const calsHoy = calendariosDePersona.filter(c => (c.fechas||{})[iso] > 0);
-    const dots = calsHoy.map(c=>`<span class="otros-dot" style="background:${c.color};" title="${c.nombre} · ${nombreNivel(c.fechas[iso])}"></span>`).join('');
-
-    const cell = document.createElement('div');
-    cell.className = 'cal-cell' + ((weekday===0||weekday===6)?' weekend':'') + (esFest?' feriado':'') + (iso===isoHoy() ? ' hoy' : '');
-    cell.title = esFest ? 'Feriado' : '';
-    let etiquetaTurno = '';
-    if(asignado){
-      const bg = persona.color || COLOR_DEFAULT;
-      etiquetaTurno = `<div class="name" style="background:${bg}; color:${colorTextoDePersona(persona)};">Turno</div>`;
-    }
-    cell.innerHTML = `<div class="num">${d}</div>` + (dots ? `<div class="otros-dots">${dots}</div>` : '') + etiquetaTurno;
-    cell.addEventListener('click', ()=> abrirDialogoDiaPcc(iso, d, weekday));
-    grid.appendChild(cell);
-  }
-
-  const legend = document.getElementById('pcc-legend');
-  const itemsLegend = [`<div class="chip"><span class="persona-color-dot" style="background:${persona.color || COLOR_DEFAULT};"></span>Turno de trabajo</div>`]
-    .concat(calendariosDePersona.map(c=>`<div class="chip"><span class="persona-color-dot" style="background:${c.color};"></span>${c.nombre}</div>`));
-  legend.innerHTML = itemsLegend.join('');
-  if(!schedule){
-    legend.innerHTML += `<p class="sub-hint" style="width:100%; margin:6px 0 0;">Todavía no generaste turnos para ${MESES[pccMes]} de ${pccAnio}.</p>`;
-  }
-}
-
-// ---------- Edición manual de un día en "Calendario completo de la persona" ----------
-// A diferencia del diálogo del calendario de turnos (que solo marca quién
-// trabaja ese día), acá se edita UNA persona a la vez: si tiene turno de
-// trabajo asignado ese día y en qué nivel queda cada uno de sus calendarios
-// extra. Si todavía no existe un "schedule" generado para ese mes, se crea
-// uno vacío al vuelo para poder guardar la marca manual igual.
-let pccDialogFecha = null;
-function obtenerOCrearScheduleParaPcc(anio, mes){
-  const key = LS_SCHEDULE_PREFIX+anio+'_'+mes;
-  let sched = JSON.parse(localStorage.getItem(key) || 'null');
-  if(!sched){
-    sched = { anio, mes, days:{}, warnings:[], assignedCount:{}, exclusiones:{} };
-  }
-  return sched;
-}
-function abrirDialogoDiaPcc(iso, dia, weekday){
-  pccDialogFecha = iso;
-  const persona = personas.find(p=>p.id===pccPersonaId);
-  if(!persona) return;
-  document.getElementById('pcc-dialog-fecha-titulo').textContent = `${dia} de ${MESES[pccMes]} (${DOW_FULL[weekday]}) · ${persona.nombre}`;
-
-  // Días fijos (por día de semana) + días puntuales marcados en "Generar"
-  // para este mes: se muestran acá porque antes esta ventana no avisaba
-  // nada, y alguien podía marcar "No puede" en Días puntuales sin darse
-  // cuenta de que acá seguía dejando pasar el turno.
-  const exclusionesDelMesPcc = migrarExclusiones(
-    JSON.parse(localStorage.getItem(exclusionesKey(pccAnio, pccMes)) || '{}')
-  );
-  const nivelFijo = nivelDiaFijo(persona, weekday);
-  const nivelPuntual = nivelExclusion(exclusionesDelMesPcc, persona.id, iso);
-  const nivelBase = Math.max(nivelFijo, nivelPuntual);
-  const dispBox = document.getElementById('pcc-dialog-disponibilidad');
-  if(nivelBase >= NIVEL_BLOQUEO){
-    dispBox.innerHTML = `<span class="restringido">No disponible ese día (marcado como "No puede"${nivelFijo>=NIVEL_BLOQUEO ? ' por día fijo' : ' en días puntuales'})</span>`;
-  } else if(nivelBase > 0){
-    const bg = colorParaNivel(nivelBase);
-    dispBox.innerHTML = `<span class="nivel-tag" style="background:${bg}; color:${textoContraste(bg)};">${nombreNivel(nivelBase)}</span>`;
-  } else {
-    dispBox.innerHTML = '';
-  }
-
-  const sched = obtenerOCrearScheduleParaPcc(pccAnio, pccMes);
-  const asignado = new Set(sched.days[iso] || []).has(persona.id);
-  document.getElementById('pcc-dialog-turno').checked = asignado;
-  const pccBloqueado = mesBloqueado(pccAnio, pccMes);
-  document.getElementById('pcc-dialog-turno').disabled = pccBloqueado;
-  document.getElementById('pcc-dialog-bloqueo').style.display = pccBloqueado ? 'block' : 'none';
-
-  const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
-  const cont = document.getElementById('pcc-dialog-calendarios');
-  if(calendariosDePersona.length===0){
-    cont.innerHTML = '<p class="sub-hint" style="margin:0;">Esta persona no tiene calendarios extra creados.</p>';
-  } else {
-    cont.innerHTML = calendariosDePersona.map(c=>{
-      const nivel = (c.fechas && c.fechas[iso]) || 0;
-      return `<div class="chip pcc-dialog-chip" data-cal-id="${c.id}" data-nivel="${nivel}" style="cursor:pointer; margin-bottom:6px; width:100%; justify-content:space-between;">
-        <span><span class="persona-color-dot" style="background:${c.color};"></span> ${c.nombre}</span>
-        <span class="pcc-dialog-chip-nivel">${nombreNivel(nivel)}</span>
-      </div>`;
-    }).join('');
-    cont.querySelectorAll('.pcc-dialog-chip').forEach(chip=>{
-      aplicarEstiloNivelChipPcc(chip, parseInt(chip.dataset.nivel,10)||0);
-      chip.addEventListener('click', ()=>{
-        const siguiente = ((parseInt(chip.dataset.nivel,10)||0) + 1) % (NIVEL_BLOQUEO + 1);
-        chip.dataset.nivel = siguiente;
-        aplicarEstiloNivelChipPcc(chip, siguiente);
-      });
-    });
-  }
-  const leyenda = document.getElementById('pcc-dialog-leyenda');
-  leyenda.innerHTML = calendariosDePersona.length ? leyendaNivelesHtml() : '';
-
-  document.getElementById('dialog-dia-pcc').showModal();
-}
-function aplicarEstiloNivelChipPcc(chip, nivel){
-  const etiqueta = chip.querySelector('.pcc-dialog-chip-nivel');
-  if(!nivel){
-    chip.style.background = '';
-    chip.style.borderColor = '';
-    chip.style.color = '';
-    if(etiqueta) etiqueta.textContent = 'Disponible';
-    return;
-  }
-  const bg = colorParaNivel(nivel);
-  chip.style.background = bg;
-  chip.style.borderColor = bg;
-  chip.style.color = textoContraste(bg);
-  if(etiqueta) etiqueta.textContent = nombreNivel(nivel);
-}
-document.getElementById('btn-cerrar-dialog-pcc').addEventListener('click', ()=> document.getElementById('dialog-dia-pcc').close());
-document.getElementById('btn-guardar-dia-pcc').addEventListener('click', ()=>{
-  const persona = personas.find(p=>p.id===pccPersonaId);
-  if(!persona || !pccDialogFecha) return;
-
-  // Si el mes está bloqueado, el turno de trabajo no se toca (solo los
-  // calendarios extra de más abajo).
-  if(!mesBloqueado(pccAnio, pccMes)){
-    const sched = obtenerOCrearScheduleParaPcc(pccAnio, pccMes);
-    const marcado = document.getElementById('pcc-dialog-turno').checked;
-    const idsDelDia = new Set(sched.days[pccDialogFecha] || []);
-    if(marcado) idsDelDia.add(persona.id); else idsDelDia.delete(persona.id);
-    sched.days[pccDialogFecha] = ordenarIdsSegunPersonas([...idsDelDia], personas);
-    // Recalcula el total asignado por persona, igual que hace el diálogo del
-    // calendario de turnos, para que el resumen no quede desactualizado.
-    const assignedCount = {};
-    personas.forEach(p=>assignedCount[p.id]=0);
-    Object.values(sched.days).forEach(ids=>{
-      new Set(ids).forEach(id=>{ if(assignedCount[id]!==undefined) assignedCount[id]++; });
-    });
-    sched.assignedCount = assignedCount;
-    localStorage.setItem(LS_SCHEDULE_PREFIX+pccAnio+'_'+pccMes, JSON.stringify(sched));
-  }
-
-  document.querySelectorAll('#pcc-dialog-calendarios .pcc-dialog-chip').forEach(chip=>{
-    const cal = calendariosExtra.find(c=>c.id===chip.dataset.calId);
-    if(!cal) return;
-    if(!cal.fechas) cal.fechas = {};
-    const nivel = parseInt(chip.dataset.nivel,10) || 0;
-    if(nivel) cal.fechas[pccDialogFecha] = nivel;
-    else delete cal.fechas[pccDialogFecha];
-  });
-  guardarCalendariosExtra();
-
-  document.getElementById('dialog-dia-pcc').close();
-  renderPersonaCalCompleto();
-  // Si el mes que se está editando es el mismo que se ve en la pestaña
-  // "Calendario", la refrescamos también para que quede todo en sincro.
-  if(calViewAnio===pccAnio && calViewMes===pccMes) renderCalendar();
-  renderOtrosCalendarios();
-});
 
 // ---------- Selector flotante de fechas (multi-selección) ----------
 // Se usa tanto para feriados como para las fechas de "otros calendarios":
@@ -3293,17 +3015,18 @@ document.addEventListener('click', e=>{
 });
 
 function mostrarAccionesCalendario(hay){
-  document.getElementById('cal-actions').style.display = hay ? 'block' : 'none';
+  document.getElementById('btn-exportar-imagen').style.visibility = hay ? 'visible' : 'hidden';
   document.getElementById('btn-exportar-shifter').style.display = hay ? '' : 'none';
 }
 
+// Filtro del calendario: id de la persona cuyos turnos se muestran (null = todas)
+let filtroPersonaCal = null;
 function renderCalendar(){
   const dowRow = document.getElementById('cal-dow-row');
   const grid = document.getElementById('cal-grid');
   const titulo = document.getElementById('cal-titulo');
   const warningsBox = document.getElementById('cal-warnings');
   const resumenCard = document.getElementById('resumen-card');
-  const actions = document.getElementById('cal-actions');
 
   // Determina qué mes se está mirando: si todavía no se navegó nada en esta
   // sesión, arranca directamente en el mes real de hoy (haya o no turnos
@@ -3366,7 +3089,8 @@ function renderCalendar(){
   for(let d=1; d<=diasEnMes; d++){
     const iso = isoDate(anio, mes, d);
     const weekday = new Date(anio,mes,d).getDay();
-    const ids = [...new Set(days[iso] || [])];
+    const idsTodos = [...new Set(days[iso] || [])];
+    const ids = filtroPersonaCal ? idsTodos.filter(id=>id===filtroPersonaCal) : idsTodos;
     const esFest = esFechaFestiva(iso) && weekday!==0;
     const cell = document.createElement('div');
     cell.className='cal-cell' + ((weekday===0||weekday===6) ? ' weekend':'') + (esFest ? ' feriado':'') + (iso===isoHoy() ? ' hoy' : '');
@@ -3412,13 +3136,21 @@ function renderCalendar(){
     normales: normalesPorPersona[p.id] ?? 0,
     festivos: festivosPorPersona[p.id] ?? 0
   }));
+  if(filtroPersonaCal && !personas.some(p=>p.id===filtroPersonaCal)) filtroPersonaCal = null;
   personas.forEach(p=>{
     const usados = assignedCount[p.id] ?? 0;
     const normales = normalesPorPersona[p.id] ?? 0;
     const festivos = festivosPorPersona[p.id] ?? 0;
     const over = usados > p.maxDias;
     const row = document.createElement('div');
-    row.className = 'resumen-total' + (over?' warn':'');
+    row.className = 'resumen-total' + (over?' warn':'') + (filtroPersonaCal===p.id ? ' filtro-activo' : '');
+    row.style.cursor = 'pointer';
+    row.setAttribute('role','button');
+    row.setAttribute('aria-pressed', filtroPersonaCal===p.id ? 'true' : 'false');
+    row.addEventListener('click', ()=>{
+      filtroPersonaCal = (filtroPersonaCal===p.id) ? null : p.id;
+      renderCalendar();
+    });
     row.title = `${normales} normales · ${festivos} festivos (domingos, feriados y días en solitario)`;
     row.innerHTML = `
       <span class="resumen-nombre">${p.nombre}</span>
@@ -3514,9 +3246,7 @@ function cargarHtml2Canvas(){
 document.getElementById('btn-exportar-imagen').addEventListener('click', async ()=>{
   const btn = document.getElementById('btn-exportar-imagen');
   if(btn.disabled) return;
-  const textoOriginal = btn.innerHTML;
   btn.disabled = true;
-  btn.textContent = 'Generando imagen...';
   try{
     const html2canvas = await cargarHtml2Canvas();
     const nodo = document.querySelector('.card.print-cal');
@@ -3524,10 +3254,9 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
     // Oculta los botones de navegación de mes, el aviso de "sin turnos" y
     // los puntitos de otros calendarios: la imagen exportada solo debe
     // mostrar los turnos de trabajo de este calendario.
-    const selectoresAOcultar = ['.btn-nav-mes', '.btn-hoy', '.btn-lock', '#cal-sin-turnos-hint', '.otros-dots'];
-    // Si el usuario destildó la opción, los avisos de días incompletos
-    // (faltan personas disponibles) tampoco salen en la imagen.
-    const incluirAvisos = document.getElementById('chk-exportar-avisos').checked;
+    const selectoresAOcultar = ['.btn-nav-mes', '.btn-hoy', '.btn-lock', '.btn-img', '#cal-sin-turnos-hint', '.otros-dots'];
+    // Los avisos de días incompletos no salen en la imagen.
+    const incluirAvisos = false;
     const aOcultar = nodo.querySelectorAll(selectoresAOcultar.join(', '));
     const displayPrevio = [];
     aOcultar.forEach(el=>{ displayPrevio.push(el.style.display); el.style.display='none'; });
@@ -3562,7 +3291,6 @@ document.getElementById('btn-exportar-imagen').addEventListener('click', async (
     alert('No se pudo generar la imagen. ' + (err && err.message ? err.message : 'Probá de nuevo.'));
   } finally {
     btn.disabled = false;
-    btn.innerHTML = textoOriginal;
   }
 });
 // ---------- Exportar el resumen por persona como imagen (PNG) ----------
@@ -3632,14 +3360,7 @@ document.getElementById('btn-exportar-resumen-imagen').addEventListener('click',
 });
 
 // ---------- Tema oscuro / claro ----------
-const btnTheme = document.getElementById('btn-theme-toggle');
-function actualizarIconoTheme(){
-  const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
-  btnTheme.innerHTML = mi(esClaro ? 'dark_mode' : 'light_mode');
-  const t = esClaro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro';
-  btnTheme.title = t; btnTheme.setAttribute('aria-label', t);
-}
-btnTheme.addEventListener('click', ()=>{
+function alternarTema(){
   const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
   if(esClaro){
     document.documentElement.removeAttribute('data-theme');
@@ -3648,9 +3369,22 @@ btnTheme.addEventListener('click', ()=>{
     document.documentElement.setAttribute('data-theme','light');
     localStorage.setItem('turnos_theme','light');
   }
-  actualizarIconoTheme();
-});
-actualizarIconoTheme();
+}
+
+// Doble toque en el botón Calendario de la barra: cambia entre tema claro y oscuro
+(function(){
+  const btnCal = document.querySelector('nav.tabs button[data-tab="calendario"]');
+  let ultimoToque = 0;
+  btnCal.addEventListener('click', ()=>{
+    const ahora = Date.now();
+    if(ahora - ultimoToque < 400){
+      ultimoToque = 0;
+      alternarTema();
+    } else {
+      ultimoToque = ahora;
+    }
+  });
+})();
 
 // ---------- Exportar a Shifter (.Shifter) ----------
 // Shifter guarda sus datos como una base SQLite. Para exportar generamos
@@ -3802,161 +3536,6 @@ async function exportarAShifter(){
 }
 document.getElementById('btn-exportar-shifter').addEventListener('click', exportarAShifter);
 
-// ---------- Exportar UNA persona a Shifter, convirtiendo también sus ----------
-// ---------- calendarios extra en "turnos" (no solo puntitos) ----------
-// Shifter no tiene concepto de "calendario extra": todo lo que se ve ahí es
-// un turno. Para que esta persona se vea completa en Shifter (turno de
-// trabajo + Fórmula 1 + cumpleaños, etc.) cada calendario extra se exporta
-// como si fuera un turno más, con su propio color. La limitación real de
-// Shifter es que cada día solo tiene 2 casilleros (turno1 y turno2): acá el
-// turno de trabajo siempre ocupa el primero, y como segundo se usa el
-// primer calendario extra marcado ese día (si hay más de uno, los demás
-// quedan afuera y se avisa al final).
-async function exportarPersonaComoTurnosAShifter(){
-  const persona = personas.find(p=>p.id===pccPersonaId);
-  if(!persona){
-    alert('Elegí primero una persona.');
-    return;
-  }
-  const calendariosDePersona = calendariosExtra.filter(c=>c.personaId===persona.id);
-  const btn = document.getElementById('btn-exportar-pcc-shifter');
-  const textoOriginal = btn.innerHTML;
-
-  // Se sugiere el mismo nombre de calendario que el usuario ya venía usando
-  // desde la primera vez que exportó a Shifter (guardado en
-  // config.nombreCalendarioShifter), no el nombre de la persona: es el
-  // nombre del turno de trabajo que se ve en el calendario global, y es lo
-  // que también se usa como etiqueta del turno de trabajo más abajo.
-  const nombreCalPrevioPersona = (config.nombreCalendarioShifter || 'Turno');
-  const nombreCalEntrada = prompt('Nombre del calendario en Shifter:', nombreCalPrevioPersona);
-  if(nombreCalEntrada === null) return; // canceló
-  const nombreCal = (nombreCalEntrada.trim() || nombreCalPrevioPersona || 'Turno').slice(0,60);
-  config.nombreCalendarioShifter = nombreCal;
-  saveAll();
-
-  btn.disabled = true;
-  btn.textContent = 'Generando...';
-  try{
-    const SQL = await cargarSqlJs();
-    const db = new SQL.Database();
-    db.run(`PRAGMA user_version = 7`);
-    db.run(`CREATE TABLE android_metadata (locale TEXT)`);
-    db.run(`CREATE TABLE dias (fecha INTEGER PRIMARY KEY, turno1 INTEGER, turno2 INTEGER, alarma1 INTEGER, alarma2 INTEGER, notas TEXT, notificacion INTEGER, hora INTEGER, alarma1T2 INTEGER, alarma2T2 INTEGER, sonido TEXT, notificacionDiaAntes INTEGER,notificacion2 INTEGER, notificacion2DiaAntes INTEGER, hora2 INTEGER, sonido2 TEXT, instruccionesDibujo TEXT, foto BLOB,horasExtraT1 INTEGER, horasExtraT2 INTEGER, ingresoExtra INTEGER, salidaAnticipadaT1 INTEGER, salidaAnticipadaT2 INTEGER,icono INTEGER, horasExtraT1Acumula INTEGER, horasExtraT2Acumula INTEGER)`);
-    db.run(`CREATE TABLE tablaTurnos (_id INTEGER PRIMARY KEY, texto TEXT, horaAlarma TEXT, alarma INTEGER, alarmaDiaAntes INTEGER, color INTEGER, colorTexto INTEGER, codigoSecuencial INTEGER, textSize REAL, horaAlarma2 TEXT, alarma2 INTEGER, alarma2DiaAntes INTEGER, sonido1 TEXT, sonido2 TEXT,abreviatura TEXT, horaInicio1 TEXT, horaFinal1 TEXT, horaInicio2 TEXT, horaFinal2 TEXT, turnoPartido INTEGER, realizarAccion TEXT,ingresosHora INTEGER, ingresoHoraExtra INTEGER, tiempoDescanso INTEGER, tiempoTurno INTEGER, calcularTiempoTurnoManual INTEGER)`);
-    db.run(`CREATE TABLE nombreCalendario (_id INTEGER PRIMARY KEY, nombre TEXT, posicion INTEGER, moneda TEXT)`);
-    db.run(`CREATE TABLE patrones (_id INTEGER PRIMARY KEY, nombre TEXT, numeroDias INTEGER)`);
-    db.run(`CREATE TABLE contenidoPatron (_id INTEGER PRIMARY KEY, idPatron INTEGER, dia INTEGER, turno1 INTEGER, turno2 INTEGER)`);
-    db.run(`CREATE TABLE festivos (_id INTEGER PRIMARY KEY, fecha INTEGER, fiesta TEXT, oculto INTEGER)`);
-
-    db.run(`INSERT INTO android_metadata (locale) VALUES ('es_ES')`);
-    db.run(`INSERT INTO nombreCalendario (_id, nombre, posicion, moneda) VALUES (1, ?, NULL, NULL)`, [nombreCal]);
-
-    // _id 1 = el turno de trabajo de la persona; el resto, uno por cada
-    // calendario extra que tenga (en el mismo orden en que aparecen en "Tus
-    // calendarios").
-    const stmtTurno = db.prepare(`INSERT INTO tablaTurnos
-      (_id, texto, horaAlarma, alarma, alarmaDiaAntes, color, colorTexto, codigoSecuencial, textSize,
-       horaAlarma2, alarma2, alarma2DiaAntes, sonido1, sonido2, abreviatura,
-       horaInicio1, horaFinal1, horaInicio2, horaFinal2, turnoPartido, realizarAccion,
-       ingresosHora, ingresoHoraExtra, tiempoDescanso, tiempoTurno, calcularTiempoTurnoManual)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`);
-    function insertarTurno(shifterId, nombre, colorHex, colorTextoHex){
-      const color = colorHexAAndroidInt(colorHex);
-      const colorTexto = colorHexAAndroidInt(colorTextoHex || oscurecerColor(colorHex || COLOR_DEFAULT));
-      stmtTurno.run([
-        shifterId, nombre, '08:00', 0, 0, color, colorTexto, shifterId, 16.0,
-        '17:00', 0, 0, '', '', (nombre||'').toUpperCase().slice(0,10),
-        '14:00', '14:00', '15:00', '15:00', 0, '000000',
-        null, null, 0, 0, 0
-      ]);
-    }
-    const TURNO_TRABAJO_ID = 1;
-    // El turno de trabajo se etiqueta con el nombre de calendario (el mismo
-    // que se ve en el calendario global de Shifter), no con el nombre de la
-    // persona.
-    insertarTurno(TURNO_TRABAJO_ID, nombreCal, persona.color, persona.colorTexto);
-    const idCalendario = {}; // calId -> shifterId
-    calendariosDePersona.forEach((c, i)=>{
-      const shifterId = i+2;
-      idCalendario[c.id] = shifterId;
-      insertarTurno(shifterId, c.nombre, c.color);
-    });
-    stmtTurno.free();
-
-    // Junta todos los días de todos los meses guardados en este dispositivo
-    // donde esta persona tiene turno de trabajo asignado o algún calendario
-    // extra marcado, para no depender solo del mes que se está mirando.
-    const fechasConDatos = new Set();
-    Object.keys(localStorage)
-      .filter(k=>k.startsWith(LS_SCHEDULE_PREFIX))
-      .forEach(k=>{
-        try{
-          const sched = JSON.parse(localStorage.getItem(k));
-          if(sched && sched.days){
-            Object.keys(sched.days).forEach(iso=>{
-              if(new Set(sched.days[iso]||[]).has(persona.id)) fechasConDatos.add(iso);
-            });
-          }
-        }catch(e){ /* ignorar entradas corruptas */ }
-      });
-    calendariosDePersona.forEach(c=>{
-      Object.keys(c.fechas||{}).forEach(iso=>{ if(c.fechas[iso]>0) fechasConDatos.add(iso); });
-    });
-
-    let diasConVariosExtra = 0;
-    const stmtDia = db.prepare(`INSERT OR REPLACE INTO dias (fecha, turno1, turno2) VALUES (?,?,?)`);
-    fechasConDatos.forEach(iso=>{
-      const [y, m, d] = iso.split('-').map(Number);
-      if(!y || !m || !d) return;
-      const fecha = y*10000 + (m-1)*100 + d;
-
-      const sched = JSON.parse(localStorage.getItem(LS_SCHEDULE_PREFIX+y+'_'+(m-1)) || 'null');
-      const tieneTurno = !!(sched && new Set(sched.days[iso]||[]).has(persona.id));
-      const t1 = tieneTurno ? TURNO_TRABAJO_ID : 0;
-
-      const calsHoy = calendariosDePersona.filter(c => (c.fechas||{})[iso] > 0);
-      if(calsHoy.length > 1) diasConVariosExtra++;
-      const t2 = calsHoy.length ? idCalendario[calsHoy[0].id] : 0;
-
-      stmtDia.run([fecha, t1, t2]);
-    });
-    stmtDia.free();
-
-    const stmtFest = db.prepare(`INSERT INTO festivos (fecha, fiesta, oculto) VALUES (?,?,0)`);
-    feriados.forEach(iso=>{
-      const [y, m, d] = iso.split('-').map(Number);
-      if(y && m && d) stmtFest.run([y*10000 + (m-1)*100 + d, 'Feriado']);
-    });
-    stmtFest.free();
-
-    const bytes = db.export();
-    db.close();
-    const blob = new Blob([bytes], {type:'application/octet-stream'});
-    const url = URL.createObjectURL(blob);
-    const pad = n => String(n).padStart(2,'0');
-    const now = new Date();
-    const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}m${pad(now.getSeconds())}s`;
-    const nombreArchivo = `Shifter_${(persona.nombre||'persona').replace(/[^a-zA-Z0-9]+/g,'')||'Turnos'}_${stamp}.Shifter`;
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = nombreArchivo;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-
-    if(diasConVariosExtra > 0){
-      alert(`Listo. Ojo: ${diasConVariosExtra} día(s) tenían más de un calendario extra marcado ese mismo día. Shifter solo admite 2 turnos por día, así que en esos días solo se incluyó el turno de trabajo y el primer calendario extra; el resto quedó afuera de este archivo.`);
-    }
-  }catch(err){
-    console.error(err);
-    alert('No se pudo generar el archivo para Shifter.\n' + (err && err.message ? err.message : err));
-  }finally{
-    btn.disabled = false;
-    btn.innerHTML = textoOriginal;
-  }
-}
-document.getElementById('btn-exportar-pcc-shifter').addEventListener('click', exportarPersonaComoTurnosAShifter);
 
 // ---------- Importar desde Shifter (.Shifter) ----------
 // Lee el mismo esquema SQLite que genera exportarAShifter (y que también
@@ -4152,7 +3731,6 @@ function habilitarSwipeMes(el, btnAnterior, btnSiguiente){
   el.addEventListener('touchcancel', ()=>{ activo = false; }, {passive:true});
 }
 habilitarSwipeMes(document.getElementById('cal-grid').closest('.card'), 'btn-mes-anterior', 'btn-mes-siguiente');
-habilitarSwipeMes(document.getElementById('pcc-card'), 'btn-pcc-mes-anterior', 'btn-pcc-mes-siguiente');
 habilitarSwipeMes(document.getElementById('btn-g-mes-anterior').closest('.card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
 habilitarSwipeMes(document.getElementById('excl-card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
 
