@@ -349,7 +349,7 @@
   .persona-check input[type=checkbox]{width:18px; height:18px;}
 
   #dialog-variantes{width:min(1100px,96vw); max-height:94vh;}
-  .var-ctrl{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:8px 0;}
+  .var-ctrl{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:8px 0; position:sticky; top:0; z-index:5; background:var(--card); padding:8px 0; border-bottom:1px solid var(--line);}
   .var-ctrl select{width:auto; padding:6px 8px;}
   .var-leyenda{display:flex; flex-wrap:wrap; gap:4px; margin-bottom:10px;}
   .var-leyenda span, .var-stats span{font-size:.66rem; padding:1px 6px; border-radius:5px; font-weight:600;}
@@ -791,30 +791,36 @@ function oscurecerColor(hex, factor=0.55){
 // generador intenta evitarlos pero puede usarlos si no queda otra opción.
 const NIVEL_BLOQUEO = 5;
 const ETIQUETAS_NIVEL = { 1:'Muy baja', 2:'Baja', 3:'Media', 4:'Alta', 5:'No puede' };
-const PESO_NIVEL = { 1:5, 2:15, 3:40, 4:90 }; // penalización en el puntaje del calendario (nivel 5 no puntúa: está bloqueado)
+const PESO_NIVEL = { 1:0, 2:15, 3:40, 4:90 }; // penalización en el puntaje del calendario (nivel 5 no puntúa: está bloqueado)
+
+// Nivel 1 = solo marca visual: indica que ese día tiene otras cosas pero SÍ
+// puede asistir. El generador lo trata como disponible (nivel efectivo 0).
+function nivelEfectivo(nivel){ return nivel === 1 ? 0 : nivel; }
 
 function nombreNivel(nivel){
   if(!nivel) return 'Disponible';
+  if(nivel===1) return 'Tiene otras cosas (puede asistir)';
   if(nivel>=NIVEL_BLOQUEO) return 'No puede';
   return 'Prefiere no trabajar (' + ETIQUETAS_NIVEL[nivel].toLowerCase() + ')';
 }
 function esBloqueante(nivel){ return nivel >= NIVEL_BLOQUEO; }
 
-// Color del nivel: interpola entre el ámbar y el rojo del tema actual, así
-// se adapta solo si el usuario cambia entre tema claro y oscuro.
+// Color del nivel: una paleta de tonos bien distintos (verde, amarillo,
+// naranja, rojo, rojo oscuro) para distinguir cada nivel de un vistazo. Funciona igual en
+// tema claro y oscuro; el color del texto se calcula con textoContraste().
+const COLORES_NIVEL = {
+  1:'#3FB668', // verde: solo marca visual, sí puede asistir
+  2:'#EBC63C', // amarillo
+  3:'#EE8A3A', // naranja
+  4:'#E5524A', // rojo
+  5:'#A31621'  // rojo oscuro: no puede
+};
 function getCssVarHex(name){
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 function colorParaNivel(nivel){
   if(!nivel) return null;
-  const from = hexToRgb(getCssVarHex('--amber'));
-  const to = hexToRgb(getCssVarHex('--red'));
-  const t = (nivel-1)/(NIVEL_BLOQUEO-1);
-  return rgbToHex(
-    from.r + (to.r-from.r)*t,
-    from.g + (to.g-from.g)*t,
-    from.b + (to.b-from.b)*t
-  );
+  return COLORES_NIVEL[Math.min(nivel, NIVEL_BLOQUEO)];
 }
 function textoContraste(hex){
   const {r,g,b} = hexToRgb(hex);
@@ -1491,6 +1497,38 @@ document.getElementById('btn-generar').addEventListener('click', ()=>{
   }, 10);
 });
 
+// ---------- Botón "Atrás" del dispositivo y diálogos ----------
+// Cada diálogo modal que se abre agrega una entrada al historial; así, Atrás
+// cierra el diálogo en vez de salirse de la página (pantalla en blanco).
+// Además se cierran al tocar fuera de ellos.
+const dialogosAbiertos = [];
+let ignorarPopstate = 0;
+(function(){
+  const showOriginal = HTMLDialogElement.prototype.showModal;
+  HTMLDialogElement.prototype.showModal = function(){
+    const dlg = this;
+    if(dlg.open) return;
+    showOriginal.call(dlg);
+    try{ history.pushState({dlg: dlg.id}, ''); dialogosAbiertos.push(dlg); }catch(e){}
+    if(!dlg._backListo){
+      dlg._backListo = true;
+      dlg.addEventListener('close', ()=>{
+        const i = dialogosAbiertos.indexOf(dlg);
+        if(i < 0) return;
+        dialogosAbiertos.splice(i, 1);
+        ignorarPopstate++;
+        try{ history.back(); }catch(e){ ignorarPopstate--; }
+      });
+      dlg.addEventListener('click', e=>{ if(e.target === dlg) dlg.close(); });
+    }
+  };
+  window.addEventListener('popstate', ()=>{
+    if(ignorarPopstate > 0){ ignorarPopstate--; return; }
+    const dlg = dialogosAbiertos.pop();
+    if(dlg && dlg.open) dlg.close();
+  });
+})();
+
 // ---------- Comparar variantes lado a lado ----------
 // generarTurnosRobusto siempre devuelve "la mejor" de su búsqueda, por eso
 // al apretar Generar varias veces se repiten las mismas pocas opciones. Acá
@@ -1590,7 +1628,7 @@ function buscarVariantes(){
     s.exclusiones = exclusionesActuales;
     const f = firmaSchedule(s);
     if(!firmas.has(f)){ firmas.add(f); variantes.push(s); renderVariantes(false); }
-    setTimeout(paso, 15);
+    setTimeout(paso, 40);
   }
   setTimeout(paso, 10);
 }
@@ -1936,8 +1974,8 @@ function generarTurnosConEstrategiaPorPrioridad(anio, mes, personasList, persona
     // ese día se lo prioriza), y recién como desempate se usa el criterio
     // matemático propio de la estrategia.
     elegibles.sort((a,b) => {
-      const na = nivelPreferenciaDia(a, weekday, iso, exclusiones);
-      const nb = nivelPreferenciaDia(b, weekday, iso, exclusiones);
+      const na = nivelEfectivo(nivelPreferenciaDia(a, weekday, iso, exclusiones));
+      const nb = nivelEfectivo(nivelPreferenciaDia(b, weekday, iso, exclusiones));
       if(na !== nb) return na - nb;
       return comparator(a,b,ctx);
     });
@@ -2016,8 +2054,8 @@ function repararCronologicamente(anio, mes, personasList, personasPorDia, exclus
       const candidatosExtra = elegibles
         .filter(p => !yaElegidos.has(p.id))
         .sort((a,b) => {
-          const na = nivelPreferenciaDia(a, weekday, iso, exclusiones);
-          const nb = nivelPreferenciaDia(b, weekday, iso, exclusiones);
+          const na = nivelEfectivo(nivelPreferenciaDia(a, weekday, iso, exclusiones));
+          const nb = nivelEfectivo(nivelPreferenciaDia(b, weekday, iso, exclusiones));
           if(na !== nb) return na - nb;
           return assignedCount[a.id] - assignedCount[b.id];
         });
@@ -2173,7 +2211,7 @@ function puntuarCalendario(sched, personasList, personasPorDia, exclusiones){
         const persona = personasList.find(p=>p.id===id);
         if(!persona) return;
         const nivel = nivelPreferenciaDia(persona, weekday, iso, exclusiones);
-        if(nivel > 0 && nivel < NIVEL_BLOQUEO) resto += PESO_NIVEL[nivel];
+        if(nivel > 1 && nivel < NIVEL_BLOQUEO) resto += PESO_NIVEL[nivel];
       });
     });
   }
