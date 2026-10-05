@@ -279,12 +279,12 @@
 
   .resumen-total{
     display:flex; align-items:center; gap:10px;
-    background:var(--teal-dim); border-radius:8px; padding:6px 10px; margin-top:6px; font-size:.82rem;
+    background:var(--teal-dim); border-radius:10px; padding:10px 14px; margin-top:8px; font-size:.95rem; min-height:44px;
   }
   .resumen-total .resumen-nombre{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .resumen-total .resumen-detalle{font-size:.7rem; color:var(--ink-soft); font-weight:500; white-space:nowrap;}
+  .resumen-total .resumen-detalle{font-size:.8rem; color:var(--ink-soft); font-weight:500; white-space:nowrap;}
   .resumen-total.warn{background:var(--amber-dim);}
-  .resumen-total b{font-family:'JetBrains Mono';}
+  .resumen-total b{font-family:'JetBrains Mono'; font-size:1rem;}
 
   /* Los avisos ya no empujan el contenido: en pantalla van en un globito flotante.
      #cal-warnings se mantiene oculto y solo se muestra al exportar la imagen. */
@@ -510,7 +510,6 @@
 
 
     <div class="card acc-card" id="cal-shifter-card" style="margin-top:18px; display:none;">
-      <div class="acc-titulo">Shifter</div>
       <div class="acc-grid" id="cal-import-actions">
         <button class="acc-btn acc-btn-main" id="btn-exportar-shifter" type="button" style="display:none;"><i data-mi="file_upload"></i>Exportar</button>
         <button class="acc-btn" id="btn-importar-shifter" type="button"><i data-mi="file_download"></i>Importar</button>
@@ -3434,7 +3433,7 @@ async function exportarAShifter(){
   const textoOriginal = btn.innerHTML;
 
   const nombreCalPrevio = (config.nombreCalendarioShifter || 'Turnos');
-  const nombreCalEntrada = prompt('Nombre del calendario en Shifter:', nombreCalPrevio);
+  const nombreCalEntrada = prompt('Nombre del calendario:', nombreCalPrevio);
   if(nombreCalEntrada === null) return; // canceló
   const nombreCal = (nombreCalEntrada.trim() || 'Turnos').slice(0,60);
   config.nombreCalendarioShifter = nombreCal;
@@ -3539,7 +3538,7 @@ async function exportarAShifter(){
     URL.revokeObjectURL(url);
   }catch(err){
     console.error(err);
-    alert('No se pudo generar el archivo para Shifter.\n' + (err && err.message ? err.message : err));
+    alert('No se pudo generar el archivo.\n' + (err && err.message ? err.message : err));
   }finally{
     btn.disabled = false;
     btn.innerHTML = textoOriginal;
@@ -3713,10 +3712,10 @@ async function importarDesdeShifter(file){
     if(clavesMeses.length) partesResumen.push(`${clavesMeses.length} mes(es) de turnos`);
     if(nuevosFeriados.size) partesResumen.push(`${nuevosFeriados.size} feriado(s)`);
     alert('Importación lista: se cargaron ' + partesResumen.join(', ') + '.\n\n'
-      + 'Ojo: el formato de Shifter no guarda el máximo de días, los días fijos ni el descanso mínimo de cada persona, así que quedaron con valores por defecto. Revisalos arriba, en la lista de personas.');
+      + 'Ojo: el formato del archivo no guarda el máximo de días, los días fijos ni el descanso mínimo de cada persona, así que quedaron con valores por defecto. Revisalos arriba, en la lista de personas.');
   }catch(err){
     console.error(err);
-    alert('No se pudo importar el archivo. ¿Seguro que es un backup de Shifter (.Shifter)?\n' + (err && err.message ? err.message : err));
+    alert('No se pudo importar el archivo. ¿Seguro que es un archivo de backup válido?\n' + (err && err.message ? err.message : err));
   }finally{
     btn.disabled = false;
     btn.innerHTML = textoOriginal;
