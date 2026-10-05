@@ -252,11 +252,11 @@
   .empty{color:var(--ink-soft); font-size:.88rem; text-align:center; padding:30px 10px;}
 
   .config-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  .personas-stepper{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; padding-top:12px; border-top:1px solid var(--line);}
-  .personas-stepper .ps-label{font-size:.78rem; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
-  .personas-stepper .ps-ctrl{display:flex; align-items:center; gap:8px;}
-  .personas-stepper .ps-valor{min-width:28px; text-align:center; font-size:1.15rem; font-weight:700; color:var(--ink);}
-  .personas-stepper .btn-nav-mes{width:36px; height:36px; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.2rem; line-height:1;}
+  .personas-stepper{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:6px; padding-top:6px; border-top:1px solid var(--line);}
+  .personas-stepper .ps-label{font-size:.72rem; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+  .personas-stepper .ps-ctrl{display:flex; align-items:center; gap:4px;}
+  .personas-stepper .ps-valor{min-width:22px; text-align:center; font-size:1rem; font-weight:700; color:var(--ink);}
+  .personas-stepper .btn-nav-mes{width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center; font-size:1rem; line-height:1;}
 
   .sub-hint{font-size:.8rem; color:var(--ink-soft); margin:0 0 12px;}
   .excl-tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
@@ -406,21 +406,21 @@
       <input type="hidden" id="g-anio">
       <input type="hidden" id="g-personas-dia" value="2">
       <div class="personas-stepper">
-        <span class="ps-label">Personas por día</span>
+        <span class="ps-label">Personas/día</span>
         <div class="ps-ctrl">
           <button class="btn btn-ghost btn-nav-mes" id="btn-g-personas-menos" type="button" aria-label="Menos personas" title="Menos personas">&minus;</button>
           <span class="ps-valor" id="g-personas-valor">2</span>
           <button class="btn btn-ghost btn-nav-mes" id="btn-g-personas-mas" type="button" aria-label="Más personas" title="Más personas">+</button>
         </div>
+        <button class="btn btn-accent btn-sm" id="btn-abrir-selector-feriados" type="button" title="Elegir feriados"><i data-mi="event"></i>Feriados <span id="feriados-chips"></span></button>
       </div>
     </div>
 
     <div class="card" id="excl-card" style="margin-top:18px;">
-      <h3>Días puntuales este mes</h3>
-      <label style="display:flex; align-items:center; gap:8px; text-transform:none; font-weight:500; letter-spacing:normal; cursor:pointer; color:var(--ink);">
-        <input type="checkbox" id="excl-modo-simple" style="width:auto;">
-        Un toque = "No puede" (sin niveles intermedios)
-      </label>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;">
+        <h3 style="margin:0;">Días puntuales este mes</h3>
+        <button class="btn btn-ghost btn-sm" id="excl-modo-simple" type="button" aria-pressed="false" title="Un toque = &quot;No puede&quot; (sin niveles intermedios)">No puede</button>
+      </div>
       <div class="excl-tabs" id="excl-tabs" style="margin-top:12px;"></div>
       <div class="cal-grid" id="excl-dow-row"></div>
       <div class="cal-grid" id="excl-cal-grid"></div>
@@ -506,13 +506,7 @@
       </div>
     </div>
 
-    <div class="card" id="feriados-card" style="margin-top:18px; padding:10px 14px; display:flex; align-items:center; gap:10px;">
-      <h3 style="margin:0;">Feriados</h3>
-      <div id="feriados-chips" style="flex:1; font-size:.8rem; color:var(--ink-soft, inherit); opacity:.7;"></div>
-      <button class="btn btn-accent btn-sm" id="btn-abrir-selector-feriados" type="button"><i data-mi="event"></i>Elegir fechas</button>
-    </div>
-
-    <div class="card acc-card" id="cal-shifter-card" style="margin-top:18px;">
+    <div class="card acc-card" id="cal-shifter-card" style="margin-top:18px; display:none;">
       <div class="acc-titulo">Shifter</div>
       <div class="acc-grid" id="cal-import-actions">
         <button class="acc-btn acc-btn-main" id="btn-exportar-shifter" type="button" style="display:none;"><i data-mi="file_upload"></i>Exportar</button>
@@ -1176,7 +1170,7 @@ function renderExclusiones(){
     return;
   }
   document.getElementById('excl-card').style.display='block';
-  document.getElementById('excl-modo-simple').checked = modoSimpleExclusiones;
+  aplicarEstadoModoSimple();
 
   if(!selectedExclPersonId || !personas.find(p=>p.id===selectedExclPersonId)){
     selectedExclPersonId = personas[0].id;
@@ -1272,9 +1266,16 @@ document.getElementById('btn-g-personas-menos').addEventListener('click', ()=>ca
 document.getElementById('btn-g-personas-mas').addEventListener('click', ()=>cambiarPersonasDia(1));
 
 document.getElementById('g-mes').addEventListener('change', sincronizarMesDesdeGenerar);
-document.getElementById('excl-modo-simple').addEventListener('change', (e)=>{
-  modoSimpleExclusiones = e.target.checked;
+function aplicarEstadoModoSimple(){
+  const b = document.getElementById('excl-modo-simple');
+  b.setAttribute('aria-pressed', modoSimpleExclusiones ? 'true' : 'false');
+  b.classList.toggle('btn-accent', modoSimpleExclusiones);
+  b.classList.toggle('btn-ghost', !modoSimpleExclusiones);
+}
+document.getElementById('excl-modo-simple').addEventListener('click', ()=>{
+  modoSimpleExclusiones = !modoSimpleExclusiones;
   localStorage.setItem('turnos_excl_modo_simple', modoSimpleExclusiones ? 'true' : 'false');
+  aplicarEstadoModoSimple();
 });
 document.getElementById('g-anio').addEventListener('change', sincronizarMesDesdeGenerar);
 function sincronizarMesDesdeGenerar(){
@@ -2613,7 +2614,7 @@ function renderFeriados(){
   // Los feriados no se listan; solo se muestra cuántos hay cargados.
   const info = document.getElementById('feriados-chips');
   if(!info) return;
-  info.textContent = feriados.length === 0 ? '' : `${feriados.length} cargado${feriados.length===1?'':'s'}`;
+  info.textContent = feriados.length ? `(${feriados.length})` : '';
 }
 
 document.getElementById('btn-abrir-selector-feriados').addEventListener('click', ()=>{
@@ -3702,6 +3703,42 @@ function habilitarSwipeMes(el, btnAnterior, btnSiguiente){
 habilitarSwipeMes(document.getElementById('cal-grid').closest('.card'), 'btn-mes-anterior', 'btn-mes-siguiente');
 habilitarSwipeMes(document.getElementById('btn-g-mes-anterior').closest('.card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
 habilitarSwipeMes(document.getElementById('excl-card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
+
+// ---------- Exportar / Importar ocultos: se muestran con pulsación larga en el botón de configuración ----------
+(function(){
+  const LS = 'turnos_shifter_visible';
+  const card = document.getElementById('cal-shifter-card');
+  const btn = document.querySelector('nav.tabs button[data-tab="generar"]');
+  const nav = btn.closest('nav');
+  const aplicar = v => { card.style.display = v ? '' : 'none'; };
+  aplicar(localStorage.getItem(LS) === 'true');
+
+  let timer = null, largo = false;
+  const cancelar = () => { clearTimeout(timer); timer = null; };
+  btn.addEventListener('pointerdown', ()=>{
+    largo = false;
+    cancelar();
+    timer = setTimeout(()=>{
+      largo = true;
+      const visible = card.style.display === 'none';
+      localStorage.setItem(LS, visible ? 'true' : 'false');
+      aplicar(visible);
+      if(navigator.vibrate) try{ navigator.vibrate(30); }catch(e){}
+      if(visible){
+        document.querySelector('nav.tabs button[data-tab="calendario"]').click();
+        card.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    }, 600);
+  });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>btn.addEventListener(ev, cancelar));
+  btn.addEventListener('contextmenu', e=>e.preventDefault());
+  // Si fue pulsación larga, no cambiar de pestaña al soltar.
+  nav.addEventListener('click', e=>{
+    if(largo && e.target.closest('button[data-tab="generar"]')){
+      e.stopImmediatePropagation(); e.preventDefault(); largo = false;
+    }
+  }, true);
+})();
 
 // ---------- Init ----------
 renderPersonas();
