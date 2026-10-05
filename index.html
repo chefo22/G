@@ -396,7 +396,7 @@
 
   <!-- GENERAR -->
   <section id="view-generar" class="view">
-    <div class="card">
+    <div class="card" id="generar-card">
       <div class="cal-nav">
         <button class="btn btn-ghost btn-lock" id="btn-bloquear-mes-g" type="button" style="visibility:hidden;" aria-pressed="false" title="Bloquear este mes"><i data-mi="lock_open"></i></button>
         <button class="btn btn-ghost btn-nav-mes" id="btn-g-mes-anterior" type="button" aria-label="Mes anterior" title="Mes anterior"><i data-mi="chevron_left"></i></button>
@@ -416,9 +416,8 @@
         </div>
         <button class="btn btn-accent btn-sm" id="btn-variantes" type="button">Generar</button>
       </div>
-    </div>
 
-    <div class="card" id="excl-card" style="margin-top:18px;">
+    <div id="excl-card" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--line);">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;">
         <h3 style="margin:0;">Días puntuales este mes</h3>
         <button class="btn btn-ghost btn-sm" id="excl-modo-simple" type="button" aria-pressed="false" title="Un toque = &quot;No puede&quot; (sin niveles intermedios)">No puede</button>
@@ -426,6 +425,7 @@
       <div class="excl-tabs" id="excl-tabs" style="margin-top:12px;"></div>
       <div class="cal-grid" id="excl-dow-row"></div>
       <div class="cal-grid" id="excl-cal-grid"></div>
+    </div>
     </div>
     <p class="empty" id="generar-empty-hint">Cargá al menos una persona antes de generar.</p>
 
@@ -3772,7 +3772,7 @@ function habilitarSwipeMes(el, btnAnterior, btnSiguiente){
 }
 habilitarSwipeMes(document.getElementById('cal-grid').closest('.card'), 'btn-mes-anterior', 'btn-mes-siguiente');
 habilitarSwipeMes(document.getElementById('btn-g-mes-anterior').closest('.card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
-habilitarSwipeMes(document.getElementById('excl-card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
+habilitarSwipeMes(document.getElementById('generar-card'), 'btn-g-mes-anterior', 'btn-g-mes-siguiente');
 
 // ---------- Exportar / Importar ocultos: se muestran con pulsación larga en el botón de configuración ----------
 (function(){
