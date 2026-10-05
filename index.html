@@ -431,12 +431,12 @@
     </div>
     <p class="empty" id="generar-empty-hint">Cargá al menos una persona antes de generar.</p>
 
-    <h3 style="margin:18px 0 10px 4px; font-size:.95rem;">Personas cargadas</h3>
-    <div id="lista-personas"></div>
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin:18px 0 10px 4px;">
+      <h3 style="margin:0; font-size:.95rem;">Personas cargadas</h3>
+      <button class="btn btn-accent btn-sm" id="btn-toggle-form-persona" type="button"><i data-mi="add"></i>Agregar</button>
+    </div>
 
-    <button class="btn btn-accent btn-sm" id="btn-toggle-form-persona" type="button" style="margin-top:14px;"><i data-mi="add"></i>Agregar</button>
-
-    <div class="card" id="form-persona-card" style="display:none; margin-top:14px;">
+    <div class="card" id="form-persona-card" style="display:none; margin:0 0 14px;">
       <h3 id="form-title">Agregar persona</h3>
       <input type="hidden" id="persona-id">
       <label for="p-nombre">Nombre</label>
@@ -505,6 +505,9 @@
         <button class="btn btn-ghost btn-sm" id="btn-cancelar-edit" style="display:none;">Cancelar</button>
       </div>
     </div>
+
+    <div id="lista-personas"></div>
+
 
     <div class="card acc-card" id="cal-shifter-card" style="margin-top:18px; display:none;">
       <div class="acc-titulo">Shifter</div>
@@ -1297,7 +1300,7 @@ function formatFechaCorta(iso){
 
 // ---------- Plegado del formulario "Agregar persona" ----------
 // El formulario arranca oculto debajo del botón "+ Agregar persona"; se
-// despliega al tocar ese botón o al editar una persona existente, y se
+// despliega al tocar ese botón (arriba, junto al título de la lista) o al editar una persona existente, y se
 // vuelve a plegar al guardar o cancelar.
 const btnToggleFormPersona = document.getElementById('btn-toggle-form-persona');
 const formPersonaCard = document.getElementById('form-persona-card');
@@ -1305,10 +1308,11 @@ const formPersonaCard = document.getElementById('form-persona-card');
 function mostrarFormPersona(){
   formPersonaCard.style.display = 'block';
   btnToggleFormPersona.style.display = 'none';
+  formPersonaCard.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 function ocultarFormPersona(){
   formPersonaCard.style.display = 'none';
-  btnToggleFormPersona.style.display = 'block';
+  btnToggleFormPersona.style.display = '';
 }
 
 btnToggleFormPersona.addEventListener('click', ()=>{
